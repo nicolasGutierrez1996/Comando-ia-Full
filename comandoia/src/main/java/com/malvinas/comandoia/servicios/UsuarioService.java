@@ -30,5 +30,10 @@ public class UsuarioService {
     public void eliminarUsuario(Integer id) {
         usuarioRepository.deleteById(id);
     }
+
+    public Optional<Usuario> buscarPorMail(String mail) {
+        return usuarioRepository.findByEmail(mail);
+    }
+
 }
 

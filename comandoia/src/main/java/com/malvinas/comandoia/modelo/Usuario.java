@@ -25,9 +25,11 @@ public class Usuario {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "contrasena", nullable = false)
+    @Column(name = "contrasena")
     private String contrasena;
 
+    @Column(name = "token")
+     private String token;
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 
