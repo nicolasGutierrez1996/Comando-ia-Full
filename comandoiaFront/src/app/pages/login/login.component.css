@@ -4,10 +4,7 @@
   height: 100vh;
 }
 
-app-menu {
-  height: 80px;
-  flex-shrink: 0;
-}
+
 
 app-bienvenida {
   flex-grow: 1;

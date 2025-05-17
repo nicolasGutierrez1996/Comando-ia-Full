@@ -1,47 +1,131 @@
-:host {
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.seccion-inicio-sesion {
+  width: 100%;
+  min-height: 100vh;
+  background: url('/assets/Fondo.jpg') no-repeat center center/cover;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 60px); /* Ajusta según el alto de app-menu */
-  background: white;
+  padding-top: 80px;
+  box-sizing: border-box;
+  margin-top: 80px;
 }
 
-.login-section {
-  background-color: white;
-  padding: 40px 60px;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+.caja-inicio-sesion {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(15px);
+  border-radius: 20px;
+  padding: 40px 30px;
+  width: 350px;
+  color: #fff;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+}
+
+.caja-inicio-sesion h2 {
   text-align: center;
-  width: 320px;
+  margin-bottom: 30px;
+  font-size: 24px;
 }
 
-.login-section h2 {
-  margin-bottom: 24px;
-  font-weight: 700;
-  color: #333;
+.grupo-entrada {
+  position: relative;
+  margin-bottom: 30px;
 }
 
-.login-section input {
+.grupo-entrada input {
   width: 100%;
-  padding: 10px;
-  margin: 8px 0 20px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-}
-
-.login-section button {
-  width: 100%;
-  padding: 12px;
-  border-radius: 6px;
-  background-color: #2575fc;
-  color: white;
-  font-weight: 600;
+  padding: 10px 5px;
+  background: transparent;
   border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  border-bottom: 2px solid #ccc;
+  color: white;
+  font-size: 16px;
+  outline: none;
 }
 
-.login-section button:hover {
-  background-color: #6a11cb;
+.grupo-entrada label {
+  position: absolute;
+  top: 10px;
+  left: 5px;
+  color: #ccc;
+  pointer-events: none;
+  transition: 0.3s ease;
+}
+
+.grupo-entrada input:focus + label,
+.grupo-entrada input:valid + label {
+  top: -12px;
+  font-size: 12px;
+  color: #5ad1f3;
+}
+
+.opciones {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #ccc;
+  margin-bottom: 20px;
+}
+
+.opciones a {
+  color: #ccc;
+  text-decoration: none;
+}
+
+.opciones a:hover {
+  text-decoration: underline;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #5ad1f3, #2196f3);
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: 'Segoe UI', sans-serif;
+  letter-spacing: 1px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+.enlace-registro {
+  text-align: center;
+  margin-top: 20px;
+  color: #ccc;
+}
+
+.enlace-registro a {
+  color: #5ad1f3;
+  text-decoration: none;
+}
+
+.enlace-registro a:hover {
+  text-decoration: underline;
 }
