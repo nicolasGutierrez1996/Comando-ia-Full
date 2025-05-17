@@ -1,8 +1,24 @@
-body {
+html, body {
   margin: 0;
   padding: 0;
+  height: 100%;
   font-family: 'Segoe UI', sans-serif;
+  background-color: #004080;
 }
+
+.mensaje-bienvenida h1 {
+  color: white;
+  font-size: 32px;
+  font-weight: bold;
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  text-align: center;
+  text-shadow:
+    0 0 8px rgba(90, 209, 243, 0.8),
+    0 0 16px rgba(90, 209, 243, 0.6),
+    0 0 24px rgba(90, 209, 243, 0.4);
+}
+
 
 nav {
   position: fixed;
@@ -14,18 +30,20 @@ nav {
 
 .seccion-inicio-sesion {
   width: 100%;
-  min-height: 100vh;
-  background: url('/assets/Fondo.jpg') no-repeat center center/cover;
+  height: 100vh;
+  background-color: #004080;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 80px;
   box-sizing: border-box;
-  margin-top: 80px;
+ background-image: url('/assets/Fondo3.jpg');
+ background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .caja-inicio-sesion {
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.45);
   border: 1px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(15px);
   border-radius: 20px;
@@ -73,23 +91,6 @@ nav {
   color: #5ad1f3;
 }
 
-.opciones {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-  color: #ccc;
-  margin-bottom: 20px;
-}
-
-.opciones a {
-  color: #ccc;
-  text-decoration: none;
-}
-
-.opciones a:hover {
-  text-decoration: underline;
-}
-
 button {
   width: 100%;
   padding: 14px;
@@ -115,17 +116,25 @@ button:active {
   transform: scale(0.98);
 }
 
-.enlace-registro {
+.olvido-contrasena {
   text-align: center;
-  margin-top: 20px;
-  color: #ccc;
+  margin-top: 15px;
+  font-size: 14px;
 }
 
-.enlace-registro a {
-  color: #5ad1f3;
+.olvido-contrasena a {
+  color: #ccc;
   text-decoration: none;
 }
 
-.enlace-registro a:hover {
+.olvido-contrasena a:hover {
   text-decoration: underline;
 }
+
+.mensaje-bienvenida {
+  position: absolute;
+  top: 40px;
+  text-align: center;
+  width: 100%;
+}
+
