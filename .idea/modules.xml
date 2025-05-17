@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/comandoIa.iml" filepath="$PROJECT_DIR$/.idea/comandoIa.iml" />
+      <module fileurl="file://$PROJECT_DIR$/comandoia/comandoia.iml" filepath="$PROJECT_DIR$/comandoia/comandoia.iml" />
+    </modules>
+  </component>
+</project>

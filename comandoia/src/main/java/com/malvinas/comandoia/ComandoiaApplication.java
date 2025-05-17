@@ -1,0 +1,13 @@
+package com.malvinas.comandoia;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class ComandoiaApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ComandoiaApplication.class, args);
+	}
+
+}
