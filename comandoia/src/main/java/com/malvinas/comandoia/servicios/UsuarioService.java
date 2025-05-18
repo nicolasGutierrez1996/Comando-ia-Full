@@ -35,5 +35,10 @@ public class UsuarioService {
         return usuarioRepository.findByEmail(mail);
     }
 
+    public Optional<Usuario> buscarPorUserPass(String nombre,String contrasenia) {
+        return usuarioRepository.findByNombreAndContrasena(nombre,contrasenia);
+    }
+
+
 }
 

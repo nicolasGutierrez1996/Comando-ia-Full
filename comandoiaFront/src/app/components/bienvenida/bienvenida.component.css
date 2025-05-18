@@ -35,6 +35,7 @@ nav {
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
+
   background-image: url('/assets/Fondo3.jpg');
   background-size: cover;
   background-position: center;
@@ -42,14 +43,19 @@ nav {
 }
 
 .caja-inicio-sesion {
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(15px);
   border-radius: 20px;
-  padding: 40px 30px;
-  width: 350px;
+  padding: 60px 40px; /* aumenté el padding arriba y abajo */
+  width: 380px;       /* un poco más ancho si querés */
   color: #fff;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+
+  min-height: 420px; /* altura mínima más alta */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* centra verticalmente el contenido */
 }
 
 .caja-inicio-sesion h2 {
@@ -132,7 +138,10 @@ button:active {
 
 .mensaje-bienvenida {
   position: absolute;
-  top: 40px;
+  top: 20px;
   text-align: center;
   width: 100%;
 }
+
+
+

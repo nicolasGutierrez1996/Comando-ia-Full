@@ -1,0 +1,24 @@
+<section class="seccion-recuperar">
+  <div class="mensaje-recuperar">
+    <h1>Recuperar contraseña</h1>
+    <p>Ingresá tu correo electrónico y te enviaremos instrucciones para restablecer tu contraseña.</p>
+  </div>
+
+  <form (ngSubmit)="enviarRecuperacion()">
+    <div class="grupo-entrada">
+      <input
+        id="email"
+        name="email"
+        type="email"
+        [(ngModel)]="email"
+        required
+      />
+      <label for="email">Correo electrónico</label>
+    </div>
+
+    <button type="submit">Enviar</button>
+
+    <div *ngIf="mensaje" class="mensaje-info">{{ mensaje }}</div>
+    <div *ngIf="error" class="mensaje-error">{{ error }}</div>
+  </form>
+</section>

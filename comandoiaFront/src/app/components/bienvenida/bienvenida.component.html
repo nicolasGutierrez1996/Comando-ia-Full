@@ -1,29 +1,46 @@
-
-<section class="seccion-inicio-sesion">
-
+<section class="seccion-inicio-sesion" *ngIf="!mostrarRecuperar">
   <div class="mensaje-bienvenida">
     <h1>¡Bienvenido a Comando IA Malvinas!</h1>
   </div>
 
   <div class="caja-inicio-sesion">
+    <h2>Iniciar sesión</h2>
 
-    <h2 >Iniciar sesión</h2>
-    <form method="POST" action="/login">
+    <form (ngSubmit)="onLogin($event)">
       <div class="grupo-entrada">
-        <input id="usuario" name="usuario" type="text" required />
+        <input
+          id="usuario"
+          name="usuario"
+          type="text"
+          [(ngModel)]="usuario"
+          required
+        />
         <label for="usuario">Usuario</label>
       </div>
 
       <div class="grupo-entrada">
-        <input id="contrasena" name="contrasena" type="password" required />
+        <input
+          id="contrasena"
+          name="contrasena"
+          type="password"
+          [(ngModel)]="contrasena"
+          required
+        />
         <label for="contrasena">Contraseña</label>
       </div>
 
       <button type="submit">Ingresar</button>
 
-      <div class="olvido-contrasena">
-        <a href="#">¿Olvidaste tu contraseña?</a>
+      <div *ngIf="error" style="color: red; margin-top: 10px;">
+        {{ error }}
       </div>
     </form>
+
+    <div class="olvido-contrasena">
+      <button type="button" (click)="mostrarRecuperar = true">Recuperar contraseña</button>
+    </div>
   </div>
 </section>
+
+<!-- Acá aparece el hijo si mostrarRecuperar es true -->
+<app-recuperar-contrasena *ngIf="mostrarRecuperar"></app-recuperar-contrasena>

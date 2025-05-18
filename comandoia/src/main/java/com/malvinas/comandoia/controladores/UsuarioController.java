@@ -1,6 +1,7 @@
 package com.malvinas.comandoia.controladores;
 
 import com.malvinas.comandoia.modelo.Usuario;
+import com.malvinas.comandoia.requests.LoginRequest;
 import com.malvinas.comandoia.servicios.UsuarioService;
 import com.malvinas.comandoia.utils.EmailService;
 import com.malvinas.comandoia.utils.FuncionesVarias;
@@ -31,7 +32,7 @@ public class UsuarioController {
         return usuarioService.listarUsuario();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<?> obtenerPorId(@PathVariable Integer id) {
         Map<String, Object> response = new HashMap<>();
         Optional<Usuario> usuario = usuarioService.obtenerUsuarioPorId(id);
@@ -159,4 +160,24 @@ public class UsuarioController {
 
         return ResponseEntity.ok("Contraseña actualizada exitosamente.");
     }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        Map<String, Object> response = new HashMap<>();
+        Optional<Usuario> usuario =  usuarioService.buscarPorUserPass(
+                loginRequest.getUsuario(), loginRequest.getContrasena());
+
+
+        if (usuario.isPresent()) {
+            response.put("success", true);
+            response.put("usuario", usuario.get());
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario o contraseña incorrectos");
+        }
+    }
+
+
+
 }
