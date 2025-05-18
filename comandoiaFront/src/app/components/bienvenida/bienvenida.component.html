@@ -29,7 +29,7 @@
         <label for="contrasena">Contraseña</label>
       </div>
 
-      <button type="submit">Ingresar</button>
+      <button class="ingresar" type="submit">Ingresar</button>
 
       <div *ngIf="error" style="color: red; margin-top: 10px;">
         {{ error }}
@@ -37,10 +37,9 @@
     </form>
 
     <div class="olvido-contrasena">
-      <button type="button" (click)="mostrarRecuperar = true">Recuperar contraseña</button>
+      <button class="olvidoContra" type="button" (click)="mostrarRecuperar = true">¿Olvidaste la contraseña?</button>
     </div>
   </div>
 </section>
 
-<!-- Acá aparece el hijo si mostrarRecuperar es true -->
 <app-recuperar-contrasena *ngIf="mostrarRecuperar"></app-recuperar-contrasena>

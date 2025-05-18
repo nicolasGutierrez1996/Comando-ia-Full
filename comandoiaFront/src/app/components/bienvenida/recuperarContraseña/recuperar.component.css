@@ -1,0 +1,126 @@
+.seccion-recuperar {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #f0f0f0;
+  font-family: 'Segoe UI', sans-serif;
+  padding: 20px;
+
+   background-image: url('/assets/Fondo3.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+
+
+.mensaje-recuperar {
+  text-align: center;
+  margin-bottom: 30px;
+  max-width: 400px;
+  width: 100%;
+}
+
+.mensaje-recuperar h1 {
+  font-size: 28px;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.mensaje-recuperar p {
+  font-size: 16px;
+  color: white;
+  margin-bottom: 30px;
+}
+
+.recuperar-form {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 100%;
+}
+
+.grupo-entrada {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.grupo-entrada input {
+  width: 100%;
+  padding: 14px 10px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.grupo-entrada input:focus {
+  border-color: #2196f3;
+}
+
+.grupo-entrada label {
+  position: absolute;
+  left: 14px;
+  top: -10px;
+  background: white;
+  padding: 0 5px;
+  font-size: 14px;
+  color: #2196f3;
+  transition: 0.3s;
+}
+
+.enviar {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #5ad1f3, #2196f3);
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.enviar:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.enviar:active {
+  transform: scale(0.98);
+}
+
+.mensaje-info,
+.mensaje-error {
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 15px;
+  text-align: center;
+}
+
+.mensaje-info {
+  background-color: #d1f7d6;
+  color: #2e7d32;
+}
+
+.mensaje-error {
+  background-color: #fddede;
+  color: #c62828;
+}
+
+
+
+
+
+
+
+

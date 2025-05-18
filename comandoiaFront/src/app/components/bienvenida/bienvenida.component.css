@@ -47,12 +47,12 @@ nav {
   border: 1px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(15px);
   border-radius: 20px;
-  padding: 60px 40px; /* aumenté el padding arriba y abajo */
-  width: 380px;       /* un poco más ancho si querés */
+  padding: 60px 40px;
+  width: 340px;
   color: #fff;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
 
-  min-height: 420px; /* altura mínima más alta */
+  min-height: 320px; /* altura mínima más alta */
   display: flex;
   flex-direction: column;
   justify-content: center; /* centra verticalmente el contenido */
@@ -96,7 +96,7 @@ nav {
   color: #5ad1f3;
 }
 
-button {
+.ingresar {
   width: 100%;
   padding: 14px;
   background: linear-gradient(135deg, #5ad1f3, #2196f3);
@@ -108,31 +108,39 @@ button {
   border: none;
   border-radius: 30px;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-button:hover {
-  transform: scale(1.05);
+.ingresar:hover {
+  transform: scale(1.08);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
 }
 
-button:active {
+.ingresar:active {
   transform: scale(0.98);
 }
+.olvido-contrasena{
+    background-color: transparent;
+    text-align:center;
 
-.olvido-contrasena {
+
+}
+
+.olvidoContra {
   text-align: center;
   margin-top: 15px;
   font-size: 14px;
-}
-
-.olvido-contrasena a {
   color: #ccc;
   text-decoration: none;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
 }
 
-.olvido-contrasena a:hover {
+
+.olvidoContra:hover {
   text-decoration: underline;
 }
 
