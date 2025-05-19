@@ -19,6 +19,7 @@ public class Rol {
     private int id;
 
     @Column(name = "tipo", nullable = false)
+    @Enumerated(EnumType.STRING)
     private TipoRoles tipo;
 
     @Column(name = "descripcion")

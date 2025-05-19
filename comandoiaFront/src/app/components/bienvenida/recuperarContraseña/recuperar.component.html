@@ -5,50 +5,77 @@
     <p>Ingresá tu correo electrónico y te enviaremos instrucciones para restablecer tu contraseña.</p>
   </div>
 
-  <form class="recuperar-form" action="#" method="post">
+  <form (ngSubmit)="enviarRecuperacion()"
+    class="recuperar-form" action="#" method="post">
     <div class="grupo-entrada">
       <input
         id="email"
         name="email"
         type="email"
+        [(ngModel)]="email"
         required
       />
       <label for="email">Correo electrónico</label>
+      <div *ngIf="error" class="mensaje-error">
+        {{ error }}
+      </div>
     </div>
 
-    <div class="grupo-entrada">
+    <div class="grupo-entrada" *ngIf="ocultarToken">
       <input
         id="token"
         name="token"
         type="text"
         required
+        [(ngModel)]="token"
       />
       <label for="token">Ingrese su Token</label>
+
+      <!-- Mensaje estático que se oculta si el token tiene contenido -->
+      <div *ngIf="!token" class="mensaje-info">
+        Revise su casilla de email e ingrese el token de recuperación.
+      </div>
+
+      <div *ngIf="errorToken" class="mensaje-error">
+        {{ errorToken }}
+      </div>
     </div>
 
-    <div class="grupo-entrada">
+    <div class="grupo-entrada" *ngIf="ocultarClave">
       <input
         id="nuevaContrasena"
         name="nuevaContrasena"
         type="password"
         required
+        [(ngModel)]="clave"
+
       />
       <label for="nuevaContrasena">Ingrese su nueva contraseña</label>
+      <div *ngIf="errorClave" class="mensaje-error">
+        {{ errorClave }}
+      </div>
     </div>
 
-    <div class="grupo-entrada">
+    <div class="grupo-entrada" *ngIf="ocultarClave">
       <input
         id="repetirContrasena"
         name="repetirContrasena"
         type="password"
         required
+        [(ngModel)]="repeticion"
+
       />
       <label for="repetirContrasena">Repita su nueva contraseña</label>
+      <div *ngIf="errorRepeticion" class="mensaje-error">
+        {{ errorRepeticion }}
+      </div>
     </div>
 
     <button class="enviar" type="submit">Enviar</button>
 
   </form>
+
+
 </section>
 
 

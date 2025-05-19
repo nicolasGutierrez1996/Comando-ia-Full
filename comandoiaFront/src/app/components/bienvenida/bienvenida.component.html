@@ -1,4 +1,4 @@
-<section class="seccion-inicio-sesion" *ngIf="!mostrarRecuperar">
+<section class="seccion-inicio-sesion">
   <div class="mensaje-bienvenida">
     <h1>¡Bienvenido a Comando IA Malvinas!</h1>
   </div>
@@ -37,9 +37,9 @@
     </form>
 
     <div class="olvido-contrasena">
-      <button class="olvidoContra" type="button" (click)="mostrarRecuperar = true">¿Olvidaste la contraseña?</button>
+      <button class="olvidoContra" type="button" (click)="irARecuperar()">
+        ¿Olvidaste la contraseña?
+      </button>
     </div>
   </div>
 </section>
-
-<app-recuperar-contrasena *ngIf="mostrarRecuperar"></app-recuperar-contrasena>

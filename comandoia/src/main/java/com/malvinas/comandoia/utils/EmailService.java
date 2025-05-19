@@ -3,6 +3,7 @@ package com.malvinas.comandoia.utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -10,6 +11,7 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Async
     public void enviarCredenciales(String destino, String contrasena, String nombreUsuario) {
         SimpleMailMessage mensaje = new SimpleMailMessage();
         mensaje.setTo(destino);
@@ -19,6 +21,7 @@ public class EmailService {
         mailSender.send(mensaje);
     }
 
+    @Async
     public void enviarTokenDeRecuperacion(String destino, String token) {
         SimpleMailMessage mensaje = new SimpleMailMessage();
         mensaje.setTo(destino);

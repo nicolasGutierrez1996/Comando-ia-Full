@@ -15,7 +15,24 @@
     background-repeat: no-repeat;
 }
 
-
+.mensaje-error {
+  color: #d32f2f;
+  font-weight: 600;
+  font-size: 15px;
+  margin-top: 12px;
+  text-align: center;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+  font-family: 'Roboto', sans-serif;
+}
+.mensaje-info {
+  color: #34495e;
+  font-size: 0.9rem;
+  margin-top: 4px;
+  font-style: italic;
+}
 
 .mensaje-recuperar {
   text-align: center;
@@ -98,8 +115,7 @@
   transform: scale(0.98);
 }
 
-.mensaje-info,
-.mensaje-error {
+.mensaje-info {
   margin-top: 20px;
   padding: 10px;
   border-radius: 8px;
@@ -112,10 +128,7 @@
   color: #2e7d32;
 }
 
-.mensaje-error {
-  background-color: #fddede;
-  color: #c62828;
-}
+
 
 
 

@@ -123,9 +123,12 @@ public class UsuarioController {
 
     @PutMapping("/recuperar/{email}")
     public ResponseEntity<?> recuperarClave(@PathVariable String email) {
+        Map<String, Object> response = new HashMap<>();
         Optional<Usuario> usuarioOpt = usuarioService.buscarPorMail(email);
         if (usuarioOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe un usuario con ese email");
+            response.put("success",false);
+            response.put("mensaje","No existe un usuario con ese email");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
         Usuario usuario = usuarioOpt.get();
@@ -134,8 +137,9 @@ public class UsuarioController {
         usuarioService.guardarUsuario(usuario);
 
         emailService.enviarTokenDeRecuperacion(usuario.getEmail(), token);
-
-        return ResponseEntity.ok("Se envió un token de recuperación al correo registrado.");
+        response.put("success",true);
+        response.put("mensaje","Se envió un token de recuperación al correo registrado.");
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/actualizar-clave/{email}/{token}/{nuevaClave}")
@@ -178,6 +182,53 @@ public class UsuarioController {
         }
     }
 
+    @PostMapping("/obtenerToken/{mail}")
+    public ResponseEntity<?> obtenerTokenPorMail(@PathVariable String mail) {
+        Map<String, Object> response = new HashMap<>();
+        Optional<String> token = usuarioService.obtenerTokenPorMail(mail);
 
+        if (token.isPresent()) {
+            response.put("success", true);
+            response.put("token", token.get());
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("El mail ingresado no tiene ningun token asignado");
+        }
+    }
+
+  @PutMapping("/actualizarContrasena/{mail}/{contrasena}")
+  public ResponseEntity<?> actualizarContrasena(@PathVariable String mail,@PathVariable String contrasena) {
+      Map<String, Object> response = new HashMap<>();
+      Optional<Usuario> usuario = usuarioService.buscarPorMail(mail);
+
+      if (usuario.isPresent()) {
+          usuarioService.actualizarPassword(mail,contrasena);
+          response.put("success", true);
+          response.put("mensaje", "Se actualizo correctamente la contraseña");
+          return ResponseEntity.ok(response);
+      } else {
+          response.put("success", false);
+          response.put("mensaje", "Error al actualizar contraseña");
+          return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                  .body(response);
+      }
+  }
+
+
+    @PostMapping("/obtenerRol/{nombre}")
+    public ResponseEntity<?> obtenerRolPorNombre(@PathVariable String nombre) {
+        Map<String, Object> response = new HashMap<>();
+        Optional<String> rol = usuarioService.obtenerRolPorNombre(nombre);
+
+        if (rol.isPresent()) {
+            response.put("success", true);
+            response.put("rol", rol.get());
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("El nombre ingresado no tiene ningun rol asignado");
+        }
+    }
 
 }

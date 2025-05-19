@@ -114,4 +114,8 @@ public class RolController {
         response.put("mensaje", String.format("Rol con ID %d eliminado correctamente", id));
         return ResponseEntity.ok(response);
     }
+
+
+
+
 }

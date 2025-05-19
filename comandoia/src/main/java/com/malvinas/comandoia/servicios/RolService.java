@@ -32,4 +32,6 @@ public class RolService {
 
         rolRepository.deleteById(id);
     }
+
+
 }

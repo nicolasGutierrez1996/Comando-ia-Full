@@ -39,6 +39,22 @@ public class UsuarioService {
         return usuarioRepository.findByNombreAndContrasena(nombre,contrasenia);
     }
 
+    public Optional<String> obtenerTokenPorMail(String mail){
+        return usuarioRepository.findTokenByEmail(mail);
+    }
+
+    public void actualizarPassword(String email, String nuevaPassword) {
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        usuario.setContrasena(nuevaPassword);
+        usuarioRepository.save(usuario);
+    }
+
+    public Optional<String> obtenerRolPorNombre(String nombre){
+        return usuarioRepository.findTipoRolByNombre(nombre);
+    }
+
 
 }
 
