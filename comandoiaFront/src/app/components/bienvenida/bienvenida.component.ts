@@ -50,7 +50,18 @@ export class BienvenidaComponent {
        if (this.rol === 'ADMINISTRADOR_DEL_SISTEMA') {
          console.log("Ingrese a redireccionar a administrador del sistema");
          this.router.navigate(['./administradorSistemaInit']);
-       } else {
+       }else if(this.rol === 'ADMINISTRATIVO'){
+                  this.router.navigate(['./Administrador']);
+
+
+       }else if(this.rol === 'CONSULTOR_PRINCIPAL'){
+                     this.router.navigate(['./Consultor']);
+
+       }else if(this.rol === 'CONSULTOR'){
+               this.router.navigate(['./ConsultorPrincipal']);
+
+       }
+        else {
          // Si hay otros roles y rutas, podés agregar más condiciones aquí
          console.log("Rol no autorizado o diferente");
        }

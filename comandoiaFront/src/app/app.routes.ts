@@ -4,6 +4,9 @@ import { BienvenidaComponent } from './components/bienvenida/bienvenida.componen
 import { MenuComponent } from './components/menu/menu.component';
 import { RecuperarComponent } from './components/bienvenida/recuperarContraseña/recuperar.component';
 import { AdministradorSistemaInitComponent } from './components/AdministradorSistemaInit/administradorSistemaInit.component';
+import { AdministradorComponent } from './components/administrador/administrador.component';
+import { ConsultorComponent } from './components/consultor/consultor.component';
+import { ConsultorPrincipalComponent } from './components/consultor-principal/consultor-principal.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -11,7 +14,9 @@ export const routes: Routes = [
   { path: 'bienvenida', component: BienvenidaComponent },
   { path: 'menu', component: MenuComponent },
   { path: 'recuperar', component: RecuperarComponent },
-  { path: 'administradorSistemaInit', component: AdministradorSistemaInitComponent }
-
+  { path: 'administradorSistemaInit', component: AdministradorSistemaInitComponent },
+  { path: 'Administrador', component: AdministradorComponent },
+  { path: 'Consultor', component: ConsultorComponent },
+  { path: 'ConsultorPrincipal', component: ConsultorPrincipalComponent }
 
 ];
