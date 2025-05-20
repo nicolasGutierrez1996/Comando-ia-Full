@@ -5,6 +5,9 @@
 }
 
 
+/* Mostrar subbotones solo si el radio está seleccionado */
+
+
 .aplicacion {
   font-family: 'Arial', sans-serif;
   display: flex;
@@ -32,7 +35,27 @@
   list-style: none;
   padding: 0;
 }
+.subbotones {
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+  margin-top: 5px;
+}
 
+.subbotones button {
+  margin-bottom: 6px;
+  padding: 6px 12px;
+  border: none;
+  background-color: #1976d2;
+  color: white;
+  border-radius: 4px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.subbotones button:hover {
+  background-color: #1565c0;
+}
 
  .opcion {
    padding: 15px 20px;
