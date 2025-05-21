@@ -38,8 +38,37 @@
     </ul>
   </div>
 
-  <!-- NUEVA SECCIÓN -->
+  <!-- CONTENIDO PRINCIPAL -->
   <div class="contenido-principal">
-    <h2>USUARIOS</h2>
+    <h2 style="color: white; margin-bottom: 20px;">USUARIOS</h2>
+
+    <div id="formulario-crear-usuario">
+      <form class="formulario">
+        <label>Nombre de usuario:
+          <input type="text" name="nombre" required>
+        </label>
+
+        <label>Email:
+          <input type="email" name="email" required>
+        </label>
+
+        <label>Estado:
+          <select name="estado">
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+          </select>
+        </label>
+
+        <label>Rol:
+          <select name="rol">
+            <option value="admin">Administrador</option>
+            <option value="usuario">Usuario</option>
+            <option value="invitado">Invitado</option>
+          </select>
+        </label>
+
+        <button type="submit">Guardar usuario</button>
+      </form>
+    </div>
   </div>
 </div>

@@ -1,139 +1,187 @@
-* {
-   margin: 0;
-   padding: 0;
-   box-sizing: border-box;
-}
+>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
+    .aplicacion {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      height: 100vh;
+      width: 100%;
+    }
 
-/* Mostrar subbotones solo si el radio está seleccionado */
+    .menu-lateral {
+      width: 250px;
+      height: 100vh;
+      background: linear-gradient(180deg, #003366, #0055cc, #3399ff);
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+      padding-top: 20px;
+    }
 
+    .menu-lateral h2 {
+      text-align: center;
+      color: white;
+      margin-bottom: 30px;
+    }
 
-.aplicacion {
-  font-family: 'Arial', sans-serif;
-  display: flex;
-  height: 100vh;
-  width: 100%;
-}
+    .lista-opciones {
+      list-style: none;
+      padding: 0;
+    }
 
-.menu-lateral {
-  width: 250px;
-  height: 100vh;
-  background: linear-gradient(180deg, #003366, #0055cc, #3399ff); /* degradado azul mágico */
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-  padding-top: 20px;
+    .subbotones {
+      display: flex;
+      flex-direction: column;
+      margin-left: 20px;
+      margin-top: 5px;
+    }
 
+    .subbotones button {
+      margin-bottom: 6px;
+      padding: 6px 12px;
+      border: none;
+      background-color: transparent;
+      color: white;
+      text-align: left;
+      cursor: pointer;
+      font-size: 14px;
+      transition: color 0.3s ease, text-decoration 0.3s ease;
+    }
 
-}
+    .subbotones button:hover {
+      color: #ffcc00;
+      text-decoration: underline;
+    }
 
- .menu-lateral h2 {
-   text-align: center;
-   color: white;
-   margin-bottom: 30px;
- }
+    .opcion {
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #fff;
+      cursor: pointer;
+      transition: color 0.3s ease, background-color 0.3s ease;
+      position: relative;
+    }
 
-.lista-opciones {
-  list-style: none;
-  padding: 0;
-}
-.subbotones {
-  display: flex;
-  flex-direction: column;
-  margin-left: 20px;
-  margin-top: 5px;
-}
+    .opcion:hover {
+      background-color: #1e90ff;
+      color: #ffffff;
+    }
 
-.subbotones button {
-  margin-bottom: 6px;
-  padding: 6px 12px;
-  border: none;
-  background-color: #1976d2;
-  color: white;
-  border-radius: 4px;
-  text-align: left;
-  cursor: pointer;
-}
+    .opcion i {
+      margin-right: 10px;
+      color: #ffffff;
+    }
 
-.subbotones button:hover {
-  background-color: #1565c0;
-}
+    .flecha {
+      font-size: 14px;
+      transition: transform 0.3s ease;
+    }
 
- .opcion {
-   padding: 15px 20px;
-   display: flex;
-   align-items: center;
-   justify-content: space-between; /* para que la flecha quede a la derecha */
-   color: #fff;
-   cursor: pointer;
-   transition: color 0.3s ease, background-color 0.3s ease;
-   position: relative;
- }
+    .opcion.active .flecha {
+      transform: rotate(180deg);
+    }
 
- .opcion:hover {
-   background-color: #1e90ff;
-   color: #ffffff;
- }
+    .opcion.active {
+      background-color: #7eaaff;
+      color: #fff;
+      font-weight: bold;
+    }
 
- .opcion i {
-   margin-right: 10px;
-   color: #ffffff;
- }
+    .lista-opciones input[type="radio"] {
+      display: none;
+    }
 
- .flecha {
-   font-size: 14px;
-   transition: transform 0.3s ease;
- }
+    .lista-opciones label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      cursor: pointer;
+      color: #fff;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
 
- .opcion.active .flecha {
-   transform: rotate(180deg);
- }
+    .lista-opciones label:hover {
+      background-color: #1e90ff;
+      color: #ffffff;
+    }
 
- .opcion.active {
-   background-color: #7eaaff;
-   color: #fff;
-   font-weight: bold;
- }
+    .lista-opciones input[type="radio"]:checked + label {
+      background-color: #1e90ff;
+      color: #ffffff;
+      font-weight: bold;
+    }
 
-.lista-opciones input[type="radio"] {
-  display: none;
-}
+    .flecha {
+      display: inline-block;
+      transition: transform 0.3s ease;
+      transform: rotate(0deg);
+    }
 
-.lista-opciones label {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  cursor: pointer;
-  color: #fff;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
+    input[type="radio"]:checked + label .flecha {
+      transform: rotate(90deg);
+    }
 
-.lista-opciones label:hover {
-  background-color: #1e90ff;
-  color: #ffffff;
-}
+    .contenido-principal {
+      flex: 1;
+      background-image: url('/assets/Fondo3.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+    }
 
- .lista-opciones input[type="radio"]:checked + label {
-   background-color: #1e90ff;
-   color: #ffffff;
-   font-weight: bold;
- }
+    #formulario-crear-usuario {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    }
 
-.flecha {
-  display: inline-block;
-  transition: transform 0.3s ease;
-  transform: rotate(0deg); /* ▶ derecha */
-}
+    .formulario {
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 400px;
+      width: 100%;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
 
-/* Flecha girada hacia abajo cuando está seleccionado */
-input[type="radio"]:checked + label .flecha {
-  transform: rotate(90deg); /* ▼ abajo */
-}
+    .formulario label {
+      display: flex;
+      flex-direction: column;
+      font-weight: bold;
+    }
 
-.contenido-principal {
-  flex: 1;
-  background-image: url('/assets/Fondo3.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
+    .formulario input,
+    .formulario select {
+      padding: 8px;
+      border: none;
+      border-radius: 4px;
+      margin-top: 5px;
+    }
+
+    .formulario button {
+      padding: 10px;
+      background-color: #1e90ff;
+      border: none;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .formulario button:hover {
+      background-color: #187bcd;
+    }
 
