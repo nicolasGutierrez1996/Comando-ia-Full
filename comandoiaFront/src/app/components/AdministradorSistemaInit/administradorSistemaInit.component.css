@@ -3,13 +3,15 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+
     }
 
     .aplicacion {
       font-family: 'Arial', sans-serif;
       display: flex;
-      height: 100vh;
+      height: 120vh;
       width: 100%;
+
     }
 
     .menu-lateral {
@@ -38,22 +40,22 @@
       margin-top: 5px;
     }
 
-    .subbotones button {
-      margin-bottom: 6px;
-      padding: 6px 12px;
-      border: none;
-      background-color: transparent;
-      color: white;
-      text-align: left;
-      cursor: pointer;
-      font-size: 14px;
-      transition: color 0.3s ease, text-decoration 0.3s ease;
-    }
+   .subboton {
+     margin-bottom: 6px;
+     padding: 6px 12px;
+     border: none;
+     background-color: transparent;
+     color: white;
+     text-align: left;
+     cursor: pointer;
+     font-size: 14px;
+     transition: color 0.3s ease, text-decoration 0.3s ease;
+   }
 
-    .subbotones button:hover {
-      color: #ffcc00;
-      text-decoration: underline;
-    }
+   .subboton:hover {
+     color: #ffcc00;
+     text-decoration: underline;
+   }
 
     .opcion {
       padding: 15px 20px;
@@ -76,20 +78,15 @@
       color: #ffffff;
     }
 
-    .flecha {
-      font-size: 14px;
-      transition: transform 0.3s ease;
-    }
+.flecha {
+  display: inline-block;
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
 
-    .opcion.active .flecha {
-      transform: rotate(180deg);
-    }
-
-    .opcion.active {
-      background-color: #7eaaff;
-      color: #fff;
-      font-weight: bold;
-    }
+.flecha.rotada {
+  transform: rotate(90deg);
+}
 
     .lista-opciones input[type="radio"] {
       display: none;
@@ -128,7 +125,6 @@
 
     .contenido-principal {
       flex: 1;
-      background-image: url('/assets/Fondo3.jpg');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -136,6 +132,7 @@
       flex-direction: column;
       align-items: center;
       padding: 40px;
+      background-image: url('/assets/Fondo3.jpg');
     }
 
     #formulario-crear-usuario {
@@ -185,3 +182,28 @@
       background-color: #187bcd;
     }
 
+
+.menu-titulo {
+  padding: 18px 22px;
+  background-color: transparent;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  width: 100%;
+  text-align: left;
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+.menu-titulo:hover {
+  background-color: #187bcd;
+}
+
+.menu-titulo.activo {
+  background-color: #3399ff;
+}

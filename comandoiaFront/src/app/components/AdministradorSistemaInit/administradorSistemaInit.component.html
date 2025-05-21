@@ -3,46 +3,48 @@
     <h2>IA Malvinas</h2>
     <ul class="lista-opciones">
       <li>
-        <input type="radio" id="opcion1" name="menu" />
-        <label for="opcion1">
+        <button type="button"
+                (click)="MostrarSubBotonesReclamo()"
+                class="menu-titulo"
+                [class.activo]="mostrarSubBotonReclamos">
           <span class="texto">Administrar reclamos</span>
-          <span class="flecha">▶</span>
-        </label>
+          <span class="flecha" [class.rotada]="mostrarSubBotonReclamos">▶</span>
+        </button>
         <div class="subbotones">
-          <button>Administrar valores</button>
-          <button>Editar valores</button>
+          <button class="subboton" *ngIf="mostrarSubBotonReclamos">Administrar valores</button>
+          <button class="subboton" *ngIf="mostrarSubBotonReclamos">Editar valores</button>
         </div>
       </li>
       <li>
-        <input type="radio" id="opcion2" name="menu" />
-        <label for="opcion2">
+        <button type="button" (click)="MostrarSubBotonesObras()" class="menu-titulo"
+                [class.activo]="mostrarSubBotonObras">
           <span class="texto">Administrar obras</span>
-          <span class="flecha">▶</span>
-        </label>
+          <span class="flecha" [class.rotada]="mostrarSubBotonObras">▶</span>
+        </button>
         <div class="subbotones">
-          <button>Administrar valores</button>
-          <button>Editar valores</button>
+          <button class="subboton" *ngIf="mostrarSubBotonObras">Administrar valores</button>
+          <button class="subboton" *ngIf="mostrarSubBotonObras">Editar valores</button>
         </div>
       </li>
       <li>
-        <input type="radio" id="opcion3" name="menu" />
-        <label for="opcion3">
+        <button type="button" (click)="MostrarSubBotonesUsuarios()" class="menu-titulo"
+                [class.activo]="mostrarSubBotonUsuario">
           <span class="texto">Administrar usuarios</span>
-          <span class="flecha">▶</span>
-        </label>
+          <span class="flecha" [class.rotada]="mostrarSubBotonUsuario">▶</span>
+        </button>
         <div class="subbotones">
-          <button>Crear usuario</button>
-          <button>Editar usuario</button>
+          <button class="subboton" *ngIf="mostrarSubBotonUsuario" (click)="MostrarCargarUsuarios()">Crear usuario</button>
+          <button class="subboton" *ngIf="mostrarSubBotonUsuario">Editar usuario</button>
         </div>
       </li>
     </ul>
   </div>
 
-  <!-- CONTENIDO PRINCIPAL -->
+  <!-- CONTENIDO PRINCIPAL USUARIOS-->
   <div class="contenido-principal">
     <h2 style="color: white; margin-bottom: 20px;">USUARIOS</h2>
 
-    <div id="formulario-crear-usuario">
+    <div id="formulario-crear-usuario" *ngIf="mostrarCargaDeUsuario">
       <form class="formulario">
         <label>Nombre de usuario:
           <input type="text" name="nombre" required>

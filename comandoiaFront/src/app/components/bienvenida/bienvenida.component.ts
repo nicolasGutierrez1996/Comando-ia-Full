@@ -16,6 +16,7 @@ export class BienvenidaComponent {
   contrasena = '';
   error = '';
   rol='';
+  mostrarContrasena = false;
 
   constructor(
     private usersService: UsersService,
@@ -71,4 +72,9 @@ export class BienvenidaComponent {
      }
    });
  }
+
+ toggleMostrarContrasena(): void {
+   this.mostrarContrasena = !this.mostrarContrasena;
+ }
+
 }

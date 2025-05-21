@@ -45,30 +45,36 @@
       <input
         id="nuevaContrasena"
         name="nuevaContrasena"
-        type="password"
+        [type]="mostrarClave ? 'text' : 'password'"
         required
         [(ngModel)]="clave"
-
       />
       <label for="nuevaContrasena">Ingrese su nueva contraseña</label>
       <div *ngIf="errorClave" class="mensaje-error">
         {{ errorClave }}
       </div>
+      <button type="button" class="toggle-ojito" (click)="mostrarClave = !mostrarClave" tabindex="-1">
+        <span *ngIf="mostrarClave">👁️</span>
+        <span *ngIf="!mostrarClave">👁️‍🗨️</span>
+      </button>
     </div>
 
     <div class="grupo-entrada" *ngIf="ocultarClave">
       <input
         id="repetirContrasena"
         name="repetirContrasena"
-        type="password"
+        [type]="mostrarRepeticion ? 'text' : 'password'"
         required
         [(ngModel)]="repeticion"
-
       />
       <label for="repetirContrasena">Repita su nueva contraseña</label>
       <div *ngIf="errorRepeticion" class="mensaje-error">
         {{ errorRepeticion }}
       </div>
+      <button type="button" class="toggle-ojito" (click)="mostrarRepeticion = !mostrarRepeticion" tabindex="-1">
+        <span *ngIf="mostrarRepeticion">👁️</span>
+        <span *ngIf="!mostrarRepeticion">👁️‍🗨️</span>
+      </button>
     </div>
 
     <button class="enviar" type="submit">Enviar</button>

@@ -23,10 +23,15 @@
           id="contrasena"
           name="contrasena"
           type="password"
+          [type]="mostrarContrasena ? 'text' : 'password'"
           [(ngModel)]="contrasena"
           required
         />
         <label for="contrasena">Contraseña</label>
+        <button type="button" class="toggle-ojito" (click)="toggleMostrarContrasena()" tabindex="-1">
+          <span *ngIf="mostrarContrasena">👁️</span>
+          <span *ngIf="!mostrarContrasena">👁️‍🗨️</span>
+        </button>
       </div>
 
       <button class="ingresar" type="submit">Ingresar</button>

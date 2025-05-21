@@ -5,18 +5,34 @@ html, body {
   font-family: 'Segoe UI', sans-serif;
   background-color: #004080;
 }
+.grupo-entrada {
+  position: relative;
+}
 
-.mensaje-bienvenida h1 {
-  color: white;
-  font-size: 32px;
-  font-weight: bold;
-  font-family: 'Segoe UI', sans-serif;
-  margin: 0;
-  text-align: center;
-  text-shadow:
-    0 0 8px rgba(90, 209, 243, 0.8),
-    0 0 16px rgba(90, 209, 243, 0.6),
-    0 0 24px rgba(90, 209, 243, 0.4);
+.grupo-entrada {
+  position: relative;
+}
+
+.grupo-entrada input {
+  width: 100%;
+  padding-right: 40px; /* espacio para el ojito */
+}
+
+.toggle-ojito {
+  position: absolute;
+  top: 50%;
+  right: 10px; /* más a la derecha */
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #555;
+  z-index: 2;
+}
+
+.toggle-ojito:focus {
+  outline: none;
 }
 
 nav {
@@ -47,15 +63,15 @@ nav {
   border: 1px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(15px);
   border-radius: 20px;
-  padding: 60px 40px;
-  width: 340px;
+  padding: 4vw 3vw; /* se adapta al ancho del viewport */
+  width: min(90vw, 380px); /* nunca más grande que 380px */
   color: #fff;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
 
-  min-height: 320px; /* altura mínima más alta */
+  min-height: 320px;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* centra verticalmente el contenido */
+  justify-content: center;
 }
 
 .caja-inicio-sesion h2 {
@@ -152,4 +168,36 @@ nav {
 }
 
 
+/* 📐 Ajustes generales responsivos */
+.seccion-inicio-sesion {
+  padding: 0 20px; /* margen lateral para pantallas pequeñas */
+  box-sizing: border-box;
+}
+
+/* 📏 Limita el ancho para que no se estire en pantallas grandes */
+.caja-inicio-sesion {
+  width: 100%;
+  max-width: 380px; /* ancho máximo para monitores grandes */
+}
+
+/* 📱 Mejora para celulares muy chicos */
+@media (max-width: 400px) {
+  .caja-inicio-sesion {
+    padding: 40px 20px;
+    border-radius: 15px;
+  }
+
+  .ingresar {
+    font-size: 16px;
+    padding: 12px;
+  }
+
+  .caja-inicio-sesion h2 {
+    font-size: 20px;
+  }
+
+  .grupo-entrada input {
+    font-size: 15px;
+  }
+}
 

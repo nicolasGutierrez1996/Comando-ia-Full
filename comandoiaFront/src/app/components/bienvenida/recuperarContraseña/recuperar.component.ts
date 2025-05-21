@@ -24,6 +24,8 @@ export class RecuperarComponent {
   cargando: boolean = false;
   ocultarClave:boolean=false;
   ocultarToken:boolean=false;
+  mostrarClave: boolean = false;
+  mostrarRepeticion: boolean = false;
   constructor(private usersService: UsersService, private router: Router,
                                                                           private snackBar: MatSnackBar) {}
 
