@@ -1,11 +1,25 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { timeout } from 'rxjs/operators';
+import { map,timeout } from 'rxjs/operators';
 
 interface LoginRequest {
   usuario: string;
   contrasena: string;
+}
+
+
+
+export interface Usuario {
+  id?: number;
+  nombre: string;
+  email: string;
+  contrasena?: string;
+  token?: string;
+  fechaCreacion?: string;
+  fechaUltimaActualizacion?: string;
+  estado: { id: number };
+  rol: { id: number };
 }
 
 @Injectable({
@@ -39,6 +53,21 @@ cambiarContrasena(email:string,contrasena:string):Observable<any>{
 
 obtenerRol(nombre: string): Observable<any> {
   return this.http.post(`${this.baseUrl}/obtenerRol/${nombre}`, null);
+}
+
+crearUsuario(usuario: Usuario): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}`, usuario);
+  }
+
+existeUsuario(nombre: string): Observable<boolean> {
+  return this.http.get<boolean>(`${this.baseUrl}/existe-nombre/${nombre}`);
+}
+buscarUsuariosPorNombre(nombre: string): Observable<Usuario[]> {
+  return this.http.get<Usuario[]>(`${this.baseUrl}/buscarUsuariosPorNombre/${nombre}`);
+}
+
+actualizarUsuario(id: number, usuario: Usuario): Observable<any> {
+  return this.http.put(`${this.baseUrl}/${id}`, usuario);
 }
 
 

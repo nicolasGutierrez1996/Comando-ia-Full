@@ -5,6 +5,8 @@ import com.malvinas.comandoia.repositorios.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -55,6 +57,16 @@ public class UsuarioService {
         return usuarioRepository.findTipoRolByNombre(nombre);
     }
 
+    public boolean existeNombre(String nombre){
+        return usuarioRepository.existsByNombre(nombre);
+    }
 
+
+    public List<Usuario> buscarUsuariosPorNombre(String nombreParcial) {
+        Iterable<Usuario> iterableUsuarios = usuarioRepository.findByNombreContainingIgnoreCase(nombreParcial);
+        List<Usuario> listaUsuarios = new ArrayList<>();
+        iterableUsuarios.forEach(listaUsuarios::add);
+        return listaUsuarios;
+    }
 }
 

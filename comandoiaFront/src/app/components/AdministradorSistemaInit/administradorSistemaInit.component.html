@@ -34,7 +34,7 @@
         </button>
         <div class="subbotones">
           <button class="subboton" *ngIf="mostrarSubBotonUsuario" (click)="MostrarCargarUsuarios()">Crear usuario</button>
-          <button class="subboton" *ngIf="mostrarSubBotonUsuario">Editar usuario</button>
+          <button class="subboton" *ngIf="mostrarSubBotonUsuario" (click)="MostrarModoEdicion()">Editar usuario</button>
         </div>
       </li>
     </ul>
@@ -44,32 +44,56 @@
   <div class="contenido-principal">
     <h2 style="color: white; margin-bottom: 20px;">USUARIOS</h2>
 
-    <div id="formulario-crear-usuario" *ngIf="mostrarCargaDeUsuario">
+    <div id="formulario-crear-usuario" *ngIf="mostrarCargaDeUsuario ||  modoEdicion">
       <form class="formulario">
+
+        <div style="position: relative;">
         <label>Nombre de usuario:
-          <input type="text" name="nombre" required>
-        </label>
+          <input type="text" name="nombre" [(ngModel)]="nombre_usuario" (input)="buscarUsuarios(nombre_usuario)" required>        </label>
 
+        <ul *ngIf="modoEdicion && usuariosSugeridos && usuariosSugeridos.length > 0" class="autocomplete-list">
+          <li *ngFor="let usuario of usuariosSugeridos" (mousedown)="seleccionarUsuario(usuario)">
+            {{ usuario.nombre }}
+          </li>
+        </ul>
+        <div *ngIf="error_nombre" class="mensaje-error">
+          {{ error_nombre }}
+        </div>
+        </div>
+        <ng-container *ngIf="!modoEdicion || mostrarDatosEdicion">
         <label>Email:
-          <input type="email" name="email" required>
+          <input type="email" name="email" [(ngModel)]="email" required>
         </label>
-
+        <div *ngIf="error_mail" class="mensaje-error">
+          {{ error_mail }}
+        </div>
         <label>Estado:
-          <select name="estado">
-            <option value="activo">Activo</option>
-            <option value="inactivo">Inactivo</option>
+          <select name="estado" [(ngModel)]="estadoSeleccionadoId" required>
+            <option *ngFor="let estado of estados" [value]="estado.id">
+              {{ estado.descripcion }}
+            </option>
           </select>
         </label>
+        <div *ngIf="error_estado" class="mensaje-error">
+          {{ error_estado }}
+        </div>
 
         <label>Rol:
-          <select name="rol">
-            <option value="admin">Administrador</option>
-            <option value="usuario">Usuario</option>
-            <option value="invitado">Invitado</option>
+          <select name="rol" [(ngModel)]="rolSeleccionadoId" required>
+            <option *ngFor="let rol of roles" [value]="rol.id">
+              {{ rol.tipo }}
+            </option>
           </select>
         </label>
-
-        <button type="submit">Guardar usuario</button>
+        <div *ngIf="error_rol" class="mensaje-error">
+          {{ error_rol }}
+        </div>
+        </ng-container>
+        <button (click)="crearUsuario() " *ngIf="!modoEdicion">Crear usuario</button>
+        <button (click)="editarUsuario()" *ngIf="modoEdicion">Editar usuario</button>
+        <div *ngIf="error" class="mensaje-error">
+          {{ error }}
+        </div>
       </form>
     </div>
   </div>

@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -226,9 +227,22 @@ public class UsuarioController {
             response.put("rol", rol.get());
             return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
                     .body("El nombre ingresado no tiene ningun rol asignado");
         }
     }
+
+    @GetMapping("/existe-nombre/{nombre}")
+    public ResponseEntity<Boolean> existeNombre(@PathVariable String nombre) {
+        return ResponseEntity.ok(usuarioService.existeNombre(nombre));
+    }
+
+    @GetMapping("/buscarUsuariosPorNombre/{nombre}")
+    public ResponseEntity<List<Usuario>> buscarUsuariosPorNombre(@PathVariable String nombre) {
+        List<Usuario> listaUsuarios = usuarioService.buscarUsuariosPorNombre(nombre);
+        return ResponseEntity.ok(listaUsuarios);
+    }
+
+
 
 }

@@ -12,6 +12,10 @@ public interface UsuarioRepository extends CrudRepository<Usuario, Integer> {
     Optional<Usuario> findByEmail(String email);
     Optional<Usuario> findByNombreAndContrasena(String nombre, String contrasenia);
 
+    boolean existsByNombre(String nombre);
+
+    Iterable<Usuario> findByNombreContainingIgnoreCase(String nombreParcial);
+
     @Query("SELECT u.token FROM Usuario u WHERE u.email = :email")
     Optional<String> findTokenByEmail(@Param("email") String email);
 
