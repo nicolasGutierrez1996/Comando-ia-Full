@@ -11,7 +11,7 @@ export interface Estado {
   providedIn: 'root'
 })
 export class EstadoUsuarioService {
-  private baseUrl = 'http://localhost:8080/api/EstadosUsuario';
+  private baseUrl = 'http://localhost:8080/api/estadoUsuario';
 
   constructor(private http: HttpClient) {}
 

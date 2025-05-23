@@ -1,6 +1,7 @@
 package com.malvinas.comandoia.controladores;
 
 import com.malvinas.comandoia.modelo.TipoObra;
+import com.malvinas.comandoia.modelo.Usuario;
 import com.malvinas.comandoia.servicios.TipoObraService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -106,4 +108,18 @@ public class TipoObraController {
         response.put("mensaje", String.format("Tipo de obra con ID %d eliminado correctamente", id));
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/existe-descripcion/{descripcion}")
+    public ResponseEntity<Boolean> existeDescripcion(@PathVariable String descripcion) {
+        return ResponseEntity.ok(tipoObraService.existeDescripcion(descripcion));
+    }
+
+    @GetMapping("/buscarTipoObraPorDescripcion/{descripcion}")
+    public ResponseEntity<List<TipoObra>> buscarUsuariosPorNombre(@PathVariable String descripcion) {
+        List<TipoObra> listaTipoObra = tipoObraService.buscarTipoObraPorDescripcion(descripcion);
+        return ResponseEntity.ok(listaTipoObra);
+    }
+
+
+
 }

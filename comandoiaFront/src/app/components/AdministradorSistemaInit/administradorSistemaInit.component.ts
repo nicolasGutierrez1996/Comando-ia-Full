@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { RolesService, Rol } from '../../services/roles.service';
 import { EstadoUsuarioService, Estado } from '../../services/estadoUsuario.service';
 import { UsersService,Usuario} from '../../services/users.service';
+import { EstadoObrasService,EstadoObra} from '../../services/estadoObras.service';
+import { TipoObrasService,TipoObra} from '../../services/tipoObras.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { map } from 'rxjs/operators';
 
@@ -24,6 +26,18 @@ export class AdministradorSistemaInitComponent implements OnInit {
   modoEdicion: boolean = false;
   mostrarDatosEdicion:boolean=false;
 
+  //obras
+  administrarObra: boolean=false;
+  modoEdicionTipoObra: boolean=false;
+  modoEliminarTipoObra: boolean=false;
+  tipoObra: string='';
+  estadoObra: string='';
+  errorObras: string='';
+  tipoObrasSugeridos: TipoObra[] = [];
+  tipoObraSeleccionado: TipoObra | null = null;
+  estadoObrasSugeridos: TipoObra[] = [];
+  estadoObraSeleccionado: TipoObra | null = null;
+
   roles: Rol[] = [];
   estados: Estado[] = [];
   nombre_usuario: string = '';
@@ -40,7 +54,8 @@ usuarioSeleccionado: Usuario | null = null;
 
 
   constructor(private rolesService: RolesService,private estadoUsuario: EstadoUsuarioService
-  ,private usersService:UsersService,private snackBar: MatSnackBar) {}
+  ,private usersService:UsersService,private snackBar: MatSnackBar, private estadoObraService:EstadoObrasService,
+  private tipoObraService: TipoObrasService) {}
 
   ngOnInit(): void {
     console.log('AdministradorSistemaInitComponent inicializado');
@@ -61,6 +76,8 @@ usuarioSeleccionado: Usuario | null = null;
   MostrarCargarUsuarios(): void {
     this.mostrarCargaDeUsuario = !this.mostrarCargaDeUsuario;
     this.modoEdicion=false;
+    this.administrarObra=false;
+    this.modoEdicionTipoObra=false;
     if(this.mostrarCargaDeUsuario){
       this.cargarDatosAltaCliente();
     }
@@ -171,10 +188,10 @@ esEmailValido(email: string): boolean {
 
 validarSiExisteNombre(nombre: string): Promise<boolean> {
   return this.usersService.existeUsuario(nombre).toPromise()
-    .then(res => res ?? false) // Si res es undefined, devuelve false
+    .then(res => res ?? false)
     .catch(err => {
       console.error('Error validando nombre de usuario:', err);
-      return false; // Por defecto, asumimos que no existe si hay error
+      return false;
     });
 }
 
@@ -184,6 +201,8 @@ validarSiExisteNombre(nombre: string): Promise<boolean> {
   MostrarModoEdicion(): void {
     this.modoEdicion = !this.modoEdicion;
     this.mostrarCargaDeUsuario=false;
+        this.administrarObra=false;
+        this.modoEdicionTipoObra=false;
   }
 
 buscarUsuarios(valor: string) {
@@ -312,6 +331,376 @@ editarUsuario() {
   });
 }
 
+//OBRAS
+MostrarCrearValorObra(): void {
+  console.log("click administrar obra");
+  this.administrarObra = !this.administrarObra;
+    this.modoEdicionTipoObra = false;
+    this.modoEliminarTipoObra
+    this.errorObras='';
+    this.mostrarCargaDeUsuario=false;
+      this.modoEdicion = false;
+}
+
+async  crearValoresObra(){
+console.log("voy a crear valores para obras");
+
+  this.errorObras='';
+if(this.tipoObra==='' && this.estadoObra===''){
+
+   this.errorObras='Debe por lo menos ingresar algun valor para crear';
+   return;
+}
+if(this.estadoObra!==''){
 
 
+   const existe = await this.validarSiExisteEstadoObra(this.estadoObra);
+
+    if (existe) {
+      this.errorObras = 'El estado obra ingresado ya existe';
+          return;
+    }
+
+ const estadoObra: EstadoObra = {
+       descripcion: this.estadoObra
+     };
+
+     this.estadoObraService.crearEstadoObra(estadoObra).subscribe({
+       next: res => {
+         console.log('Respuesta del backend:', res);
+         this.snackBar.open('Estado de obra creado con éxito', '', { duration: 3000 });
+
+         // Limpiar campos
+         this.estadoObra = '';
+         this.errorObras = '';
+       },
+       error: err => {
+         console.error('Error al crear estado de obra:', err);
+         this.snackBar.open('Error al crear estado de obra', '', { duration: 3000 });
+       }
+     });
+}
+
+if(this.tipoObra!==''){
+
+
+   const existe = await this.validarSiExisteTipoObra(this.tipoObra);
+
+    if (existe) {
+      this.errorObras = 'El tipo obra ingresado ya existe';
+          return;
+    }
+
+
+   const tipoObra: TipoObra = {
+         descripcion: this.tipoObra
+       };
+
+       this.tipoObraService.crearTipoObra(tipoObra).subscribe({
+         next: res => {
+           console.log('Respuesta del backend:', res);
+           this.snackBar.open('Tipo de obra creado con éxito', '', { duration: 6000 });
+
+           // Limpiar campos
+           this.tipoObra = '';
+           this.errorObras = '';
+         },
+         error: err => {
+           console.error('Error al crear tipo de obra:', err);
+           this.snackBar.open('Error al crear tipo de obra', '', { duration: 3000 });
+         }
+       });
+
+}
+ return
+}
+
+validarSiExisteEstadoObra(descripcion: string): Promise<boolean> {
+  return this.estadoObraService.existeEstadoObra(descripcion).toPromise()
+    .then(res => res ?? false)
+    .catch(err => {
+      console.error('Error validando estado obra:', err);
+      return false;
+    });
+}
+
+validarSiExisteTipoObra(descripcion: string): Promise<boolean> {
+  return this.tipoObraService.existeTipoObra(descripcion).toPromise()
+    .then(res => res ?? false)
+    .catch(err => {
+      console.error('Error validando tipo obra:', err);
+      return false;
+    });
+}
+
+buscarTipoObras(valor: string) {
+  if ((this.modoEdicionTipoObra || this.modoEliminarTipoObra) && this.tipoObra.length>1) {
+   this.tipoObraService.buscarTipoObraPorDescripcion(valor).subscribe(
+     tipoObras => {
+       console.log(tipoObras); // aquí es un array de Usuario
+this.tipoObrasSugeridos = Array.isArray(tipoObras) ? tipoObras : [];
+console.log(this.tipoObrasSugeridos.length);
+     },
+     err => {
+       console.error(err);
+       this.tipoObrasSugeridos = [];
+     }
+   );
+  } else {
+    console.log("No encontre");
+    this.tipoObrasSugeridos = [];
+  }
+}
+
+
+
+seleccionarTipoObra(tipoObra: TipoObra) {
+  setTimeout(() => {
+    this.tipoObraSeleccionado = tipoObra;
+    this.tipoObra = tipoObra.descripcion;
+    this.tipoObrasSugeridos = [];
+    console.log(this.tipoObraSeleccionado);
+  }, 0);
+}
+
+  MostrarEditarTipoObras(): void {
+    this.administrarObra=false;
+    this.modoEliminarTipoObra
+    this.modoEdicionTipoObra = !this.modoEdicionTipoObra;
+    this.errorObras='';
+    this.mostrarCargaDeUsuario=false;
+          this.modoEdicion = false;
+
+  }
+
+  actualizarValoresObras():void{
+     if(this.tipoObra==='' && this.estadoObra===''){
+
+        this.errorObras='Debe por lo menos ingresar algun valor para editar';
+        return;
+     }
+
+
+     if(this.tipoObra!==''){
+
+           if (!this.tipoObraSeleccionado){
+             this.errorObras='Seleccione un tipo de obra';
+
+                return;
+
+           }
+
+          const tipoObraActualizada: TipoObra = {
+                descripcion:this.tipoObra
+           }
+         this.tipoObraService.actualizarTipoObra(this.tipoObraSeleccionado.id as number, tipoObraActualizada).subscribe({
+           next: res => {
+             if (res.success) {
+               this.snackBar.open('valores actualizados con éxito', '', {
+                 duration: 3000,
+                 horizontalPosition: 'end',
+                 verticalPosition: 'top'
+               });
+
+               this.tipoObraSeleccionado = null;
+               this.tipoObra = '';
+               this.modoEdicionTipoObra = false;
+             } else {
+               this.snackBar.open('No se pudo actualizar valores', '', {
+                 duration: 3000,
+                 horizontalPosition: 'end',
+                 verticalPosition: 'top'
+               });
+             }
+           },
+           error: err => {
+             console.error('Error al tipo obra:', err);
+             this.snackBar.open('Error al actualizar valores', '', {
+               duration: 3000,
+               horizontalPosition: 'end',
+               verticalPosition: 'top'
+             });
+           }
+         });
+
+
+  }
+  if(this.estadoObra!==''){
+
+        if (!this.estadoObraSeleccionado){
+               this.errorObras='Seleccione un estado de obra';
+
+                  return;
+
+             }
+     const estadoObraActualizada: EstadoObra = {
+                  descripcion:this.estadoObra
+             }
+          if(this.estadoObraSeleccionado===null){
+
+          }
+
+           this.estadoObraService.actualizarEstadoObra(this.estadoObraSeleccionado.id as number, estadoObraActualizada).subscribe({
+             next: res => {
+               if (res.success) {
+                 this.snackBar.open('valores actualizados con éxito', '', {
+                   duration: 3000,
+                   horizontalPosition: 'end',
+                   verticalPosition: 'top'
+                 });
+
+                 this.estadoObraSeleccionado = null;
+                 this.estadoObra = '';
+                 this.modoEdicionTipoObra = false;
+               } else {
+                 this.snackBar.open('No se pudo actualizar los valores', '', {
+                   duration: 3000,
+                   horizontalPosition: 'end',
+                   verticalPosition: 'top'
+                 });
+               }
+             },
+             error: err => {
+               console.error('Error al estado obra:', err);
+               this.snackBar.open('Error al actualizar valores', '', {
+                 duration: 3000,
+                 horizontalPosition: 'end',
+                 verticalPosition: 'top'
+               });
+             }
+           });
+
+
+  }
+}
+
+buscarEstadoObras(valor: string) {
+
+  if ((this.modoEdicionTipoObra || this.modoEliminarTipoObra) && this.estadoObra.length>1) {
+   this.estadoObraService.buscarEstadoObraPorDescripcion(valor).subscribe(
+     estadoObras => {
+       console.log(estadoObras); // aquí es un array de Usuario
+    this.estadoObrasSugeridos = Array.isArray(estadoObras) ? estadoObras : [];
+console.log(this.estadoObrasSugeridos.length);
+     },
+     err => {
+       console.error(err);
+       this.estadoObrasSugeridos = [];
+     }
+   );
+  } else {
+    console.log("No encontre");
+    this.estadoObrasSugeridos = [];
+  }
+}
+
+
+
+seleccionarEstadoObra(estadoObra: EstadoObra) {
+  setTimeout(() => {
+    this.estadoObraSeleccionado = estadoObra;
+    this.estadoObra = estadoObra.descripcion;
+    this.estadoObrasSugeridos = [];
+    console.log(this.estadoObraSeleccionado);
+  }, 0);
+}
+
+mostrarEliminarValoresObra(){
+ console.log("mostrar valores eliminar");
+ this.modoEliminarTipoObra=!this.modoEliminarTipoObra;
+ this.modoEdicionTipoObra=false;
+ this.administrarObra=false;
+ this.mostrarCargaDeUsuario=false;
+ this.modoEdicion = false;
+
+}
+
+eliminarValoresObra(){
+
+    if(this.estadoObra==='' && this.tipoObra===''){
+
+        this.errorObras='Debe por lo menos ingresar algun valor para eliminar';
+               return;
+
+    }
+
+     if(this.estadoObra!=''){
+
+        if(this.estadoObraSeleccionado==null){
+             this.errorObras='Debe seleccionar un estado obra';
+                            return;
+
+        }
+
+         this.estadoObraService.eliminarEstadoObra(this.estadoObraSeleccionado.id as number).subscribe({
+           next: (res: any) => {
+             if (res.success) {
+               this.snackBar.open('valores eliminados con éxito', '', {
+                 duration: 3000,
+                 horizontalPosition: 'end',
+                 verticalPosition: 'top'
+               });
+
+               this.estadoObraSeleccionado = null;
+               this.estadoObra = '';
+               this.modoEdicionTipoObra = false;
+             } else {
+               this.snackBar.open('No se pudo eliminar valores', '', {
+                 duration: 3000,
+                 horizontalPosition: 'end',
+                 verticalPosition: 'top'
+               });
+             }
+           },
+           error: (err: any) => {
+             console.error('Error al eliminar estado obra', err);
+             this.snackBar.open('Error al eliminar valores', '', {
+               duration: 3000,
+               horizontalPosition: 'end',
+               verticalPosition: 'top'
+             });
+           }
+         });
+
+
+    }
+
+    if(this.tipoObra!=''){
+                 if(this.tipoObraSeleccionado==null){
+                          this.errorObras='Debe seleccionar un tipo obra';
+                                         return;
+
+                     }
+
+             this.tipoObraService.eliminarTipoObra(this.tipoObraSeleccionado.id as number).subscribe({
+               next: (res: any) => {
+                 if (res.success) {
+                   this.snackBar.open('valores eliminados con éxito', '', {
+                     duration: 3000,
+                     horizontalPosition: 'end',
+                     verticalPosition: 'top'
+                   });
+
+                   this.tipoObraSeleccionado = null;
+                   this.tipoObra = '';
+                   this.modoEdicionTipoObra = false;
+                 } else {
+                   this.snackBar.open('No se pudo eliminar valores', '', {
+                     duration: 3000,
+                     horizontalPosition: 'end',
+                     verticalPosition: 'top'
+                   });
+                 }
+               },
+               error: (err: any) => {
+                 console.error('Error al eliminar tipo obra', err);
+                 this.snackBar.open('Error al eliminar valores', '', {
+                   duration: 3000,
+                   horizontalPosition: 'end',
+                   verticalPosition: 'top'
+                 });
+               }
+             });
+}
+}
 }

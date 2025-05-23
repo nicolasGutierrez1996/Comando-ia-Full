@@ -1,6 +1,7 @@
 package com.malvinas.comandoia.controladores;
 
 import com.malvinas.comandoia.modelo.EstadoObra;
+import com.malvinas.comandoia.modelo.TipoObra;
 import com.malvinas.comandoia.servicios.EstadoObraService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -105,5 +107,16 @@ public class EstadoObraController {
         response.put("success", true);
         response.put("mensaje", String.format("Estado de obra con ID %d eliminado correctamente", id));
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/existe-descripcion/{descripcion}")
+    public ResponseEntity<Boolean> existeDescripcion(@PathVariable String descripcion) {
+        return ResponseEntity.ok(estadoObraService.existeDescripcion(descripcion));
+    }
+
+    @GetMapping("/buscarEstadoObraPorDescripcion/{descripcion}")
+    public ResponseEntity<List<EstadoObra>> buscarUsuariosPorNombre(@PathVariable String descripcion) {
+        List<EstadoObra> listaEstadoObra = estadoObraService.buscarEstadoObraPorDescripcion(descripcion);
+        return ResponseEntity.ok(listaEstadoObra);
     }
 }

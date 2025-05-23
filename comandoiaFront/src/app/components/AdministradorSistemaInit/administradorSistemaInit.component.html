@@ -13,6 +13,7 @@
         <div class="subbotones">
           <button class="subboton" *ngIf="mostrarSubBotonReclamos">Administrar valores</button>
           <button class="subboton" *ngIf="mostrarSubBotonReclamos">Editar valores</button>
+          <button class="subboton" *ngIf="mostrarSubBotonReclamos">Eliminar valores</button>
         </div>
       </li>
       <li>
@@ -22,8 +23,9 @@
           <span class="flecha" [class.rotada]="mostrarSubBotonObras">▶</span>
         </button>
         <div class="subbotones">
-          <button class="subboton" *ngIf="mostrarSubBotonObras">Administrar valores</button>
-          <button class="subboton" *ngIf="mostrarSubBotonObras">Editar valores</button>
+          <button class="subboton" *ngIf="mostrarSubBotonObras" (click)="MostrarCrearValorObra()">Administrar valores</button>
+          <button class="subboton" *ngIf="mostrarSubBotonObras" (click)="MostrarEditarTipoObras()">Editar valores</button>
+          <button class="subboton" *ngIf="mostrarSubBotonObras" (click)="mostrarEliminarValoresObra()">Eliminar valores</button>
         </div>
       </li>
       <li>
@@ -38,19 +40,31 @@
         </div>
       </li>
     </ul>
+
+    <button class="boton-volver">Volver hacia atrás</button>
+
   </div>
 
   <!-- CONTENIDO PRINCIPAL USUARIOS-->
   <div class="contenido-principal">
-    <h2 style="color: white; margin-bottom: 20px;">USUARIOS</h2>
+
+
+    <div class="seccion-usuarios">
+      <div class="titulo">
+        <h2 *ngIf="mostrarCargaDeUsuario ||  modoEdicion">USUARIOS</h2>
+        <h2  *ngIf="administrarObra || modoEdicionTipoObra || modoEliminarTipoObra">ADMINISTRAR OBRAS</h2>
+
+      </div>
+
+    </div>
 
     <div id="formulario-crear-usuario" *ngIf="mostrarCargaDeUsuario ||  modoEdicion">
       <form class="formulario">
 
         <div style="position: relative;">
         <label>Nombre de usuario:
-          <input type="text" name="nombre" [(ngModel)]="nombre_usuario" (input)="buscarUsuarios(nombre_usuario)" required>        </label>
-
+          <input type="text" name="nombre" [(ngModel)]="nombre_usuario" (input)="buscarUsuarios(nombre_usuario)" required>
+        </label>
         <ul *ngIf="modoEdicion && usuariosSugeridos && usuariosSugeridos.length > 0" class="autocomplete-list">
           <li *ngFor="let usuario of usuariosSugeridos" (mousedown)="seleccionarUsuario(usuario)">
             {{ usuario.nombre }}
@@ -96,5 +110,44 @@
         </div>
       </form>
     </div>
-  </div>
+      <div id="formulario-administrar-obra" *ngIf="administrarObra ||  modoEdicionTipoObra || modoEliminarTipoObra">
+      <form class="formulario">
+        <div style="position: relative;">
+        <label>Tipo Obra:
+          <input type="text" name="tipoObra" [(ngModel)]="tipoObra" (input)="buscarTipoObras(tipoObra)" required>
+        </label>
+        <ul *ngIf="(modoEdicionTipoObra || modoEliminarTipoObra) && tipoObrasSugeridos && tipoObrasSugeridos.length > 0" class="autocomplete-list">
+          <li *ngFor="let tipoObra of tipoObrasSugeridos" (mousedown)="seleccionarTipoObra(tipoObra)">
+            {{ tipoObra.descripcion }}
+          </li>
+        </ul>
+        </div>
+        <div style="position: relative;">
+        <label>Estado Obra:
+          <input type="text" name="estadoObra" [(ngModel)]="estadoObra" (input)="buscarEstadoObras(estadoObra)" required>
+        </label>
+          <ul *ngIf="(modoEdicionTipoObra || modoEliminarTipoObra)&& estadoObrasSugeridos && estadoObrasSugeridos.length > 0" class="autocomplete-list">
+            <li *ngFor="let estadoObra of estadoObrasSugeridos" (mousedown)="seleccionarEstadoObra(estadoObra)">
+              {{ estadoObra.descripcion }}
+            </li>
+          </ul>
+        </div>
+
+
+
+
+
+
+        <div *ngIf="errorObras" class="mensaje-error">
+          {{ errorObras }}
+        </div>
+        <button (click)="crearValoresObra() " *ngIf="administrarObra">Crear valores</button>
+        <button (click)="actualizarValoresObras()"  *ngIf="modoEdicionTipoObra">Editar valores</button>
+        <button   (click)="eliminarValoresObra()" *ngIf="modoEliminarTipoObra">Eliminar valores</button>
+
+      </form>
+    </div>
+
+</div>
+
 </div>
