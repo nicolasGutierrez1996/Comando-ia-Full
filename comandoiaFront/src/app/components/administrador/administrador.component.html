@@ -1,1 +1,169 @@
-<p>administrador works!</p>
+<div class="aplicacion">
+  <div class="menu-lateral">
+    <h2>IA Malvinas</h2>
+    <ul class="lista-opciones">
+      <li>
+        <button type="button"
+                class="menu-titulo">
+          <span class="texto">Administrar reclamos</span>
+          <span class="flecha" >▶</span>
+        </button>
+        <div class="subbotones">
+          <button class="subboton">Administrar valores</button>
+          <button class="subboton" >Editar valores</button>
+        </div>
+      </li>
+      <li>
+        <button type="button"  class="menu-titulo">
+          <span class="texto">Administrar obras</span>
+          <span class="flecha" >▶</span>
+        </button>
+        <div class="subbotones">
+          <button class="subboton" >Administrar valores</button>
+          <button class="subboton" >Editar valores</button>
+        </div>
+      </li>
+      <li>
+        <button type="button"  class="menu-titulo">
+          <span class="texto">Administrar reclamos</span>
+          <span class="flecha" >▶</span>
+        </button>
+        <div class="subbotones">
+          <button class="subboton"  >Crear Reclamo</button>
+          <button class="subboton" >Editar Reclamos</button>
+        </div>
+      </li>
+    </ul>
+    <button class="boton-volver">Volver hacia atrás</button>
+
+  </div>
+
+  <div class="contenido-principal">
+    <div class="seccion-usuarios">
+      <div class="titulo">
+        <h2>RECLAMOS</h2>
+      </div>
+
+      <div id="formulario-crear-reclamo" >
+        <form class="formulario">
+          <fieldset class="fieldset-form">
+            <legend>Datos del Reclamo</legend>
+            <div class="campos-en-linea">
+              <label>Tipo de reclamo:
+                <select name="satisfaccion" required>
+                  <option value="">Tipo de reclamo</option>
+                  <option value="1">Reclamo 1</option>
+                  <option value="2">Reclamo 2 </option>
+                  <option value="3">Reclamo 3</option>
+                </select>
+              </label>
+
+              <label>Fecha del reclamo:
+                <input type="date" name="fecha-reclamo" required>
+              </label>
+
+              <label>Estado:
+                <select name="estado-reclamo" required>
+                  <option value="">Seleccionar estado</option>
+                  <option value="pendiente">Pendiente</option>
+                  <option value="en_proceso">En proceso</option>
+                  <option value="resuelto">Resuelto</option>
+                </select>
+              </label>
+
+              <label>Tiempo de resolución (en días):
+                <input type="number" name="tiempoResolucion" min="1" required>
+              </label>
+
+              <label>Nivel de satisfacción:
+                <select name="satisfaccion" required>
+                  <option value="">Seleccionar nivel</option>
+                  <option value="1">Muy insatisfecho</option>
+                  <option value="2">Insatisfecho</option>
+                  <option value="3">Neutral</option>
+                  <option value="4">Satisfecho</option>
+                  <option value="5">Muy satisfecho</option>
+                </select>
+              </label>
+
+              <label>Dirección:
+                <input type="text" name="direccion" required>
+              </label>
+            </div>
+
+            <label class="descripcion-label">Descripción:
+              <textarea name="descripcion" rows="4" placeholder="Escribe aquí cualquier información adicional..."></textarea>
+            </label>
+          </fieldset>
+
+          <div class="botones-formulario">
+            <button type="submit">Crear Reclamo</button>
+            <button type="button">Editar Reclamo</button>
+          </div>
+          <div class="mensaje-error"></div>
+        </form>
+      </div>
+      <div id="formulario-crear-obra" >
+        <form class="formulario">
+          <fieldset class="fieldset-form">
+            <legend>Datos de la obra</legend>
+            <div class="campos-en-linea">
+              <label>Tipo de Obra:
+                <select name="satisfaccion" required>
+                  <option value="">Tipo de Obra</option>
+                  <option value="1">Reclamo 1</option>
+                  <option value="2">Reclamo 2 </option>
+                  <option value="3">Reclamo 3</option>
+                </select>
+              </label>
+
+              <label>Fecha de la obra:
+                <input type="date" name="fecha-obra" required>
+              </label>
+
+              <label>Estado:
+                <select name="estado-obra" required>
+                  <option value="">Seleccionar estado</option>
+                  <option value="pendiente">Pendiente</option>
+                  <option value="en_proceso">En proceso</option>
+                  <option value="resuelto">Resuelto</option>
+                </select>
+              </label>
+
+              <label>Tiempo de resolución (en días):
+                <input type="number" name="tiempoResolucion" min="1" required>
+              </label>
+
+              <label>Nivel de satisfacción:
+                <select name="satisfaccion" required>
+                  <option value="">Seleccionar nivel</option>
+                  <option value="1">Muy insatisfecho</option>
+                  <option value="2">Insatisfecho</option>
+                  <option value="3">Neutral</option>
+                  <option value="4">Satisfecho</option>
+                  <option value="5">Muy satisfecho</option>
+                </select>
+              </label>
+
+              <label>Dirección:
+                <input type="text" name="direccion" required>
+              </label>
+            </div>
+
+            <label class="descripcion-label">Descripción:
+              <textarea name="descripcion" rows="4" placeholder="Escribe aquí cualquier información adicional..."></textarea>
+            </label>
+          </fieldset>
+
+          <div class="botones-formulario">
+            <button type="submit">Crear Reclamo</button>
+            <button type="button">Editar Reclamo</button>
+          </div>
+          <div class="mensaje-error"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
