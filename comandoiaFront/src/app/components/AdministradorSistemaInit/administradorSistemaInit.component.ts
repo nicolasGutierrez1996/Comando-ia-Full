@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { RolesService, Rol } from '../../services/roles.service';
 import { EstadoUsuarioService, Estado } from '../../services/estadoUsuario.service';
 import { UsersService,Usuario} from '../../services/users.service';
 import { EstadoObrasService,EstadoObra} from '../../services/estadoObras.service';
 import { TipoObrasService,TipoObra} from '../../services/tipoObras.service';
+import { TipoReclamosService,TipoReclamo} from '../../services/tipoReclamo.service';
+import { NivelSatisfaccionService,NivelReclamo} from '../../services/nivelSatisfaccion.service';
+import { EstadoReclamoService,EstadoReclamo} from '../../services/estadoReclamo.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { map } from 'rxjs/operators';
 
@@ -26,10 +30,9 @@ export class AdministradorSistemaInitComponent implements OnInit {
   modoEdicion: boolean = false;
   mostrarDatosEdicion:boolean=false;
 
+
   //obras
-  administrarObra: boolean=false;
-  modoEdicionTipoObra: boolean=false;
-  modoEliminarTipoObra: boolean=false;
+
   tipoObra: string='';
   estadoObra: string='';
   errorObras: string='';
@@ -37,6 +40,25 @@ export class AdministradorSistemaInitComponent implements OnInit {
   tipoObraSeleccionado: TipoObra | null = null;
   estadoObrasSugeridos: TipoObra[] = [];
   estadoObraSeleccionado: TipoObra | null = null;
+    administrarObra:boolean=false;
+    modoEdicionTipoObra:boolean=false;
+    modoEliminarTipoObra:boolean=false;
+
+  //RECLAMOS
+  administrarReclamo: boolean=false;
+  modoEdicionReclamo: boolean=false;
+  modoEliminarReclamo:boolean=false;
+  nivelReclamo:string='';
+  tipoReclamo:string='';
+  estadoReclamo:string='';
+  errorReclamos:string ='';
+  nivelReclamosSugeridos: NivelReclamo[] = [];
+  tipoReclamosSugeridos: TipoReclamo[] = [];
+  estadoReclamosSugeridos: EstadoReclamo[] = [];
+  nivelReclamoSeleccionado: NivelReclamo | null = null;
+  tipoReclamoSeleccionado: TipoReclamo | null = null;
+  estadoReclamoSeleccionado: EstadoReclamo | null = null;
+
 
   roles: Rol[] = [];
   estados: Estado[] = [];
@@ -55,7 +77,9 @@ usuarioSeleccionado: Usuario | null = null;
 
   constructor(private rolesService: RolesService,private estadoUsuario: EstadoUsuarioService
   ,private usersService:UsersService,private snackBar: MatSnackBar, private estadoObraService:EstadoObrasService,
-  private tipoObraService: TipoObrasService) {}
+  private tipoObraService: TipoObrasService,private nivelReclamoService: NivelSatisfaccionService,
+  private tipoReclamoService:TipoReclamosService,private estadoReclamoService: EstadoReclamoService
+  ,private router: Router) {}
 
   ngOnInit(): void {
     console.log('AdministradorSistemaInitComponent inicializado');
@@ -78,6 +102,12 @@ usuarioSeleccionado: Usuario | null = null;
     this.modoEdicion=false;
     this.administrarObra=false;
     this.modoEdicionTipoObra=false;
+     this.modoEliminarTipoObra=false;
+      this.administrarReclamo=false;
+        this.modoEdicionReclamo=false;
+        this.modoEliminarReclamo=false;
+
+
     if(this.mostrarCargaDeUsuario){
       this.cargarDatosAltaCliente();
     }
@@ -203,7 +233,13 @@ validarSiExisteNombre(nombre: string): Promise<boolean> {
     this.mostrarCargaDeUsuario=false;
         this.administrarObra=false;
         this.modoEdicionTipoObra=false;
+      this.modoEliminarTipoObra=false;
+      this.administrarReclamo=false;
+        this.modoEdicionReclamo=false;
+        this.modoEliminarReclamo=false;
   }
+
+
 
 buscarUsuarios(valor: string) {
   console.log("ingrese a buscar usuarios");
@@ -336,10 +372,16 @@ MostrarCrearValorObra(): void {
   console.log("click administrar obra");
   this.administrarObra = !this.administrarObra;
     this.modoEdicionTipoObra = false;
-    this.modoEliminarTipoObra
+    this.modoEliminarTipoObra=false;
     this.errorObras='';
     this.mostrarCargaDeUsuario=false;
       this.modoEdicion = false;
+     this.modoEliminarTipoObra=false;
+
+       this.administrarReclamo=false;
+         this.modoEdicionReclamo=false;
+         this.modoEliminarReclamo=false;
+
 }
 
 async  crearValoresObra(){
@@ -465,11 +507,18 @@ seleccionarTipoObra(tipoObra: TipoObra) {
 
   MostrarEditarTipoObras(): void {
     this.administrarObra=false;
-    this.modoEliminarTipoObra
+    this.modoEliminarTipoObra=false;
+    this.modoEliminarTipoObra=false;
     this.modoEdicionTipoObra = !this.modoEdicionTipoObra;
     this.errorObras='';
     this.mostrarCargaDeUsuario=false;
           this.modoEdicion = false;
+
+      this.administrarReclamo=false;
+        this.modoEdicionReclamo=false;
+        this.modoEliminarReclamo=false;
+
+
 
   }
 
@@ -613,6 +662,10 @@ mostrarEliminarValoresObra(){
  this.mostrarCargaDeUsuario=false;
  this.modoEdicion = false;
 
+   this.administrarReclamo=false;
+     this.modoEdicionReclamo=false;
+     this.modoEliminarReclamo=false;
+
 }
 
 eliminarValoresObra(){
@@ -703,4 +756,539 @@ eliminarValoresObra(){
              });
 }
 }
+
+//RECLAMOS
+cambiarAmodoAdministrarReclamo(){
+ this.administrarReclamo=!this.administrarReclamo;
+ this.modoEdicionReclamo=false;
+ this.modoEliminarReclamo=false;
+
+   this.administrarObra=false;
+   this.modoEdicionTipoObra=false;
+   this.modoEliminarTipoObra=false;
+
+    this.mostrarCargaDeUsuario=false;
+      this.modoEdicion= false;
+
+
+}
+cambiarAmodoEditarReclamo(){
+ this.modoEdicionReclamo=!this.modoEdicionReclamo;
+ this.modoEliminarReclamo=false;
+ this.administrarReclamo=false;
+
+   this.administrarObra=false;
+   this.modoEdicionTipoObra=false;
+   this.modoEliminarTipoObra=false;
+
+      this.mostrarCargaDeUsuario=false;
+      this.modoEdicion = false;
+
+
+}
+cambiarAmodoEliminarReclamo(){
+ this.modoEliminarReclamo=!this.modoEliminarReclamo;
+ this.administrarReclamo=false;
+ this.modoEdicionReclamo=false;
+
+   this.administrarObra=false;
+   this.modoEdicionTipoObra=false;
+   this.modoEliminarTipoObra=false;
+
+      this.mostrarCargaDeUsuario=false;
+      this.modoEdicion = false;
+
+}
+
+
+async  crearValoresReclamo(){
+console.log("voy a crear valores para reclamos");
+
+  this.errorReclamos='';
+if(this.tipoReclamo==='' && this.estadoReclamo==='' && this.nivelReclamo===''){
+
+   this.errorReclamos='Debe por lo menos ingresar algun valor para crear';
+   return;
+}
+if(this.estadoReclamo!==''){
+
+
+   const existe = await this.validarSiExisteEstadoReclamo(this.estadoReclamo);
+
+    if (existe) {
+      this.errorReclamos = 'El estado reclamo ingresado ya existe';
+          return;
+    }
+
+ const estadoReclamo: EstadoReclamo = {
+       descripcion: this.estadoReclamo
+     };
+
+     this.estadoReclamoService.crearEstadoReclamo(estadoReclamo).subscribe({
+       next: res => {
+         console.log('Respuesta del backend:', res);
+         this.snackBar.open('Estado de reclamo creado con éxito', '', { duration: 3000 });
+
+         // Limpiar campos
+         this.estadoReclamo = '';
+         this.errorReclamos = '';
+       },
+       error: err => {
+         console.error('Error al crear estado de reclamo:', err);
+         this.snackBar.open('Error al crear estado de reclamo', '', { duration: 3000 });
+       }
+     });
+}
+
+if(this.tipoReclamo!==''){
+
+
+   const existe = await this.validarSiExisteTipoReclamo(this.tipoReclamo);
+
+    if (existe) {
+      this.errorReclamos = 'El tipo reclamo ingresado ya existe';
+          return;
+    }
+
+
+   const tipoReclamo: TipoReclamo = {
+         descripcion: this.tipoReclamo
+       };
+
+       this.tipoReclamoService.crearTipoReclamo(tipoReclamo).subscribe({
+         next: res => {
+           console.log('Respuesta del backend:', res);
+           this.snackBar.open('Tipo de reclamo creado con éxito', '', { duration: 3000 });
+
+           // Limpiar campos
+           this.tipoReclamo = '';
+           this.errorReclamos = '';
+         },
+         error: err => {
+           console.error('Error al crear tipo de reclamo:', err);
+           this.snackBar.open('Error al crear tipo de reclamo', '', { duration: 3000 });
+         }
+       });
+
+}
+
+if(this.nivelReclamo!==''){
+
+
+   const existe = await this.validarSiExisteNivelReclamo(this.nivelReclamo);
+
+    if (existe) {
+      this.errorReclamos = 'El tipo nivel de satisfaccion ingresado ya existe';
+          return;
+    }
+
+
+   const nivelReclamo: NivelReclamo = {
+         descripcion: this.nivelReclamo
+       };
+
+       this.nivelReclamoService.crearTipoNivel(nivelReclamo).subscribe({
+         next: res => {
+           console.log('Respuesta del backend:', res);
+           this.snackBar.open('Tipo de nivel de satisfaccion creado con éxito', '', { duration: 3000 });
+
+           // Limpiar campos
+           this.nivelReclamo = '';
+           this.errorReclamos = '';
+         },
+         error: err => {
+           console.error('Error al crear nivel de satisfaccion de reclamo:', err);
+           this.snackBar.open('Error al crear nivel de satisfaccion de reclamo', '', { duration: 3000 });
+         }
+       });
+
+}
+
+ return
+}
+
+validarSiExisteEstadoReclamo(descripcion: string): Promise<boolean> {
+  return this.estadoReclamoService.existeEstadoReclamo(descripcion).toPromise()
+    .then(res => res ?? false)
+    .catch(err => {
+      console.error('Error validando estado reclamo:', err);
+      return false;
+    });
+}
+
+validarSiExisteTipoReclamo(descripcion: string): Promise<boolean> {
+  return this.tipoReclamoService.existeTipoReclamo(descripcion).toPromise()
+    .then(res => res ?? false)
+    .catch(err => {
+      console.error('Error validando tipo reclamo:', err);
+      return false;
+    });
+}
+
+validarSiExisteNivelReclamo(descripcion: string): Promise<boolean> {
+  return this.nivelReclamoService.existeTipoNivel(descripcion).toPromise()
+    .then(res => res ?? false)
+    .catch(err => {
+      console.error('Error validando nivel reclamo:', err);
+      return false;
+    });
+}
+
+
+  actualizarValoresReclamo():void{
+     if(this.tipoReclamo==='' && this.estadoReclamo==='' && this.nivelReclamo===''){
+
+        this.errorReclamos='Debe por lo menos ingresar algun valor para editar';
+        return;
+     }
+
+
+     if(this.tipoReclamo!==''){
+
+           if (!this.tipoReclamoSeleccionado){
+             this.errorObras='Seleccione un tipo de reclamo';
+
+                return;
+
+           }
+
+          const tipoReclamoActualizado: TipoReclamo = {
+                descripcion:this.tipoReclamo
+           }
+         this.tipoReclamoService.actualizarTipoReclamo(this.tipoReclamoSeleccionado.id as number, tipoReclamoActualizado).subscribe({
+           next: res => {
+             if (res.success) {
+               this.snackBar.open('valores actualizados con éxito', '', {
+                 duration: 3000,
+                 horizontalPosition: 'end',
+                 verticalPosition: 'top'
+               });
+
+               this.tipoReclamoSeleccionado = null;
+               this.tipoReclamo = '';
+             } else {
+               this.snackBar.open('No se pudo actualizar valores', '', {
+                 duration: 3000,
+                 horizontalPosition: 'end',
+                 verticalPosition: 'top'
+               });
+             }
+           },
+           error: err => {
+             this.snackBar.open('Error al actualizar valores', '', {
+               duration: 3000,
+               horizontalPosition: 'end',
+               verticalPosition: 'top'
+             });
+           }
+         });
+
+
+  }
+  if(this.estadoReclamo!==''){
+
+        if (!this.estadoReclamoSeleccionado){
+               this.errorReclamos='Seleccione un estado de reclamo';
+
+                  return;
+
+             }
+     const estadoReclamoActualizado: EstadoReclamo = {
+                  descripcion:this.estadoReclamo
+             }
+
+
+           this.estadoReclamoService.actualizarEstadoReclamo(this.estadoReclamoSeleccionado.id as number, estadoReclamoActualizado).subscribe({
+             next: res => {
+               if (res.success) {
+                 this.snackBar.open('valores actualizados con éxito', '', {
+                   duration: 3000,
+                   horizontalPosition: 'end',
+                   verticalPosition: 'top'
+                 });
+
+                 this.estadoReclamoSeleccionado = null;
+                 this.estadoReclamo = '';
+               } else {
+                 this.snackBar.open('No se pudo actualizar los valores', '', {
+                   duration: 3000,
+                   horizontalPosition: 'end',
+                   verticalPosition: 'top'
+                 });
+               }
+             },
+             error: err => {
+               this.snackBar.open('Error al actualizar valores', '', {
+                 duration: 3000,
+                 horizontalPosition: 'end',
+                 verticalPosition: 'top'
+               });
+             }
+           });
+
+
+  }
+
+    if(this.nivelReclamo!==''){
+
+          if (!this.nivelReclamoSeleccionado){
+                 this.errorReclamos='Seleccione un nivel de satisfaccion de reclamo';
+
+                    return;
+
+               }
+       const nivelReclamoActualizado: NivelReclamo = {
+                    descripcion:this.nivelReclamo
+               }
+
+
+             this.nivelReclamoService.actualizarNivelReclamo(this.nivelReclamoSeleccionado.id as number, nivelReclamoActualizado).subscribe({
+               next: res => {
+                 if (res.success) {
+                   this.snackBar.open('valores actualizados con éxito', '', {
+                     duration: 3000,
+                     horizontalPosition: 'end',
+                     verticalPosition: 'top'
+                   });
+
+                   this.nivelReclamoSeleccionado = null;
+                   this.nivelReclamo = '';
+                 } else {
+                   this.snackBar.open('No se pudo actualizar los valores', '', {
+                     duration: 3000,
+                     horizontalPosition: 'end',
+                     verticalPosition: 'top'
+                   });
+                 }
+               },
+               error: err => {
+                 this.snackBar.open('Error al actualizar valores', '', {
+                   duration: 3000,
+                   horizontalPosition: 'end',
+                   verticalPosition: 'top'
+                 });
+               }
+             });
+
+
+    }
+}
+
+
+
+seleccionarNivelReclamo(nivelReclamo: NivelReclamo) {
+  setTimeout(() => {
+      this.nivelReclamoSeleccionado = nivelReclamo;
+      this.nivelReclamo = nivelReclamo.descripcion;
+      this.nivelReclamosSugeridos = [];
+      console.log(this.nivelReclamoSeleccionado);
+    }, 0);
+}
+seleccionarTipoReclamo(tipoReclamo: TipoReclamo){
+ setTimeout(() => {
+     this.tipoReclamoSeleccionado = tipoReclamo;
+     this.tipoReclamo = tipoReclamo.descripcion;
+     this.tipoReclamosSugeridos = [];
+     console.log(this.tipoReclamoSeleccionado);
+   }, 0);
+}
+
+seleccionarEstadoReclamo(estadoReclamo:EstadoReclamo){
+  setTimeout(() => {
+      this.estadoReclamoSeleccionado = estadoReclamo;
+      this.estadoReclamo = estadoReclamo.descripcion;
+      this.estadoReclamosSugeridos = [];
+      console.log(this.estadoReclamoSeleccionado);
+    }, 0);
+}
+
+buscarNivelReclamos(nivelReclamo:string){
+    if ((this.modoEdicionReclamo || this.modoEliminarReclamo) && this.nivelReclamo.length>1) {
+      this.nivelReclamoService.buscarNivelReclamoPorDescripcion(nivelReclamo).subscribe(
+        nivelReclamos => {
+          console.log(nivelReclamos); // aquí es un array de Usuario
+       this.nivelReclamosSugeridos = Array.isArray(nivelReclamos) ? nivelReclamos : [];
+   console.log(this.nivelReclamosSugeridos.length);
+        },
+        err => {
+          console.error(err);
+          this.nivelReclamosSugeridos = [];
+        }
+      );
+     } else {
+       console.log("No encontre");
+       this.nivelReclamosSugeridos = [];
+     }
+}
+buscarTipoReclamos(tipoReclamo:string){
+   if ((this.modoEdicionReclamo || this.modoEliminarReclamo) && this.tipoReclamo.length>1) {
+     this.tipoReclamoService.buscarTipoReclamoPorDescripcion(tipoReclamo).subscribe(
+       tipoReclamos => {
+         console.log(tipoReclamos); // aquí es un array de Usuario
+      this.tipoReclamosSugeridos = Array.isArray(tipoReclamos) ? tipoReclamos : [];
+  console.log(this.tipoReclamosSugeridos.length);
+       },
+       err => {
+         console.error(err);
+         this.tipoReclamosSugeridos = [];
+       }
+     );
+    } else {
+      console.log("No encontre");
+      this.tipoReclamosSugeridos = [];
+    }
+}
+buscarEstadoReclamos(estadoReclamo:string){
+   if ((this.modoEdicionReclamo || this.modoEliminarReclamo) && this.estadoReclamo.length>1) {
+     this.estadoReclamoService.buscarEstadoReclamoPorDescripcion(estadoReclamo).subscribe(
+       estadoReclamos => {
+         console.log(estadoReclamos); // aquí es un array de Usuario
+      this.estadoReclamosSugeridos = Array.isArray(estadoReclamos) ? estadoReclamos : [];
+  console.log(this.estadoReclamosSugeridos.length);
+       },
+       err => {
+         console.error(err);
+         this.estadoReclamosSugeridos = [];
+       }
+     );
+    } else {
+      console.log("No encontre");
+      this.estadoReclamosSugeridos = [];
+    }
+}
+
+
+eliminarValoresReclamo(){
+
+    if(this.estadoReclamo==='' && this.tipoReclamo==='' && this.nivelReclamo===''){
+
+        this.errorReclamos='Debe por lo menos ingresar algun valor para eliminar';
+               return;
+
+    }
+
+     if(this.estadoReclamo!=''){
+
+        if(this.estadoReclamoSeleccionado==null){
+             this.errorReclamos='Debe seleccionar un estado reclamo';
+                            return;
+
+        }
+
+         this.estadoReclamoService.eliminarEstadoReclamo(this.estadoReclamoSeleccionado.id as number).subscribe({
+           next: (res: any) => {
+             if (res.success) {
+               this.snackBar.open('valores eliminados con éxito', '', {
+                 duration: 3000,
+                 horizontalPosition: 'end',
+                 verticalPosition: 'top'
+               });
+
+               this.estadoReclamoSeleccionado = null;
+               this.estadoReclamo = '';
+             } else {
+               this.snackBar.open('No se pudo eliminar valores', '', {
+                 duration: 3000,
+                 horizontalPosition: 'end',
+                 verticalPosition: 'top'
+               });
+             }
+           },
+           error: (err: any) => {
+             this.snackBar.open('Error al eliminar valores', '', {
+               duration: 3000,
+               horizontalPosition: 'end',
+               verticalPosition: 'top'
+             });
+           }
+         });
+
+
+    }
+
+     if(this.tipoReclamo!=''){
+
+            if(this.tipoReclamoSeleccionado==null){
+                 this.errorReclamos='Debe seleccionar un tipo reclamo';
+                                return;
+
+            }
+
+             this.tipoReclamoService.eliminarTipoReclamo(this.tipoReclamoSeleccionado.id as number).subscribe({
+               next: (res: any) => {
+                 if (res.success) {
+                   this.snackBar.open('valores eliminados con éxito', '', {
+                     duration: 3000,
+                     horizontalPosition: 'end',
+                     verticalPosition: 'top'
+                   });
+
+                   this.tipoReclamoSeleccionado = null;
+                   this.tipoReclamo = '';
+                 } else {
+                   this.snackBar.open('No se pudo eliminar valores', '', {
+                     duration: 3000,
+                     horizontalPosition: 'end',
+                     verticalPosition: 'top'
+                   });
+                 }
+               },
+               error: (err: any) => {
+                 this.snackBar.open('Error al eliminar valores', '', {
+                   duration: 3000,
+                   horizontalPosition: 'end',
+                   verticalPosition: 'top'
+                 });
+               }
+             });
+
+
+        }
+
+             if(this.nivelReclamo!=''){
+
+                    if(this.nivelReclamoSeleccionado==null){
+                         this.errorReclamos='Debe seleccionar un nivel de satisfaccion reclamo';
+                                        return;
+
+                    }
+
+                     this.nivelReclamoService.eliminarNivelReclamo(this.nivelReclamoSeleccionado.id as number).subscribe({
+                       next: (res: any) => {
+                         if (res.success) {
+                           this.snackBar.open('valores eliminados con éxito', '', {
+                             duration: 3000,
+                             horizontalPosition: 'end',
+                             verticalPosition: 'top'
+                           });
+
+                           this.nivelReclamoSeleccionado = null;
+                           this.nivelReclamo = '';
+                         } else {
+                           this.snackBar.open('No se pudo eliminar valores', '', {
+                             duration: 3000,
+                             horizontalPosition: 'end',
+                             verticalPosition: 'top'
+                           });
+                         }
+                       },
+                       error: (err: any) => {
+                         this.snackBar.open('Error al eliminar valores', '', {
+                           duration: 3000,
+                           horizontalPosition: 'end',
+                           verticalPosition: 'top'
+                         });
+                       }
+                     });
+
+
+                }
+
+}
+
+volverAlLogin(){
+this.router.navigate(['./login']);
+
+}
+
 }

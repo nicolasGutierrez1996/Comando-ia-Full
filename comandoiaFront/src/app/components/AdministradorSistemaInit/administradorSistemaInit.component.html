@@ -11,9 +11,9 @@
           <span class="flecha" [class.rotada]="mostrarSubBotonReclamos">▶</span>
         </button>
         <div class="subbotones">
-          <button class="subboton" *ngIf="mostrarSubBotonReclamos">Administrar valores</button>
-          <button class="subboton" *ngIf="mostrarSubBotonReclamos">Editar valores</button>
-          <button class="subboton" *ngIf="mostrarSubBotonReclamos">Eliminar valores</button>
+          <button class="subboton" (click)="cambiarAmodoAdministrarReclamo()" *ngIf="mostrarSubBotonReclamos">Administrar valores</button>
+          <button class="subboton" (click)="cambiarAmodoEditarReclamo()" *ngIf="mostrarSubBotonReclamos">Editar valores</button>
+          <button class="subboton" (click)="cambiarAmodoEliminarReclamo()" *ngIf="mostrarSubBotonReclamos">Eliminar valores</button>
         </div>
       </li>
       <li>
@@ -41,7 +41,7 @@
       </li>
     </ul>
 
-    <button class="boton-volver">Volver hacia atrás</button>
+    <button class="boton-volver" (click)="volverAlLogin()">Volver hacia atrás</button>
 
   </div>
 
@@ -53,7 +53,7 @@
       <div class="titulo">
         <h2 *ngIf="mostrarCargaDeUsuario ||  modoEdicion">USUARIOS</h2>
         <h2  *ngIf="administrarObra || modoEdicionTipoObra || modoEliminarTipoObra">ADMINISTRAR OBRAS</h2>
-
+        <h2  *ngIf="administrarReclamo || modoEdicionReclamo || modoEliminarReclamo">ADMINISTRAR RECLAMOS</h2>
       </div>
 
     </div>
@@ -148,6 +148,47 @@
       </form>
     </div>
 
-</div>
+    <div id="formulario-administrar-reclamo" *ngIf="administrarReclamo ||  modoEdicionReclamo || modoEliminarReclamo">
+      <form class="formulario">
 
+
+    <div style="position: relative;">
+      <label>Estado Reclamo:
+        <input type="text" name="estadoReclamo" [(ngModel)]="estadoReclamo" (input)="buscarEstadoReclamos(estadoReclamo)" required>
+      </label>
+      <ul *ngIf="(modoEdicionReclamo || modoEliminarReclamo)&& estadoReclamosSugeridos && estadoReclamosSugeridos.length > 0" class="autocomplete-list">
+        <li *ngFor="let estadoReclamo of estadoReclamosSugeridos" (mousedown)="seleccionarEstadoReclamo(estadoReclamo)">
+          {{ estadoReclamo.descripcion }}
+        </li>
+      </ul>
+
+      <label>Tipo Reclamo:
+        <input type="text" name="tipoReclamo" [(ngModel)]="tipoReclamo" (input)="buscarTipoReclamos(tipoReclamo)" required>
+      </label>
+      <ul *ngIf="(modoEdicionReclamo || modoEliminarReclamo)&& tipoReclamosSugeridos && tipoReclamosSugeridos.length > 0" class="autocomplete-list">
+        <li *ngFor="let tipoReclamo of tipoReclamosSugeridos" (mousedown)="seleccionarTipoReclamo(tipoReclamo)">
+          {{ tipoReclamo.descripcion }}
+        </li>
+      </ul>
+
+      <label>Nivel de Satisfaccion:
+        <input type="text" name="nivelReclamo" [(ngModel)]="nivelReclamo" (input)="buscarNivelReclamos(nivelReclamo)" required>
+      </label>
+      <ul *ngIf="(modoEdicionReclamo || modoEliminarReclamo)&& nivelReclamosSugeridos && nivelReclamosSugeridos.length > 0" class="autocomplete-list">
+        <li *ngFor="let nivelReclamo of nivelReclamosSugeridos" (mousedown)="seleccionarNivelReclamo(nivelReclamo)">
+          {{ nivelReclamo.descripcion }}
+        </li>
+      </ul>
+      <div *ngIf="errorReclamos" class="mensaje-error">
+        {{ errorReclamos }}
+      </div>
+
+    </div>
+        <button (click)="crearValoresReclamo() " *ngIf="administrarReclamo">Crear valores</button>
+        <button (click)="actualizarValoresReclamo()"  *ngIf="modoEdicionReclamo">Editar valores</button>
+        <button   (click)="eliminarValoresReclamo()" *ngIf="modoEliminarReclamo">Eliminar valores</button>
+    </form>
+
+  </div>
+</div>
 </div>

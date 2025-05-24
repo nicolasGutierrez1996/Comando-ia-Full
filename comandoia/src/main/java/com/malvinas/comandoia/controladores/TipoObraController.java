@@ -115,7 +115,7 @@ public class TipoObraController {
     }
 
     @GetMapping("/buscarTipoObraPorDescripcion/{descripcion}")
-    public ResponseEntity<List<TipoObra>> buscarUsuariosPorNombre(@PathVariable String descripcion) {
+    public ResponseEntity<List<TipoObra>> buscarTipoObraPorDescripcion(@PathVariable String descripcion) {
         List<TipoObra> listaTipoObra = tipoObraService.buscarTipoObraPorDescripcion(descripcion);
         return ResponseEntity.ok(listaTipoObra);
     }

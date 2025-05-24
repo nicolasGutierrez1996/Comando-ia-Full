@@ -1,6 +1,7 @@
 package com.malvinas.comandoia.controladores;
 
 import com.malvinas.comandoia.modelo.TipoNivelSatisfaccion;
+import com.malvinas.comandoia.modelo.TipoReclamo;
 import com.malvinas.comandoia.servicios.TipoNivelSatisfaccionService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -105,5 +107,16 @@ public class TipoNivelSatisfaccionController {
         response.put("success", true);
         response.put("mensaje", String.format("Tipo con ID %d eliminado correctamente", id));
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/existe-descripcion/{descripcion}")
+    public ResponseEntity<Boolean> existeDescripcion(@PathVariable String descripcion) {
+        return ResponseEntity.ok(tipoNivelSatisfaccionService.existeDescripcion(descripcion));
+    }
+
+    @GetMapping("/buscarNivelPorDescripcion/{descripcion}")
+    public ResponseEntity<List<TipoNivelSatisfaccion>> buscarNivelPorDescripcion(@PathVariable String descripcion) {
+        List<TipoNivelSatisfaccion> listaNivelReclamo = tipoNivelSatisfaccionService.buscarTipoNivelPorDescripcion(descripcion);
+        return ResponseEntity.ok(listaNivelReclamo);
     }
 }

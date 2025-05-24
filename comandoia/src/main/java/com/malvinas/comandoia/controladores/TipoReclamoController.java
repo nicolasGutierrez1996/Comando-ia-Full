@@ -1,5 +1,6 @@
 package com.malvinas.comandoia.controladores;
 
+import com.malvinas.comandoia.modelo.TipoObra;
 import com.malvinas.comandoia.modelo.TipoReclamo;
 import com.malvinas.comandoia.servicios.TipoReclamoService;
 import jakarta.validation.Valid;
@@ -10,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -105,5 +107,16 @@ public class TipoReclamoController {
         response.put("success", true);
         response.put("mensaje", String.format("Tipo de reclamo con ID %d eliminado correctamente", id));
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/existe-descripcion/{descripcion}")
+    public ResponseEntity<Boolean> existeDescripcion(@PathVariable String descripcion) {
+        return ResponseEntity.ok(tipoReclamoService.existeDescripcion(descripcion));
+    }
+
+    @GetMapping("/buscarTipoReclamoPorDescripcion/{descripcion}")
+    public ResponseEntity<List<TipoReclamo>> buscarTipoReclamoPorDescripcion(@PathVariable String descripcion) {
+        List<TipoReclamo> listaTipoReclamo = tipoReclamoService.buscarTipoReclamoPorDescripcion(descripcion);
+        return ResponseEntity.ok(listaTipoReclamo);
     }
 }
