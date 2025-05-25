@@ -19,6 +19,9 @@ public class Reclamo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "nombre")
+    private String nombre;
+
     @Column(name = "descripcion")
     private String descripcion;
 

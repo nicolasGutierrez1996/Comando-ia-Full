@@ -4,53 +4,53 @@
     <ul class="lista-opciones">
       <li>
         <button type="button"
-                class="menu-titulo">
+                (click)="MostrarSubBotonesReclamo()"
+                class="menu-titulo"
+                [class.activo]="mostrarSubBotonReclamos">
           <span class="texto">Administrar reclamos</span>
-          <span class="flecha" >▶</span>
+          <span class="flecha" [class.rotada]="mostrarSubBotonReclamos">▶</span>
         </button>
         <div class="subbotones">
-          <button class="subboton">Administrar valores</button>
-          <button class="subboton" >Editar valores</button>
+          <button class="subboton" *ngIf="mostrarSubBotonReclamos" (click)="MostrarCrearReclamo()">Crear Reclamo</button>
+          <button class="subboton" *ngIf="mostrarSubBotonReclamos" (click)="MostrarEditarReclamo()">Editar Reclamo</button>
+          <button class="subboton" *ngIf="mostrarSubBotonReclamos" (click)="MostrarAdjuntarExcel()">Adjuntar Excel</button>
         </div>
       </li>
       <li>
-        <button type="button"  class="menu-titulo">
+        <button type="button" (click)="MostrarSubBotonesObras()" class="menu-titulo"
+                [class.activo]="mostrarSubBotonObras">
           <span class="texto">Administrar obras</span>
-          <span class="flecha" >▶</span>
+          <span class="flecha" [class.rotada]="mostrarSubBotonObras">▶</span>
         </button>
         <div class="subbotones">
-          <button class="subboton" >Administrar valores</button>
-          <button class="subboton" >Editar valores</button>
-        </div>
-      </li>
-      <li>
-        <button type="button"  class="menu-titulo">
-          <span class="texto">Administrar reclamos</span>
-          <span class="flecha" >▶</span>
-        </button>
-        <div class="subbotones">
-          <button class="subboton"  >Crear Reclamo</button>
-          <button class="subboton" >Editar Reclamos</button>
+          <button class="subboton" *ngIf="mostrarSubBotonObras">Crear Obra</button>
+          <button class="subboton" *ngIf="mostrarSubBotonObras">Editar Obra</button>
+          <button class="subboton" *ngIf="mostrarSubBotonObras">Adjuntar Excel</button>
         </div>
       </li>
     </ul>
-    <button class="boton-volver">Volver hacia atrás</button>
+    <button class="boton-volver" (click)="volverAlLogin()">Volver hacia atrás</button>
 
   </div>
 
   <div class="contenido-principal">
     <div class="seccion-usuarios">
       <div class="titulo">
-        <h2>RECLAMOS</h2>
+        <h2 *ngIf="mostrarEditarReclamo || mostrarAdjuntarExcel || mostrarCrearReclamo">RECLAMOS</h2>
+        <h2 *ngIf="mostrarCrearObra || mostrarEditarObra">OBRAS</h2>
       </div>
 
-      <div id="formulario-crear-reclamo" >
+      <div id="formulario-crear-reclamo" *ngIf="mostrarCrearReclamo ||  mostrarEditarReclamo">
         <form class="formulario">
           <fieldset class="fieldset-form">
             <legend>Datos del Reclamo</legend>
             <div class="campos-en-linea">
+              <label >Nombre Reclamo:
+                <input type="text" [(ngModel)]="nombreReclamo" required>
+              </label>
+
               <label>Tipo de reclamo:
-                <select name="satisfaccion" required>
+                <select name="tipoReclamo" [(ngModel)]="tipoReclamo" required>
                   <option value="">Tipo de reclamo</option>
                   <option value="1">Reclamo 1</option>
                   <option value="2">Reclamo 2 </option>
@@ -58,12 +58,12 @@
                 </select>
               </label>
 
-              <label>Fecha del reclamo:
-                <input type="date" name="fecha-reclamo" required>
+              <label >Fecha del reclamo:
+                <input type="date" name="fecha-reclamo" [(ngModel)]="fechaReclamo" required>
               </label>
 
               <label>Estado:
-                <select name="estado-reclamo" required>
+                <select name="estado-reclamo" [(ngModel)]="estadoReclamo" required>
                   <option value="">Seleccionar estado</option>
                   <option value="pendiente">Pendiente</option>
                   <option value="en_proceso">En proceso</option>
@@ -71,43 +71,60 @@
                 </select>
               </label>
 
-              <label>Tiempo de resolución (en días):
-                <input type="number" name="tiempoResolucion" min="1" required>
-              </label>
 
-              <label>Nivel de satisfacción:
-                <select name="satisfaccion" required>
-                  <option value="">Seleccionar nivel</option>
-                  <option value="1">Muy insatisfecho</option>
-                  <option value="2">Insatisfecho</option>
-                  <option value="3">Neutral</option>
-                  <option value="4">Satisfecho</option>
-                  <option value="5">Muy satisfecho</option>
-                </select>
-              </label>
 
-              <label>Dirección:
-                <input type="text" name="direccion" required>
+
+
+              <label>Localidad:
+                <input type="text" name="localidad" [(ngModel)]="localidad" required>
+              </label>
+              <label>Barrio:
+                <input type="text" name="barrio" [(ngModel)]="barrio" required>
+              </label>
+              <label>Calle:
+                <input type="text" name="calle" [(ngModel)]="calle" required>
+              </label>
+              <label>Numero de calle:
+                <input type="number" name="nroCalle" [(ngModel)]="nroCalle" required>
               </label>
             </div>
 
+            <label>Tiempo de resolución (en días):
+              <input type="number" name="tiempoResolucion" [(ngModel)]="tiempoResolucion" min="1" required>
+            </label>
+
+            <label>Nivel de Satisfaccion :
+              <select name="satisfaccion" [(ngModel)]="satisfaccion" required>
+                <option value="">Seleccionar nivel</option>
+                <option value="1">Muy insatisfecho</option>
+                <option value="2">Insatisfecho</option>
+                <option value="3">Neutral</option>
+                <option value="4">Satisfecho</option>
+                <option value="5">Muy satisfecho</option>
+              </select>
+            </label>
+
             <label class="descripcion-label">Descripción:
-              <textarea name="descripcion" rows="4" placeholder="Escribe aquí cualquier información adicional..."></textarea>
+              <textarea name="descripcion" rows="4" [(ngModel)]="descripcion"></textarea>
             </label>
           </fieldset>
 
           <div class="botones-formulario">
-            <button type="submit">Crear Reclamo</button>
-            <button type="button">Editar Reclamo</button>
+            <button type="submit" *ngIf="mostrarCrearReclamo">Crear Reclamo</button>
+            <button type="button" *ngIf="mostrarEditarReclamo">Editar Reclamo</button>
           </div>
           <div class="mensaje-error"></div>
         </form>
       </div>
-      <div id="formulario-crear-obra" >
+      <div id="formulario-crear-obra" *ngIf="mostrarCrearObra || mostrarEditarObra" >
         <form class="formulario">
           <fieldset class="fieldset-form">
             <legend>Datos de la obra</legend>
             <div class="campos-en-linea">
+              <label>Nombre:
+                <input type="text"  required>
+              </label>
+
               <label>Tipo de Obra:
                 <select name="satisfaccion" required>
                   <option value="">Tipo de Obra</option>
@@ -145,8 +162,17 @@
                 </select>
               </label>
 
-              <label>Dirección:
-                <input type="text" name="direccion" required>
+              <label>Localidad:
+                <input type="text" name="localidad" required>
+              </label>
+              <label>Barrio:
+                <input type="text" name="localidad" required>
+              </label>
+              <label>Calle:
+                <input type="text" name="localidad" required>
+              </label>
+              <label>Numero de calle:
+                <input type="number" name="localidad" required>
               </label>
             </div>
 
@@ -161,6 +187,13 @@
           </div>
           <div class="mensaje-error"></div>
         </form>
+      </div>
+
+      <div id="formulario-adjuntar-excel" *ngIf="mostrarAdjuntarExcel">
+      <form class="formulario" (submit)="onUpload()">
+        <input type="file" (change)="onFileSelected($event)" accept=".xlsx, .xls" />
+        <button type="submit" [disabled]="!selectedFile">Subir Excel</button>
+      </form>
       </div>
     </div>
   </div>

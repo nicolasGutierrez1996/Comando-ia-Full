@@ -151,6 +151,14 @@
        height: 100%;
      }
 
+     #formulario-adjuntar-excel{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+     }
+
        #formulario-crear-obra {
             display: flex;
             justify-content: center;
@@ -164,7 +172,7 @@
        background-color: rgba(0, 0, 0, 0.5);
        padding: 20px;
        border-radius: 8px;
-       max-width: 400px;
+       max-width: 1000px;
        width: 100%;
        color: white;
        display: flex;
@@ -278,7 +286,7 @@
 .campos-en-linea label {
   display: flex;
   flex-direction: column;
-  flex: 1 1 250px;
+  flex: 1 1 calc(20% - 14px);
   min-width: 200px;
 }
 

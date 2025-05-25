@@ -32,4 +32,8 @@ public class DireccionService {
 
         direccionRepository.deleteById(id);
     }
+    public Optional<Direccion> buscarDireccionPorCalleNumero(String calle, Integer numero_calle){
+        return direccionRepository.findByCalleIgnoreCaseAndNumeroCalle(calle,numero_calle);
+
+    }
 }

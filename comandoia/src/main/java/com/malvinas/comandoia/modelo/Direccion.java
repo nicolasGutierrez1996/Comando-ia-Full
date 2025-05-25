@@ -26,5 +26,5 @@ public class Direccion {
     private String calle;
 
     @Column(name = "numero_calle")
-    private Integer numero_calle;  // permite null si no se sabe el número
+    private Integer numeroCalle;  // permite null si no se sabe el número
 }
