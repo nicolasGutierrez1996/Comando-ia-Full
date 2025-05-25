@@ -13,10 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/Reclamos")
@@ -125,18 +122,22 @@ public class ReclamoController {
 
     @PostMapping("excel/upload")
     public ResponseEntity<?> handleFileUploadReclamo(@RequestParam("file") MultipartFile file) {
-        Map<String,Object> response= new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
 
         try {
             importarDesdeExcel(file);
-             response.put("success",true);
-             response.put("message","Archivo procesado correctamente");
+            response.put("success", true);
+            response.put("message", "Archivo procesado correctamente.");
             return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            response.put("success", true); // ⬅️ ¡OJO! El archivo sí se procesó, aunque con errores
+            response.put("message", "Archivo procesado con errores.");
+            response.put("errores", Arrays.asList(e.getMessage().split("\n")));
+            return ResponseEntity.ok(response); // ⬅️ Devolvemos 200 para que el frontend pueda mostrar feedback útil
         } catch (Exception e) {
-            response.put("success",false);
-            response.put("message","Error al procesar el archivo: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(response);
+            response.put("success", false);
+            response.put("message", "Error inesperado: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
@@ -144,102 +145,94 @@ public class ReclamoController {
         Workbook workbook = WorkbookFactory.create(file.getInputStream());
         Sheet sheet = workbook.getSheetAt(0);
 
+        List<String> erroresPorFila = new ArrayList<>();
+
         for (Row row : sheet) {
             if (row.getRowNum() == 0) continue; // salta encabezado
 
-            String nombre = row.getCell(0).getStringCellValue();
-            String descripcion = row.getCell(1).getStringCellValue();
-            String tipo_reclamo = row.getCell(2).getStringCellValue();
-            LocalDateTime fecha_reclamo = row.getCell(3).getLocalDateTimeCellValue();
-            String estado_reclamo = row.getCell(4).getStringCellValue();
-            int tiempo_resolucion = (int) row.getCell(5).getNumericCellValue();
-            String nivel_satisfaccion = row.getCell(6).getStringCellValue();
+            try {
 
-            // Leer campos de dirección con métodos seguros para evitar errores por celdas vacías
-            String localidad = getStringCellValueSafe(row.getCell(7));
-            String barrio = getStringCellValueSafe(row.getCell(8));
-            String calle = getStringCellValueSafe(row.getCell(9));
-            Integer numero_calle = getIntegerCellValueSafe(row.getCell(10));
-
-            // Buscar o crear EstadoReclamo
-            List<EstadoReclamo> listaEstadoReclamo = estadoReclamoService.buscarEstadoReclamoPorDescripcion(estado_reclamo);
-            EstadoReclamo estadoReclamo;
-            if (listaEstadoReclamo.isEmpty()) {
-                estadoReclamo = new EstadoReclamo();
-                estadoReclamo.setDescripcion(estado_reclamo);
-                estadoReclamo = estadoReclamoService.guardarEstadoReclamo(estadoReclamo);
-            } else {
-                estadoReclamo = listaEstadoReclamo.get(0);
-            }
-
-            // Buscar o crear TipoReclamo
-            List<TipoReclamo> listaTipoReclamo = tipoReclamoService.buscarTipoReclamoPorDescripcion(tipo_reclamo);
-            TipoReclamo tipoReclamo;
-            if (listaTipoReclamo.isEmpty()) {
-                tipoReclamo = new TipoReclamo();
-                tipoReclamo.setDescripcion(tipo_reclamo);
-                tipoReclamo = tipoReclamoService.guardarTipoReclamo(tipoReclamo);
-            } else {
-                tipoReclamo = listaTipoReclamo.get(0);
-            }
-
-            // Buscar o crear TipoNivelSatisfaccion
-            List<TipoNivelSatisfaccion> listaNivelSatisfaccion = nivelSatisfaccionService.buscarTipoNivelPorDescripcion(nivel_satisfaccion);
-            TipoNivelSatisfaccion nivelSatisfaccion;
-            if (listaNivelSatisfaccion.isEmpty()) {
-                nivelSatisfaccion = new TipoNivelSatisfaccion();
-                nivelSatisfaccion.setDescripcion(nivel_satisfaccion);
-                nivelSatisfaccion = nivelSatisfaccionService.guardarTipoNivelSatisfaccion(nivelSatisfaccion);
-            } else {
-                nivelSatisfaccion = listaNivelSatisfaccion.get(0);
-            }
-
-            // Manejo de Dirección
-            Direccion direccionRegistro = null;
-
-            // Verificamos si hay al menos un dato para dirección
-            boolean direccionTieneDatos = (localidad != null && !localidad.isEmpty())
-                    || (barrio != null && !barrio.isEmpty())
-                    || (calle != null && !calle.isEmpty())
-                    || (numero_calle != null);
-
-            if (direccionTieneDatos) {
-                Optional<Direccion> direccion = Optional.empty();
-
-                // Solo buscamos si calle y numero_calle están presentes para evitar búsquedas inválidas
-                if (calle != null && !calle.isEmpty() && numero_calle != null) {
-                    direccion = direccionService.buscarDireccionPorCalleNumero(calle, numero_calle);
+                if (row.getCell(0) == null || row.getCell(0).getCellType() == CellType.BLANK) {
+                    break;
                 }
 
-                if (direccion.isPresent()) {
-                    direccionRegistro = direccion.get();
-                } else {
-                    direccionRegistro = new Direccion();
-                    direccionRegistro.setLocalidad(localidad);
-                    direccionRegistro.setBarrio(barrio);
-                    direccionRegistro.setCalle(calle);
-                    direccionRegistro.setNumeroCalle(numero_calle);
+                String nombre = row.getCell(0).getStringCellValue();
+                String descripcion = row.getCell(1).getStringCellValue();
+                String tipo_reclamo = row.getCell(2).getStringCellValue();
+                LocalDateTime fecha_reclamo = row.getCell(3).getLocalDateTimeCellValue();
+                String estado_reclamo = row.getCell(4).getStringCellValue();
+                int tiempo_resolucion = (int) row.getCell(5).getNumericCellValue();
+                String nivel_satisfaccion = row.getCell(6).getStringCellValue();
 
-                    // Guardamos la dirección nueva para que quede persistida
-                    direccionRegistro = direccionService.guardarDireccion(direccionRegistro);
+                String localidad = getStringCellValueSafe(row.getCell(7));
+                String barrio = getStringCellValueSafe(row.getCell(8));
+                String calle = getStringCellValueSafe(row.getCell(9));
+                Integer numero_calle = getIntegerCellValueSafe(row.getCell(10));
+
+                EstadoReclamo estadoReclamo = estadoReclamoService.buscarEstadoReclamoPorDescripcion(estado_reclamo)
+                        .stream().findFirst().orElseGet(() -> {
+                            EstadoReclamo nuevo = new EstadoReclamo();
+                            nuevo.setDescripcion(estado_reclamo);
+                            return estadoReclamoService.guardarEstadoReclamo(nuevo);
+                        });
+
+                TipoReclamo tipoReclamo = tipoReclamoService.buscarTipoReclamoPorDescripcion(tipo_reclamo)
+                        .stream().findFirst().orElseGet(() -> {
+                            TipoReclamo nuevo = new TipoReclamo();
+                            nuevo.setDescripcion(tipo_reclamo);
+                            return tipoReclamoService.guardarTipoReclamo(nuevo);
+                        });
+
+                TipoNivelSatisfaccion nivelSatisfaccion = nivelSatisfaccionService.buscarTipoNivelPorDescripcion(nivel_satisfaccion)
+                        .stream().findFirst().orElseGet(() -> {
+                            TipoNivelSatisfaccion nuevo = new TipoNivelSatisfaccion();
+                            nuevo.setDescripcion(nivel_satisfaccion);
+                            return nivelSatisfaccionService.guardarTipoNivelSatisfaccion(nuevo);
+                        });
+
+                Direccion direccionRegistro = null;
+                boolean direccionTieneDatos = (localidad != null && !localidad.isEmpty())
+                        || (barrio != null && !barrio.isEmpty())
+                        || (calle != null && !calle.isEmpty())
+                        || (numero_calle != null);
+
+                if (direccionTieneDatos) {
+                    direccionRegistro = (calle != null && !calle.isEmpty() && numero_calle != null)
+                            ? direccionService.buscarDireccionPorCalleNumero(calle, numero_calle).orElseGet(() -> {
+                        Direccion nueva = new Direccion();
+                        nueva.setLocalidad(localidad);
+                        nueva.setBarrio(barrio);
+                        nueva.setCalle(calle);
+                        nueva.setNumeroCalle(numero_calle);
+                        return direccionService.guardarDireccion(nueva);
+                    })
+                            : null;
                 }
+
+                Reclamo reclamo = new Reclamo();
+                reclamo.setNombre(nombre);
+                reclamo.setDescripcion(descripcion);
+                reclamo.setTipo_reclamo(tipoReclamo);
+                reclamo.setFecha_reclamo(fecha_reclamo);
+                reclamo.setEstado(estadoReclamo);
+                reclamo.setTiempo_resolucion(tiempo_resolucion);
+                reclamo.setNivel_satisfaccion(nivelSatisfaccion);
+                reclamo.setDireccion(direccionRegistro);
+
+                reclamoService.guardarReclamo(reclamo);
+
+            } catch (Exception e) {
+                erroresPorFila.add("Fila " + (row.getRowNum() + 1) + ": " + e.getMessage());
             }
-
-            Reclamo reclamo = new Reclamo();
-            reclamo.setNombre(nombre);
-            reclamo.setDescripcion(descripcion);
-            reclamo.setTipo_reclamo(tipoReclamo);
-            reclamo.setFecha_reclamo(fecha_reclamo);
-            reclamo.setEstado(estadoReclamo);
-            reclamo.setTiempo_resolucion(tiempo_resolucion);
-            reclamo.setNivel_satisfaccion(nivelSatisfaccion);
-            reclamo.setDireccion(direccionRegistro);
-
-            reclamoService.guardarReclamo(reclamo);
         }
 
         workbook.close();
+
+        if (!erroresPorFila.isEmpty()) {
+            throw new RuntimeException("Errores al procesar el archivo:\n" + String.join("\n", erroresPorFila));
+        }
     }
+
 
 // Métodos auxiliares para leer celdas con seguridad y evitar excepciones
 

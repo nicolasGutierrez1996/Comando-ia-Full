@@ -31,7 +31,7 @@ localidad:string='';
 barrio:string='';
 calle:string='';
 nroCalle:number=0;
-tiempoResolucion=number=0;
+tiempoResolucion:number=0;
 satisfaccion:string='';
 descripcion:string='';
 
