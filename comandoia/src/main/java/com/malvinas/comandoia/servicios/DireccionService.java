@@ -6,6 +6,7 @@ import com.malvinas.comandoia.repositorios.DireccionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,5 +36,13 @@ public class DireccionService {
     public Optional<Direccion> buscarDireccionPorCalleNumero(String calle, Integer numero_calle){
         return direccionRepository.findByCalleIgnoreCaseAndNumeroCalle(calle,numero_calle);
 
+    }
+
+    public Optional<Direccion> buscarDireccionFlexible(String localidad, String barrio, String calle, Integer numeroCalle) {
+        List<Direccion> coincidencias = direccionRepository
+                .buscarDireccionFlexible(localidad, barrio, calle, numeroCalle);
+
+        // Si hay al menos una coincidencia, devolver la primera
+        return coincidencias.isEmpty() ? Optional.empty() : Optional.of(coincidencias.get(0));
     }
 }

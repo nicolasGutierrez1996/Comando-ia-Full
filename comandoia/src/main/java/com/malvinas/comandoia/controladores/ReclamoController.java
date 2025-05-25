@@ -191,24 +191,31 @@ public class ReclamoController {
                         });
 
                 Direccion direccionRegistro = null;
-                boolean direccionTieneDatos = (localidad != null && !localidad.isEmpty())
-                        || (barrio != null && !barrio.isEmpty())
-                        || (calle != null && !calle.isEmpty())
-                        || (numero_calle != null);
+                System.out.printf("Fila %d: localidad='%s'%n", row.getRowNum(), barrio);
+                System.out.printf("Fila %d: localidad='%s'%n", row.getRowNum(), calle);
+                System.out.printf("Fila %d: localidad='%s'%n", row.getRowNum(), numero_calle);
+                System.out.printf("Fila %d: localidad='%s'%n", row.getRowNum(), localidad);
+
+                boolean direccionTieneDatos =
+                        (localidad != null && !localidad.isBlank()) ||
+                                (barrio != null && !barrio.isBlank()) ||
+                                (calle != null && !calle.isBlank()) ||
+                                (numero_calle != null);
 
                 if (direccionTieneDatos) {
-                    direccionRegistro = (calle != null && !calle.isEmpty() && numero_calle != null)
-                            ? direccionService.buscarDireccionPorCalleNumero(calle, numero_calle).orElseGet(() -> {
-                        Direccion nueva = new Direccion();
-                        nueva.setLocalidad(localidad);
-                        nueva.setBarrio(barrio);
-                        nueva.setCalle(calle);
-                        nueva.setNumeroCalle(numero_calle);
-                        return direccionService.guardarDireccion(nueva);
-                    })
-                            : null;
+                    direccionRegistro = direccionService
+                            .buscarDireccionFlexible(localidad, barrio, calle, numero_calle)
+                            .orElseGet(() -> {
+                                Direccion nueva = new Direccion();
+                                nueva.setLocalidad(localidad);
+                                nueva.setBarrio(barrio);
+                                nueva.setCalle(calle);
+                                nueva.setNumeroCalle(numero_calle);
+                                nueva = direccionService.guardarDireccion(nueva);
+                                System.out.println("ID DIRECCION (creada): " + nueva.getId());
+                                return nueva;
+                            });
                 }
-
                 Reclamo reclamo = new Reclamo();
                 reclamo.setNombre(nombre);
                 reclamo.setDescripcion(descripcion);
@@ -237,16 +244,40 @@ public class ReclamoController {
 // Métodos auxiliares para leer celdas con seguridad y evitar excepciones
 
     private String getStringCellValueSafe(Cell cell) {
-        if (cell == null) return null;
-        if (cell.getCellType() == CellType.STRING) {
-            return cell.getStringCellValue().trim();
-        } else if (cell.getCellType() == CellType.NUMERIC) {
-            // Convertimos número a texto si es necesario (ej: calle "123")
-            return String.valueOf((int) cell.getNumericCellValue());
+        if (cell == null || cell.getCellType() == CellType.BLANK) {
+            return null;
         }
-        return null;
-    }
 
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue().trim();
+
+            case NUMERIC:
+                double value = cell.getNumericCellValue();
+                if (value == (int) value) {
+                    return String.valueOf((int) value); // sin decimales si es entero
+                } else {
+                    return String.valueOf(value); // con decimales si aplica
+                }
+
+            case BOOLEAN:
+                return String.valueOf(cell.getBooleanCellValue());
+
+            case FORMULA:
+                try {
+                    return cell.getStringCellValue().trim();
+                } catch (Exception e) {
+                    try {
+                        return String.valueOf(cell.getNumericCellValue());
+                    } catch (Exception ex) {
+                        return null;
+                    }
+                }
+
+            default:
+                return null;
+        }
+    }
     private Integer getIntegerCellValueSafe(Cell cell) {
         if (cell == null) return null;
         if (cell.getCellType() == CellType.NUMERIC) {
