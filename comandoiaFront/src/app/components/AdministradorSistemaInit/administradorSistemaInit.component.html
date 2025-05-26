@@ -1,4 +1,4 @@
-<div class="aplicacion">
+<div class="aplicacion" xmlns="http://www.w3.org/1999/html">
   <div class="menu-lateral">
     <h2>IA Malvinas</h2>
     <ul class="lista-opciones">
@@ -60,7 +60,8 @@
 
     <div id="formulario-crear-usuario" *ngIf="mostrarCargaDeUsuario ||  modoEdicion">
       <form class="formulario">
-
+        <fieldset class="fieldset-form">
+          <legend>Administrar Usuario</legend>
         <div style="position: relative;">
         <label>Nombre de usuario:
           <input type="text" name="nombre" [(ngModel)]="nombre_usuario" (input)="buscarUsuarios(nombre_usuario)" required>
@@ -108,10 +109,14 @@
         <div *ngIf="error" class="mensaje-error">
           {{ error }}
         </div>
+        </fieldset>
       </form>
+
     </div>
       <div id="formulario-administrar-obra" *ngIf="administrarObra ||  modoEdicionTipoObra || modoEliminarTipoObra">
       <form class="formulario">
+        <fieldset class="fieldset-form">
+          <legend>Administrar Obra</legend>
         <div style="position: relative;">
         <label>Tipo Obra:
           <input type="text" name="tipoObra" [(ngModel)]="tipoObra" (input)="buscarTipoObras(tipoObra)" required>
@@ -144,14 +149,14 @@
         <button (click)="crearValoresObra() " *ngIf="administrarObra">Crear valores</button>
         <button (click)="actualizarValoresObras()"  *ngIf="modoEdicionTipoObra">Editar valores</button>
         <button   (click)="eliminarValoresObra()" *ngIf="modoEliminarTipoObra">Eliminar valores</button>
-
+        </fieldset>
       </form>
     </div>
 
     <div id="formulario-administrar-reclamo" *ngIf="administrarReclamo ||  modoEdicionReclamo || modoEliminarReclamo">
       <form class="formulario">
-
-
+        <fieldset class="fieldset-form">
+          <legend>Administrar Reclamos</legend>
     <div style="position: relative;">
       <label>Estado Reclamo:
         <input type="text" name="estadoReclamo" [(ngModel)]="estadoReclamo" (input)="buscarEstadoReclamos(estadoReclamo)" required>
@@ -187,7 +192,8 @@
         <button (click)="crearValoresReclamo() " *ngIf="administrarReclamo">Crear valores</button>
         <button (click)="actualizarValoresReclamo()"  *ngIf="modoEdicionReclamo">Editar valores</button>
         <button   (click)="eliminarValoresReclamo()" *ngIf="modoEliminarReclamo">Eliminar valores</button>
-    </form>
+        </fieldset>
+      </form>
 
   </div>
 </div>

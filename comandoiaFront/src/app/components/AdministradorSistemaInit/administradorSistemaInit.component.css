@@ -1,4 +1,4 @@
->
+
     * {
       margin: 0;
       padding: 0;
@@ -106,30 +106,32 @@
     }
 
     .boton-volver {
-      margin: 30px 20px 0 20px;  /* margen arriba para separarlo un poco más del final */
-      padding: 14px 28px;
-      background: linear-gradient(45deg, #3399ff, #1e90ff, #0055cc);
-      border-radius: 30px;
-      border: 3px solid white; /* borde blanco para contraste fuerte */
-      color: white;
-      font-size: 18px;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow:
-        0 0 10px rgba(255, 255, 255, 0.9),  /* brillo blanco para resaltar */
-        0 0 20px rgba(30, 144, 255, 0.8),
-        0 0 40px rgba(0, 85, 204, 0.7);
-      transition:
-        background-position 0.5s ease,
-        box-shadow 0.3s ease,
-        transform 0.2s ease;
+  margin: 0 20px;
+  padding: 14px 28px;
+  background: linear-gradient(45deg, #3399ff, #1e90ff, #0055cc);
+  border-radius: 30px;
+  border: 3px solid white;
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow:
+    0 0 10px rgba(255, 255, 255, 0.9),
+    0 0 20px rgba(30, 144, 255, 0.8),
+    0 0 40px rgba(0, 85, 204, 0.7);
+  transition:
+    background-position 0.5s ease,
+    box-shadow 0.3s ease,
+    transform 0.2s ease;
 
+  background-size: 200% 200%;
+  background-position: 0% 50%;
+  text-align: center;
+  user-select: none;
 
-      background-size: 200% 200%;
-      background-position: 0% 50%;
-      text-align: center;
-      user-select: none;
-    }
+  position: relative;
+  top: -50px;
+}
 
 
     .opcion:hover {
@@ -258,6 +260,7 @@
       color: white;
       border-radius: 4px;
       cursor: pointer;
+      margin-top: 10px;
     }
 
     .formulario button:hover {
@@ -355,4 +358,25 @@
 .autocomplete-list li.active {
   background-color: #3a3a3a;
   color: #fff;
+}
+
+/*-----------*/
+.fieldset-form {
+  border: 2px solid #3399ff;
+  border-radius: 8px;
+  padding: 20px 25px 30px 25px;
+  margin-bottom: 20px;
+  color: white;
+  background: rgba(0, 51, 102, 0.6);
+  box-shadow:
+    0 0 10px rgba(51, 153, 255, 0.7);
+}
+
+.fieldset-form legend {
+  font-size: 22px;
+  font-weight: 700;
+  padding: 0 10px;
+  color: #ffcc00;
+  text-shadow:
+    1px 1px 2px black;
 }
