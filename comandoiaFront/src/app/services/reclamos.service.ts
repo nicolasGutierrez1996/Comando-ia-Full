@@ -4,6 +4,29 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 
+export interface Reclamo{
+  id?:number;
+  nombre: string;
+  descripcion: string;
+  tipo_reclamo: {
+    id: number;
+  };
+  fecha_reclamo: string;
+  estado: {
+    id: number;
+  };
+  tiempo_resolucion: number;
+  nivel_satisfaccion: {
+    id: number;
+  };
+  direccion: {
+    localidad: string;
+    barrio: string;
+    calle: string;
+    numeroCalle: number | null;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -16,6 +39,23 @@ export class ReclamosService {
 importarDesdeExcel(formData: FormData): Observable<any> {
   return this.http.post<any>(`${this.baseUrl}/excel/upload`, formData);
 }
+
+crearReclamo(reclamo:Reclamo): Observable<Reclamo>{
+return this.http.post<Reclamo>(`${this.baseUrl}`,reclamo);
+
+}
+
+  existeNombreReclamo(nombreReclamo: string): Observable<boolean> {
+    return this.http.get<boolean>(`${this.baseUrl}/existe-nombre/${nombreReclamo}`);
+  }
+
+       buscarReclamosPorNombre(nombre: string): Observable<Reclamo[]> {
+          return this.http.get<Reclamo[]>(`${this.baseUrl}/buscarReclamoPorNombre/${nombre}`);
+        }
+
+             actualizarReclamo(id: number, reclamo: Reclamo): Observable<any> {
+               return this.http.put(`${this.baseUrl}/${id}`, reclamo);
+             }
 
 }
 

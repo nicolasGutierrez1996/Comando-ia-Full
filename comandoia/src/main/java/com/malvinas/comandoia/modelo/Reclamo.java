@@ -19,7 +19,7 @@ public class Reclamo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "nombre")
+    @Column(name = "nombre",unique = true)
     private String nombre;
 
     @Column(name = "descripcion")

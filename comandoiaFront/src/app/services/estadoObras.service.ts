@@ -15,6 +15,10 @@ export class EstadoObrasService {
 
   constructor(private http: HttpClient) {}
 
+obtenerEstadosObra():Observable<EstadoObra[]>{
+ return this.http.get<EstadoObra[]>(`${this.baseUrl}`);
+}
+
 crearEstadoObra(estadoObra: EstadoObra): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}`, estadoObra);
   }

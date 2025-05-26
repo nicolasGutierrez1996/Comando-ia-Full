@@ -58,7 +58,7 @@
        background-size: cover;
        background-position: center;
        background-repeat: no-repeat;
-       background-image: url('/assets/Fondo3.jpg');
+       background-image: url('/assets/Fondo4.jpeg');
      }
 
      .seccion-usuarios {
@@ -169,7 +169,7 @@
 
 
      .formulario {
-       background-color: rgba(0, 0, 0, 0.5);
+       background-color: rgba(0, 0, 0, 0.4);
        padding: 20px;
        border-radius: 8px;
        max-width: 1000px;
@@ -288,6 +288,42 @@
   flex-direction: column;
   flex: 1 1 calc(20% - 14px);
   min-width: 200px;
+}
+.autocomplete-list {
+  border: 1px solid #555;
+  border-radius: 6px;
+  max-height: 180px;
+  overflow-y: auto;
+  background: #1e1e1e; /* fondo oscuro pero suave */
+  padding: 0;
+  margin: 4px 0 0 0;
+  list-style: none;
+  position: absolute;
+  z-index: 1000;
+  width: 220px; /* un poco más ancho para mejor lectura */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #eee;
+}
+
+/* Estilo para cada ítem de la lista */
+.autocomplete-list li {
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid #333;
+}
+
+/* Quitar borde del último ítem */
+.autocomplete-list li:last-child {
+  border-bottom: none;
+}
+
+/* Hover con fondo resaltado */
+.autocomplete-list li:hover,
+.autocomplete-list li.active {
+  background-color: #3a3a3a;
+  color: #fff;
 }
 
 .descripcion-label {

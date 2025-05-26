@@ -60,6 +60,27 @@ public class ReclamoController {
         Map<String, Object> response = new HashMap<>();
         Map<String, String> errores = new HashMap<>();
 
+        Direccion direccion = reclamo.getDireccion();
+             if(direccion.getBarrio()!= null && direccion.getBarrio()==""){
+                 direccion.setBarrio(null);
+             }
+             if(direccion.getCalle()!= null && direccion.getCalle()==""){
+                 direccion.setCalle(null);
+             }
+             if(direccion.getNumeroCalle() != null && direccion.getNumeroCalle()==0){
+                 direccion.setNumeroCalle(null);
+             }
+
+        Optional<Direccion> optionalDireccion=direccionService.buscarDireccionFlexible(direccion.getLocalidad(),direccion.getBarrio(),direccion.getCalle(),direccion.getNumeroCalle());
+
+        if(!optionalDireccion.isPresent()){
+            direccion = direccionService.guardarDireccion(direccion);
+            reclamo.setDireccion(direccion);
+        }else{
+            direccion=optionalDireccion.get();
+            reclamo.setDireccion(direccion);
+        }
+
         if (result.hasErrors()) {
             result.getFieldErrors().forEach(error ->
                     errores.put(error.getField(), error.getDefaultMessage())
@@ -120,6 +141,12 @@ public class ReclamoController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/existe-nombre/{nombre}")
+    public ResponseEntity<Boolean> existeDescripcion(@PathVariable String nombre) {
+        return ResponseEntity.ok(reclamoService.existeNombre(nombre));
+    }
+
+
     @PostMapping("excel/upload")
     public ResponseEntity<?> handleFileUploadReclamo(@RequestParam("file") MultipartFile file) {
         Map<String, Object> response = new HashMap<>();
@@ -168,6 +195,8 @@ public class ReclamoController {
                 String barrio = getStringCellValueSafe(row.getCell(8));
                 String calle = getStringCellValueSafe(row.getCell(9));
                 Integer numero_calle = getIntegerCellValueSafe(row.getCell(10));
+
+
 
                 EstadoReclamo estadoReclamo = estadoReclamoService.buscarEstadoReclamoPorDescripcion(estado_reclamo)
                         .stream().findFirst().orElseGet(() -> {
@@ -291,5 +320,12 @@ public class ReclamoController {
         }
         return null;
     }
+
+    @GetMapping("/buscarReclamoPorNombre/{nombre}")
+    public ResponseEntity<List<Reclamo>> buscarReclamoPorNombre(@PathVariable String nombre) {
+        List<Reclamo> listaReclamo = reclamoService.buscarReclamoPorNombre(nombre);
+        return ResponseEntity.ok(listaReclamo);
+    }
+
 
 }

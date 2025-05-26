@@ -15,6 +15,10 @@ export class TipoObrasService {
 
   constructor(private http: HttpClient) {}
 
+  obtenerTiposObra():Observable<TipoObra[]>{
+   return this.http.get<TipoObra[]>(`${this.baseUrl}`);
+  }
+
 crearTipoObra(tipoObra: TipoObra): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}`, tipoObra);
   }

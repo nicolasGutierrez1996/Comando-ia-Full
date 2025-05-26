@@ -15,6 +15,11 @@ export class NivelSatisfaccionService {
 
   constructor(private http: HttpClient) {}
 
+ obtenerNivelesReclamo():Observable<NivelReclamo[]>{
+   return this.http.get<NivelReclamo[]>(`${this.baseUrl}`);
+ }
+
+
 crearTipoNivel(nivelReclamo: NivelReclamo): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}`, nivelReclamo);
   }

@@ -15,6 +15,10 @@ export class TipoReclamosService {
 
   constructor(private http: HttpClient) {}
 
+ obtenerTiposReclamo():Observable<TipoReclamo[]>{
+   return this.http.get<TipoReclamo[]>(`${this.baseUrl}`);
+ }
+
 crearTipoReclamo(tipoReclamo: TipoReclamo): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}`, tipoReclamo);
   }

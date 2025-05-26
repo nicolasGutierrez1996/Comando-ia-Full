@@ -15,6 +15,10 @@ export class EstadoReclamoService {
 
   constructor(private http: HttpClient) {}
 
+ obtenerEstadosReclamo():Observable<EstadoReclamo[]>{
+   return this.http.get<EstadoReclamo[]>(`${this.baseUrl}`);
+ }
+
 crearEstadoReclamo(estadoReclamo: EstadoReclamo): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}`, estadoReclamo);
   }
