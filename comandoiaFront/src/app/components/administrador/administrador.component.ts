@@ -10,6 +10,8 @@ import { NivelSatisfaccionService,NivelReclamo} from '../../services/nivelSatisf
 import { EstadoReclamoService,EstadoReclamo} from '../../services/estadoReclamo.service';
 import { TipoObrasService,TipoObra} from '../../services/tipoObras.service';
 import { EstadoObrasService,EstadoObra} from '../../services/estadoObras.service';
+import { ObrasService,Obra} from '../../services/obras.service';
+
 
 
 
@@ -25,6 +27,7 @@ import { EstadoObrasService,EstadoObra} from '../../services/estadoObras.service
 export class AdministradorComponent {
 
 selectedFile: File | null = null;
+selectedFileObra: File | null = null;
 
 //RECLAMOS
   estadosReclamo: EstadoReclamo[] = [];
@@ -80,7 +83,8 @@ descripcionObra:string='';
   constructor(private snackBar: MatSnackBar
   ,private router: Router, private reclamosService:ReclamosService,private nivelReclamoService: NivelSatisfaccionService,
    private tipoReclamoService:TipoReclamosService,private estadoReclamoService: EstadoReclamoService,
-   private tipoObrasService:TipoObrasService, private estadoObrasService:EstadoObrasService) {}
+   private tipoObrasService:TipoObrasService, private estadoObrasService:EstadoObrasService,
+   private obrasService:ObrasService) {}
 
 
   onFileSelected(event: any) {
@@ -486,6 +490,8 @@ this.mostrarCrearObra=!this.mostrarCrearObra;
    this.mostrarEditarObra = false;
    this.mostrarAdjuntarExcelObra = false;
    this.mostrarDatosEdicionObra = false;
+      this.mostrarCrearReclamo=false;
+      this.mostrarEditarReclamo=false;
 
    // Cargar selects
    this.CargarDatosObra();
@@ -524,7 +530,33 @@ mostrarAdjuntarExcelObras(){
    this.mostrarAdjuntarExcelObra=!this.mostrarAdjuntarExcelObra;
    this.mostrarEditarObra=false;
    this.mostrarCrearObra=false;
+   this.mostrarCrearReclamo=false;
+   this.mostrarEditarReclamo=false;
 
 }
+
+
+  onFileSelectedObra(event: any) {
+    this.selectedFileObra = event.target.files[0];
+  }
+
+onUploadObra(): void {
+  if (!this.selectedFileObra) return;
+
+  const formData = new FormData();
+  formData.append('file', this.selectedFileObra);
+
+  this.obrasService.importarDesdeExcel(formData).subscribe({
+    next: (res) => {
+      console.log('Archivo subido correctamente:', res);
+      this.snackBar.open('Archivo subido correctamente', 'Cerrar', { duration: 3000 });
+    },
+    error: (err) => {
+      console.error('Error al subir el archivo:', err);
+      this.snackBar.open('Error al subir el archivo', 'Cerrar', { duration: 3000 });
+    }
+  });
+}
+
 
 }

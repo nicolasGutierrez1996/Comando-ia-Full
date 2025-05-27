@@ -192,19 +192,27 @@
           </fieldset>
 
           <div class="botones-formulario">
-            <button type="submit">Crear Reclamo</button>
-            <button type="button">Editar Reclamo</button>
+            <button type="submit" *ngIf="mostrarCrearObra">Crear Obra</button>
+            <button type="button" *ngIf="mostrarEditarObra">Editar Obra</button>
           </div>
           <div class="mensaje-error"></div>
         </form>
       </div>
 
-      <div id="formulario-adjuntar-excel" *ngIf="mostrarAdjuntarExcel || mostrarAdjuntarExcelObra">
+      <div id="formulario-adjuntar-excel" *ngIf="mostrarAdjuntarExcel ">
       <form class="formulario" (submit)="onUpload()">
         <input type="file" (change)="onFileSelected($event)" accept=".xlsx, .xls" />
-        <button type="submit" [disabled]="!selectedFile">Subir Excel</button>
+        <button type="submit" [disabled]="!selectedFile">Subir Excel de Reclamos</button>
       </form>
       </div>
+
+      <div id="formulario-adjuntar-excel-obra" *ngIf=" mostrarAdjuntarExcelObra">
+        <form class="formulario" (submit)="onUploadObra()">
+          <input type="file" (change)="onFileSelectedObra($event)" accept=".xlsx, .xls" />
+          <button type="submit" [disabled]="!selectedFileObra">Subir Excel de Obras</button>
+        </form>
+      </div>
+
     </div>
   </div>
 </div>

@@ -151,13 +151,14 @@
        height: 100%;
      }
 
-     #formulario-adjuntar-excel{
+     #formulario-adjuntar-excel,#formulario-adjuntar-excel-obra{
             display: flex;
             justify-content: center;
             align-items: center;
             width: 100%;
             height: 100%;
      }
+
 
        #formulario-crear-obra {
             display: flex;
