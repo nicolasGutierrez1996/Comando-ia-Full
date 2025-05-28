@@ -136,24 +136,17 @@ this.router.navigate(['./login']);
    // Resetear campos
    const hoy = new Date();
    this.fechaReclamo = this.convertirFechaAInputDate(hoy);
+   this.refrescarStrings();
 
-   this.nombreReclamo = '';
-   this.descripcion = '';
-   this.tipoReclamo = '';
    this.tipoReclamoSeleccionadoId = 1;
    this.estadoReclamoSeleccionadoId = 1;
    this.tiempoResolucion = null;
    this.nivelReclamoSeleccionadoId = 1;
-   this.localidad = '';
-   this.barrio = '';
-   this.calle = '';
-   this.nroCalle = null;
+
    this.mostrarCrearObra=false;
    this.mostrarEditarObra=false;
    this.mostrarAdjuntarExcelObra=false;
 
-   // Importante: limpiar mensaje y objeto seleccionado
-   this.mensajeErrorReclamo = '';
    this.reclamoSeleccionado = null;
  }
 
@@ -162,16 +155,12 @@ this.router.navigate(['./login']);
     this.mostrarAdjuntarExcel=false;
     this.mostrarCrearReclamo=false;
 
-            this.nombreReclamo = '';
-            this.descripcion = '';
+             this.refrescarStrings();
             const hoy = new Date();
              this.fechaReclamo = this.convertirFechaAInputDate(hoy);        this.tipoReclamoSeleccionadoId = null;
             this.estadoReclamoSeleccionadoId=null;
             this.tiempoResolucion=null;
             this.nivelReclamoSeleccionadoId=null;
-            this.localidad='';
-            this.barrio='';
-            this.calle='';
             this.nroCalle=null;
 
 
@@ -315,6 +304,11 @@ this.reclamosService.crearReclamo(nuevoReclamo).subscribe({
     },
     error: err => {
       console.error('Error', err);
+      this.snackBar.open('Error al crear reclamo', '', {
+        duration: 3000,
+        verticalPosition: 'top',
+        horizontalPosition: 'end'
+      });
     }
   });
 }
@@ -466,8 +460,11 @@ const nuevoReclamo: Reclamo= {
 this.reclamosService.actualizarReclamo(this.reclamoSeleccionado.id as number,nuevoReclamo).subscribe({
     next: res => {
       if (res.success) {
-        this.snackBar.open('Reclamo actualizado con éxito', '', { duration: 3000 });
-
+this.snackBar.open('Reclamo actualizado con éxito', '', {
+  duration: 3000,
+  verticalPosition: 'top',
+  horizontalPosition: 'end'
+});
         this.nombreReclamo = '';
         this.descripcion = '';
         const hoy = new Date();
@@ -489,7 +486,11 @@ this.reclamosService.actualizarReclamo(this.reclamoSeleccionado.id as number,nue
     },
     error: err => {
       console.error('Error al actualizar usuario:', err);
-      this.snackBar.open('Error al actualizar usuario', '', { duration: 3000 });
+      this.snackBar.open('Error al actualizar reclamo', '', {
+         duration: 3000,
+         verticalPosition: 'top',
+         horizontalPosition: 'end'
+       });
     }
   });
 }
@@ -506,6 +507,7 @@ this.mostrarCrearObra=!this.mostrarCrearObra;
    this.mostrarCrearReclamo=false;
    this.mostrarEditarReclamo=false;
    this.mostrarAdjuntarExcel=false;
+   this.refrescarStrings();
    this.estadoObraSeleccionadoId=1;
    this.tipoObraSeleccionadoId=1;
 
@@ -653,6 +655,11 @@ this.obrasService.crearObra(nuevaObra).subscribe({
     },
     error: err => {
       console.error('Error', err);
+      this.snackBar.open('Error al crear obra', '', {
+        duration: 3000,
+        verticalPosition: 'top',
+        horizontalPosition: 'end'
+      });
     }
   });
 
@@ -681,6 +688,7 @@ this.mostrarEditarObra=!this.mostrarEditarObra;
    this.mostrarCrearReclamo=false;
    this.mostrarEditarReclamo=false;
    this.mostrarAdjuntarExcel=false;
+   this.refrescarStrings();
    this.estadoObraSeleccionadoId=1;
    this.tipoObraSeleccionadoId=1;
 
@@ -834,11 +842,47 @@ this.obrasService.actualizarObra(this.obraSeleccionada?.id as number,nuevaObra).
     },
     error: err => {
       console.error('Error', err);
+      this.snackBar.open('Error al actualizar obra', '', {
+        duration: 3000,
+        verticalPosition: 'top',
+        horizontalPosition: 'end'
+      });
     }
   });
 
 
 
+}
+
+refrescarStrings(): void {
+  // Variables string de reclamos
+  this.nombreReclamo = '';
+  this.tipoReclamo = '';
+  this.fechaReclamo = '';
+  this.estadoReclamo = '';
+  this.localidad = '';
+  this.barrio = '';
+  this.calle = '';
+  this.satisfaccion = '';
+  this.descripcion = '';
+  this.mensajeErrorReclamo = '';
+  this.nroCalle=null;
+
+  // Variables string de obras
+  this.nombreObra = '';
+  this.fechaInicioObra = null;  // es string|null, lo seteamos en null
+  this.fechaFinEstimada = null;
+  this.fechaFinReal = null;
+  this.localidadObra = '';
+  this.barrioObra = '';
+  this.calleObra = '';
+  this.montoEjecutado=null;
+  this.montoPresupuestado=null;
+  this.avanceFisico=null
+
+  this.nroCalleObra=null
+  this.descripcionObra = '';
+  this.mensajeErrorObra = '';
 }
 
 }

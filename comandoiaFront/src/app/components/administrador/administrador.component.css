@@ -11,7 +11,11 @@
        width: 100%;
     }
 
+.subboton.activo {
 
+  color: yellow; /* buen contraste */
+  font-weight: bold;
+}
 
      .menu-lateral h2 {
        text-align: center;

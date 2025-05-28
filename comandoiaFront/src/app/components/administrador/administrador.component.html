@@ -11,9 +11,9 @@
           <span class="flecha" [class.rotada]="mostrarSubBotonReclamos">▶</span>
         </button>
         <div class="subbotones">
-          <button class="subboton" *ngIf="mostrarSubBotonReclamos" (click)="MostrarCrearReclamo()">Crear Reclamo</button>
-          <button class="subboton" *ngIf="mostrarSubBotonReclamos" (click)="MostrarEditarReclamo()">Editar Reclamo</button>
-          <button class="subboton" *ngIf="mostrarSubBotonReclamos" (click)="MostrarAdjuntarExcel()">Adjuntar Excel</button>
+          <button class="subboton" *ngIf="mostrarSubBotonReclamos" (click)="MostrarCrearReclamo()" [class.activo]="mostrarCrearReclamo">Crear Reclamo</button>
+          <button class="subboton" *ngIf="mostrarSubBotonReclamos" (click)="MostrarEditarReclamo()" [class.activo]="mostrarEditarReclamo">Editar Reclamo</button>
+          <button class="subboton" *ngIf="mostrarSubBotonReclamos" (click)="MostrarAdjuntarExcel()" [class.activo]="mostrarAdjuntarExcel">Adjuntar Excel</button>
         </div>
       </li>
       <li>
@@ -23,9 +23,9 @@
           <span class="flecha" [class.rotada]="mostrarSubBotonObras">▶</span>
         </button>
         <div class="subbotones">
-          <button class="subboton" *ngIf="mostrarSubBotonObras" (click)="MostrarCrearObra()">Crear Obra</button>
-          <button class="subboton" *ngIf="mostrarSubBotonObras" (click)="MostrarEditarObra()">Editar Obra</button>
-          <button class="subboton" *ngIf="mostrarSubBotonObras" (click)="mostrarAdjuntarExcelObras()">Adjuntar Excel</button>
+          <button class="subboton" *ngIf="mostrarSubBotonObras" (click)="MostrarCrearObra()"[class.activo]="mostrarCrearObra">Crear Obra</button>
+          <button class="subboton" *ngIf="mostrarSubBotonObras" (click)="MostrarEditarObra()" [class.activo]="mostrarEditarObra">Editar Obra</button>
+          <button class="subboton" *ngIf="mostrarSubBotonObras" (click)="mostrarAdjuntarExcelObras()" [class.activo]="mostrarAdjuntarExcelObra">Adjuntar Excel</button>
         </div>
       </li>
     </ul>
