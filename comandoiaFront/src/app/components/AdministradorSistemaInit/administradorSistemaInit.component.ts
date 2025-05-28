@@ -106,11 +106,16 @@ usuarioSeleccionado: Usuario | null = null;
       this.administrarReclamo=false;
         this.modoEdicionReclamo=false;
         this.modoEliminarReclamo=false;
+        this.mostrarDatosEdicion=false;
+
+        this.limpiarStrings();
 
 
     if(this.mostrarCargaDeUsuario){
       this.cargarDatosAltaCliente();
     }
+
+
   }
 
 cargarDatosAltaCliente(): void {
@@ -237,6 +242,8 @@ validarSiExisteNombre(nombre: string): Promise<boolean> {
       this.administrarReclamo=false;
         this.modoEdicionReclamo=false;
         this.modoEliminarReclamo=false;
+
+        this.limpiarStrings();
   }
 
 
@@ -369,18 +376,22 @@ editarUsuario() {
 
 //OBRAS
 MostrarCrearValorObra(): void {
-  console.log("click administrar obra");
-  this.administrarObra = !this.administrarObra;
-    this.modoEdicionTipoObra = false;
-    this.modoEliminarTipoObra=false;
-    this.errorObras='';
-    this.mostrarCargaDeUsuario=false;
-      this.modoEdicion = false;
-     this.modoEliminarTipoObra=false;
 
-       this.administrarReclamo=false;
-         this.modoEdicionReclamo=false;
-         this.modoEliminarReclamo=false;
+  this.modoEdicionTipoObra = false;
+      this.modoEliminarTipoObra=false;
+      this.errorObras='';
+      this.mostrarCargaDeUsuario=false;
+        this.modoEdicion = false;
+       this.modoEliminarTipoObra=false;
+
+         this.administrarReclamo=false;
+           this.modoEdicionReclamo=false;
+           this.modoEliminarReclamo=false;
+           this.limpiarStrings();
+    setTimeout(() => {
+  this.administrarObra = !this.administrarObra;
+
+         },50);
 
 }
 
@@ -506,19 +517,23 @@ seleccionarTipoObra(tipoObra: TipoObra) {
 }
 
   MostrarEditarTipoObras(): void {
-    this.administrarObra=false;
-    this.modoEliminarTipoObra=false;
-    this.modoEliminarTipoObra=false;
+  this.administrarObra=false;
+      this.modoEliminarTipoObra=false;
+      this.modoEliminarTipoObra=false;
+      this.errorObras='';
+          this.mostrarCargaDeUsuario=false;
+                this.modoEdicion = false;
+
+            this.administrarReclamo=false;
+              this.modoEdicionReclamo=false;
+              this.modoEliminarReclamo=false;
+              this.limpiarStrings();
+   setTimeout(() => {
+
     this.modoEdicionTipoObra = !this.modoEdicionTipoObra;
-    this.errorObras='';
-    this.mostrarCargaDeUsuario=false;
-          this.modoEdicion = false;
-
-      this.administrarReclamo=false;
-        this.modoEdicionReclamo=false;
-        this.modoEliminarReclamo=false;
 
 
+},100);
 
   }
 
@@ -655,17 +670,22 @@ seleccionarEstadoObra(estadoObra: EstadoObra) {
 }
 
 mostrarEliminarValoresObra(){
- console.log("mostrar valores eliminar");
- this.modoEliminarTipoObra=!this.modoEliminarTipoObra;
+
+ this.modoEliminarTipoObra=false;
  this.modoEdicionTipoObra=false;
- this.administrarObra=false;
- this.mostrarCargaDeUsuario=false;
- this.modoEdicion = false;
+  this.administrarObra=false;
+  this.mostrarCargaDeUsuario=false;
+  this.modoEdicion = false;
 
-   this.administrarReclamo=false;
-     this.modoEdicionReclamo=false;
-     this.modoEliminarReclamo=false;
+    this.administrarReclamo=false;
+      this.modoEdicionReclamo=false;
+      this.modoEliminarReclamo=false;
+      this.limpiarStrings();
+ setTimeout(() => {
+ this.modoEliminarTipoObra=!this.modoEliminarTipoObra;
 
+
+},100);
 }
 
 eliminarValoresObra(){
@@ -759,7 +779,7 @@ eliminarValoresObra(){
 
 //RECLAMOS
 cambiarAmodoAdministrarReclamo(){
- this.administrarReclamo=!this.administrarReclamo;
+
  this.modoEdicionReclamo=false;
  this.modoEliminarReclamo=false;
 
@@ -769,11 +789,16 @@ cambiarAmodoAdministrarReclamo(){
 
     this.mostrarCargaDeUsuario=false;
       this.modoEdicion= false;
+      this.limpiarStrings();
+
+      setTimeout(() => {
+       this.administrarReclamo=!this.administrarReclamo;
+
+               },100);
 
 
 }
 cambiarAmodoEditarReclamo(){
- this.modoEdicionReclamo=!this.modoEdicionReclamo;
  this.modoEliminarReclamo=false;
  this.administrarReclamo=false;
 
@@ -783,11 +808,16 @@ cambiarAmodoEditarReclamo(){
 
       this.mostrarCargaDeUsuario=false;
       this.modoEdicion = false;
+      this.limpiarStrings();
+
+      setTimeout(() => {
+ this.modoEdicionReclamo=!this.modoEdicionReclamo;
+
+                     },100);
 
 
 }
 cambiarAmodoEliminarReclamo(){
- this.modoEliminarReclamo=!this.modoEliminarReclamo;
  this.administrarReclamo=false;
  this.modoEdicionReclamo=false;
 
@@ -797,6 +827,12 @@ cambiarAmodoEliminarReclamo(){
 
       this.mostrarCargaDeUsuario=false;
       this.modoEdicion = false;
+      this.limpiarStrings();
+          setTimeout(() => {
+ this.modoEliminarReclamo=!this.modoEliminarReclamo;
+
+                           },100);
+
 
 }
 
@@ -1283,6 +1319,26 @@ eliminarValoresReclamo(){
 
 
                 }
+
+}
+
+limpiarStrings(): void {
+  this.titulo = '';
+  this.tipoObra = '';
+  this.estadoObra = '';
+  this.errorObras = '';
+  this.nivelReclamo = '';
+  this.tipoReclamo = '';
+  this.estadoReclamo = '';
+  this.errorReclamos = '';
+  this.nombre_usuario = '';
+  this.email = '';
+  this.error = '';
+  this.error_nombre = '';
+  this.error_mail = '';
+  this.error_estado = '';
+  this.error_rol = '';
+
 
 }
 

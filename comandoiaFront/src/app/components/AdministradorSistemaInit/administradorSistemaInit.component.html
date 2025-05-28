@@ -11,9 +11,9 @@
           <span class="flecha" [class.rotada]="mostrarSubBotonReclamos">▶</span>
         </button>
         <div class="subbotones">
-          <button class="subboton" (click)="cambiarAmodoAdministrarReclamo()" *ngIf="mostrarSubBotonReclamos">Administrar valores</button>
-          <button class="subboton" (click)="cambiarAmodoEditarReclamo()" *ngIf="mostrarSubBotonReclamos">Editar valores</button>
-          <button class="subboton" (click)="cambiarAmodoEliminarReclamo()" *ngIf="mostrarSubBotonReclamos">Eliminar valores</button>
+          <button class="subboton" (click)="cambiarAmodoAdministrarReclamo()" *ngIf="mostrarSubBotonReclamos" [class.activo]="administrarReclamo">Administrar valores</button>
+          <button class="subboton" (click)="cambiarAmodoEditarReclamo()" *ngIf="mostrarSubBotonReclamos" [class.activo]="modoEdicionReclamo">Editar valores</button>
+          <button class="subboton" (click)="cambiarAmodoEliminarReclamo()" *ngIf="mostrarSubBotonReclamos" [class.activo]="modoEliminarReclamo">Eliminar valores</button>
         </div>
       </li>
       <li>
@@ -23,9 +23,9 @@
           <span class="flecha" [class.rotada]="mostrarSubBotonObras">▶</span>
         </button>
         <div class="subbotones">
-          <button class="subboton" *ngIf="mostrarSubBotonObras" (click)="MostrarCrearValorObra()">Administrar valores</button>
-          <button class="subboton" *ngIf="mostrarSubBotonObras" (click)="MostrarEditarTipoObras()">Editar valores</button>
-          <button class="subboton" *ngIf="mostrarSubBotonObras" (click)="mostrarEliminarValoresObra()">Eliminar valores</button>
+          <button class="subboton" *ngIf="mostrarSubBotonObras" (click)="MostrarCrearValorObra()" [class.activo]="administrarObra">Administrar valores</button>
+          <button class="subboton" *ngIf="mostrarSubBotonObras" (click)="MostrarEditarTipoObras()" [class.activo]="modoEdicionTipoObra">Editar valores</button>
+          <button class="subboton" *ngIf="mostrarSubBotonObras" (click)="mostrarEliminarValoresObra()" [class.activo]="modoEliminarTipoObra">Eliminar valores</button>
         </div>
       </li>
       <li>
@@ -35,8 +35,8 @@
           <span class="flecha" [class.rotada]="mostrarSubBotonUsuario">▶</span>
         </button>
         <div class="subbotones">
-          <button class="subboton" *ngIf="mostrarSubBotonUsuario" (click)="MostrarCargarUsuarios()">Crear usuario</button>
-          <button class="subboton" *ngIf="mostrarSubBotonUsuario" (click)="MostrarModoEdicion()">Editar usuario</button>
+          <button class="subboton" *ngIf="mostrarSubBotonUsuario" (click)="MostrarCargarUsuarios()" [class.activo]="mostrarCargaDeUsuario">Crear usuario</button>
+          <button class="subboton" *ngIf="mostrarSubBotonUsuario" (click)="MostrarModoEdicion()" [class.activo]="modoEdicion">Editar usuario</button>
         </div>
       </li>
     </ul>

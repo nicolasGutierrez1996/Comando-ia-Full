@@ -9,7 +9,7 @@
     .aplicacion {
       font-family: 'Arial', sans-serif;
       display: flex;
-      height: 120vh;
+      height: 100vh;
       width: 100%;
 
     }
@@ -358,6 +358,12 @@
 .autocomplete-list li.active {
   background-color: #3a3a3a;
   color: #fff;
+}
+
+.subboton.activo {
+
+  color: yellow; /* buen contraste */
+  font-weight: bold;
 }
 
 /*-----------*/

@@ -20,7 +20,18 @@ html, body {
     margin-top: 30px;
 
   }
-
+.mensaje-error {
+  color: #d32f2f;
+  font-weight: 600;
+  font-size: 15px;
+  margin-top: 12px;
+  text-align: center;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+  font-family: 'Roboto', sans-serif;
+}
 .grupo-entrada {
   position: relative;
 }

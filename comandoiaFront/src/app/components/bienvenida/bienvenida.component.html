@@ -22,7 +22,6 @@
         <input
           id="contrasena"
           name="contrasena"
-          type="password"
           [type]="mostrarContrasena ? 'text' : 'password'"
           [(ngModel)]="contrasena"
           required
@@ -36,7 +35,7 @@
 
       <button class="ingresar" type="submit">Ingresar</button>
 
-      <div *ngIf="error" style="color: red; margin-top: 10px;">
+      <div *ngIf="error" class="mensaje-error">
         {{ error }}
       </div>
     </form>
