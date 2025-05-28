@@ -41,7 +41,7 @@
       </div>
 
       <div id="formulario-crear-reclamo" *ngIf="mostrarCrearReclamo || mostrarEditarReclamo">
-        <form class="formulario">
+        <form class="formulario" autocomplete="off">
           <fieldset class="fieldset-form">
             <legend>Datos del Reclamo</legend>
 
@@ -122,7 +122,7 @@
         </form>
       </div>
       <div id="formulario-crear-obra" *ngIf="mostrarCrearObra || mostrarEditarObra" >
-        <form class="formulario">
+        <form class="formulario" autocomplete="off">
           <fieldset class="fieldset-form">
             <legend>Datos de la obra</legend>
             <div class="campos-en-linea">
@@ -223,14 +223,14 @@
       </div>
 
       <div id="formulario-adjuntar-excel" *ngIf="mostrarAdjuntarExcel ">
-      <form class="formulario" (submit)="onUpload()">
+      <form class="formulario" (submit)="onUpload()" autocomplete="off">
         <input type="file" (change)="onFileSelected($event)" accept=".xlsx, .xls" />
         <button type="submit" [disabled]="!selectedFile">Subir Excel de Reclamos</button>
       </form>
       </div>
 
       <div id="formulario-adjuntar-excel-obra" *ngIf=" mostrarAdjuntarExcelObra">
-        <form class="formulario" (submit)="onUploadObra()">
+        <form class="formulario" (submit)="onUploadObra()" autocomplete="off">
           <input type="file" (change)="onFileSelectedObra($event)" accept=".xlsx, .xls" />
           <button type="submit" [disabled]="!selectedFileObra">Subir Excel de Obras</button>
         </form>
