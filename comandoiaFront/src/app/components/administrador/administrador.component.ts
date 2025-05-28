@@ -67,17 +67,20 @@ estadoObraSeleccionadoId:number | null = null;
 tiposObra:TipoObra[]= [];
 tipoObraSeleccionadoId:number | null = null;
 nombreObra:string='';
-fechaInicioObra:string='';
-fechaFinEstimada:string='';
+fechaInicioObra:string | null='';
+fechaFinEstimada:string | null='';
 avanceFisico:number | null = null;
 montoPresupuestado:number | null = null;
 montoEjecutado:number | null = null;
-fechaFinReal:string='';
+fechaFinReal:string | null='';
 localidadObra:string='';
 barrioObra:string='';
 calleObra:string='';
 nroCalleObra:number | null = null;
 descripcionObra:string='';
+mensajeErrorObra:string='';
+obrasSugeridas: Obra[] = [];
+obraSeleccionada:Obra | null = null;;
 
 
   constructor(private snackBar: MatSnackBar
@@ -145,6 +148,9 @@ this.router.navigate(['./login']);
    this.barrio = '';
    this.calle = '';
    this.nroCalle = null;
+   this.mostrarCrearObra=false;
+   this.mostrarEditarObra=false;
+   this.mostrarAdjuntarExcelObra=false;
 
    // Importante: limpiar mensaje y objeto seleccionado
    this.mensajeErrorReclamo = '';
@@ -170,11 +176,17 @@ this.router.navigate(['./login']);
 
 
             this.mostrarDatosEdicion = false;
+               this.mostrarCrearObra=false;
+               this.mostrarEditarObra=false;
+               this.mostrarAdjuntarExcelObra=false;
   }
 MostrarAdjuntarExcel(){
 this.mostrarAdjuntarExcel=!this.mostrarAdjuntarExcel;
 this.mostrarEditarReclamo=false;
 this.mostrarCrearReclamo=false;
+   this.mostrarCrearObra=false;
+   this.mostrarEditarObra=false;
+   this.mostrarAdjuntarExcelObra=false;
 
 
 
@@ -459,7 +471,8 @@ this.reclamosService.actualizarReclamo(this.reclamoSeleccionado.id as number,nue
         this.nombreReclamo = '';
         this.descripcion = '';
         const hoy = new Date();
-         this.fechaReclamo = this.convertirFechaAInputDate(hoy);        this.tipoReclamoSeleccionadoId = null;
+         this.fechaReclamo = this.convertirFechaAInputDate(hoy);
+         this.tipoReclamoSeleccionadoId = null;
         this.estadoReclamoSeleccionadoId=null;
         this.tiempoResolucion=null;
         this.nivelReclamoSeleccionadoId=null;
@@ -490,8 +503,11 @@ this.mostrarCrearObra=!this.mostrarCrearObra;
    this.mostrarEditarObra = false;
    this.mostrarAdjuntarExcelObra = false;
    this.mostrarDatosEdicionObra = false;
-      this.mostrarCrearReclamo=false;
-      this.mostrarEditarReclamo=false;
+   this.mostrarCrearReclamo=false;
+   this.mostrarEditarReclamo=false;
+   this.mostrarAdjuntarExcel=false;
+   this.estadoObraSeleccionadoId=1;
+   this.tipoObraSeleccionadoId=1;
 
    // Cargar selects
    this.CargarDatosObra();
@@ -532,6 +548,7 @@ mostrarAdjuntarExcelObras(){
    this.mostrarCrearObra=false;
    this.mostrarCrearReclamo=false;
    this.mostrarEditarReclamo=false;
+   this.mostrarAdjuntarExcel=false;
 
 }
 
@@ -558,5 +575,270 @@ onUploadObra(): void {
   });
 }
 
+async crearObra(){
+
+this.mensajeErrorObra='';
+console.log("nombreObra",this.nombreObra);
+if(this.nombreObra===''){
+ this.mensajeErrorObra='Debe asignarle un nombre a la obra';
+ return;
+}
+
+const existe = await this.validarSiExisteNombreObra(this.nombreObra);
+
+    if (existe) {
+      this.mensajeErrorObra = 'El nombre de obra ya existe';
+          return;
+    }
+
+if(this.tipoObraSeleccionadoId===null){
+ this.mensajeErrorObra='Debe seleccionar un tipo de obra';
+ return;
+}
+
+if(this.estadoObraSeleccionadoId===null){
+ this.mensajeErrorObra='Debe seleccionar un estado de la obra';
+ return;
+}
+if(this.localidadObra===''){
+ this.mensajeErrorObra='Debe ingresar la localidad de la obra';
+ return;
+}
+
+console.log("Asdasdasd");
+const nuevaObra: Obra= {
+                      nombre: this.nombreObra,
+                      descripcion: this.descripcionObra,
+                      tipo_obra: { id: this.tipoObraSeleccionadoId},
+                      estado: { id: this.estadoObraSeleccionadoId },
+                      avance_fisico: this.avanceFisico,
+                      monto_presupuestado:this.montoPresupuestado,
+                      monto_ejecutado: this.montoEjecutado,
+                      fecha_inicio: this.fechaInicioObra ? this.fechaInicioObra + 'T00:00:00' : null,
+                      fecha_estimada_finalizacion: this.fechaFinEstimada ? this.fechaFinEstimada + 'T00:00:00' : null,
+                      fecha_real_finalizacion: this.fechaFinReal ? this.fechaFinReal + 'T00:00:00' : null,
+                      direccion: {
+                        localidad: this.localidadObra,
+                        barrio: this.barrioObra,
+                        calle: this.calleObra,
+                        numeroCalle: this.nroCalleObra,
+                      },
+                    };
+
+
+this.obrasService.crearObra(nuevaObra).subscribe({
+    next: res => {
+      console.log('Obra creada', res);
+      this.snackBar.open('La obra fue creada con éxito', '', {
+        duration: 3000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top'
+      }).afterDismissed().subscribe(() => {
+        this.nombreObra = '';
+        this.descripcionObra = '';
+        this.localidadObra = '';
+        this.barrioObra = '';
+        this.calleObra = '';
+        this.nroCalleObra = null;
+        this.avanceFisico =null;
+        this.montoPresupuestado=null;
+        this.montoEjecutado=null;
+        this.tipoObraSeleccionadoId=null;
+        this.estadoObraSeleccionadoId = null;
+        const hoy = new Date();
+        this.fechaInicioObra = this.convertirFechaAInputDate(hoy);
+        this.fechaFinEstimada = this.convertirFechaAInputDate(hoy);
+        this.fechaFinReal = this.convertirFechaAInputDate(hoy);
+      });
+    },
+    error: err => {
+      console.error('Error', err);
+    }
+  });
+
+
+
+}
+
+validarSiExisteNombreObra(nombre: string): Promise<boolean> {
+  return this.obrasService.existeNombreObra(nombre).toPromise()
+    .then(res => res ?? false)
+    .catch(err => {
+      console.error('Error validando nombre de obra:', err);
+      return false;
+    });
+
+}
+
+
+MostrarEditarObra(){
+
+this.mostrarEditarObra=!this.mostrarEditarObra;
+
+   this.mostrarCrearObra = false;
+   this.mostrarAdjuntarExcelObra = false;
+   this.mostrarDatosEdicionObra = false;
+   this.mostrarCrearReclamo=false;
+   this.mostrarEditarReclamo=false;
+   this.mostrarAdjuntarExcel=false;
+   this.estadoObraSeleccionadoId=1;
+   this.tipoObraSeleccionadoId=1;
+
+}
+
+
+seleccionarObra(obra:Obra){
+  this.nombreObra=obra.nombre;
+  this.mostrarDatosEdicionObra = true;
+
+   console.log("asdasdasd",obra.fecha_inicio);
+  setTimeout(() => {
+    this.obraSeleccionada = obra;
+   this.fechaInicioObra = obra.fecha_inicio ? this.convertirFechaAInputDate(obra.fecha_inicio) : '';
+   this.fechaFinEstimada = obra.fecha_estimada_finalizacion ? this.convertirFechaAInputDate(obra.fecha_estimada_finalizacion) : '';
+   this.fechaFinReal = obra.fecha_real_finalizacion ? this.convertirFechaAInputDate(obra.fecha_real_finalizacion) : '';
+    this.localidadObra = obra.direccion.localidad;
+    this.barrioObra = obra.direccion.barrio;
+    this.calleObra = obra.direccion.calle;
+    this.nroCalleObra = obra.direccion.numeroCalle;
+    this.montoPresupuestado=obra.monto_presupuestado;
+    this.montoEjecutado=obra.monto_ejecutado;
+    this.descripcionObra=obra.descripcion;
+    this.avanceFisico=obra.avance_fisico;
+    this.nombreObra=obra.nombre;
+
+    this.obrasSugeridas = [];
+    this.asignarTipoEstadoEditarObra();
+  }, 0);
+
+}
+asignarTipoEstadoEditarObra(){
+
+  if (!this.obraSeleccionada) return;
+
+   this.tipoObrasService.obtenerTiposObra().subscribe({
+      next: (tiposObra: TipoObra[]) => {
+        this.tiposObra = tiposObra;
+        const tipoObraEncontrado = this.tiposObra.find(r => r.id === this.obraSeleccionada!.tipo_obra.id);
+        this.tipoObraSeleccionadoId = tipoObraEncontrado?.id ?? null;
+      },
+      error: err => {
+        console.error('Error al cargar tipo obra:', err);
+      }
+    });
+
+     this.estadoObrasService.obtenerEstadosObra().subscribe({
+          next: (estadoObra: EstadoObra[]) => {
+            this.estadosObra = estadoObra;
+            const estadoObraEncontrado = this.estadosObra.find(r => r.id === this.obraSeleccionada!.estado.id);
+            this.estadoObraSeleccionadoId = estadoObraEncontrado?.id ?? null;
+          },
+          error: err => {
+            console.error('Error al cargar estado obra:', err);
+          }
+        });
+        }
+
+buscarObras(obra:string){
+
+    if ((this.mostrarEditarObra) && this.nombreObra.length>1) {
+      this.obrasService.buscarObrasPorNombre(this.nombreObra).subscribe(
+        obras => {
+          console.log(obras); // aquí es un array de Usuario
+       this.obrasSugeridas = Array.isArray(obras) ? obras : [];
+   console.log(this.obrasSugeridas.length);
+        },
+        err => {
+          console.error(err);
+          this.obrasSugeridas = [];
+        }
+      );
+     } else {
+       console.log("No encontre");
+       this.obrasSugeridas = [];
+     }
+}
+
+editarObra(){
+this.mensajeErrorObra='';
+
+if(this.nombreObra===''){
+ this.mensajeErrorObra='Debe asignarle un nombre a la obra';
+ return;
+}
+
+if(this.tipoObraSeleccionadoId===null){
+ this.mensajeErrorObra='Debe seleccionar un tipo de obra';
+ return;
+}
+
+if(this.estadoObraSeleccionadoId===null){
+ this.mensajeErrorObra='Debe seleccionar un estado de la obra';
+ return;
+}
+if(this.localidadObra===''){
+ this.mensajeErrorObra='Debe ingresar la localidad de la obra';
+ return;
+}
+if(this.obraSeleccionada==null){
+ this.mensajeErrorObra='Debe seleccionar la obra a editar';
+ return;
+}
+
+const nuevaObra: Obra= {
+                      nombre: this.nombreObra,
+                      descripcion: this.descripcionObra,
+                      tipo_obra: { id: this.tipoObraSeleccionadoId},
+                      estado: { id: this.estadoObraSeleccionadoId },
+                      avance_fisico: this.avanceFisico,
+                      monto_presupuestado:this.montoPresupuestado,
+                      monto_ejecutado: this.montoEjecutado,
+
+                      fecha_inicio: this.fechaInicioObra ? this.fechaInicioObra + 'T00:00:00' : null,
+                      fecha_estimada_finalizacion: this.fechaFinEstimada ? this.fechaFinEstimada + 'T00:00:00' : null,
+                      fecha_real_finalizacion: this.fechaFinReal ? this.fechaFinReal + 'T00:00:00' : null,
+                      direccion: {
+                        localidad: this.localidadObra,
+                        barrio: this.barrioObra,
+                        calle: this.calleObra,
+                        numeroCalle: this.nroCalleObra,
+                      },
+                    };
+
+
+this.obrasService.actualizarObra(this.obraSeleccionada?.id as number,nuevaObra).subscribe({
+    next: res => {
+      console.log('Obra Actualizada', res);
+      this.snackBar.open('La obra fue actualizada con éxito', '', {
+        duration: 3000,
+        horizontalPosition: 'end',
+        verticalPosition: 'top'
+      }).afterDismissed().subscribe(() => {
+        this.nombreObra = '';
+        this.descripcionObra = '';
+        this.localidadObra = '';
+        this.barrioObra = '';
+        this.calleObra = '';
+        this.nroCalleObra = null;
+        this.avanceFisico =null;
+        this.montoPresupuestado=null;
+        this.montoEjecutado=null;
+        this.tipoObraSeleccionadoId=null;
+        this.estadoObraSeleccionadoId = null;
+        const hoy = new Date();
+        this.fechaInicioObra = this.convertirFechaAInputDate(hoy);
+        this.fechaFinEstimada = this.convertirFechaAInputDate(hoy);
+        this.fechaFinReal = this.convertirFechaAInputDate(hoy);
+        this.mostrarDatosEdicionObra=false;
+      });
+    },
+    error: err => {
+      console.error('Error', err);
+    }
+  });
+
+
+
+}
 
 }

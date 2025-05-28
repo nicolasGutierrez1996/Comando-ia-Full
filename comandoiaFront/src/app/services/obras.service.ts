@@ -14,13 +14,13 @@ export interface Obra{
     estado: {
       id: number;
     };
-    avance_fisico: number;
-    monto_presupuestado: number;
-    monto_ejecutado: number;
+    avance_fisico: number| null;
+    monto_presupuestado: number| null;
+    monto_ejecutado: number| null;
 
-  fecha_inicio: string;
-fecha_estimada_finalizacion: string;
-fecha_real_finalizacion: string;
+  fecha_inicio: string | null;
+fecha_estimada_finalizacion: string | null;
+fecha_real_finalizacion: string | null;
 
   direccion: {
     localidad: string;

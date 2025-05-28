@@ -63,6 +63,27 @@ public class ObraPublicaController {
         Map<String, Object> response = new HashMap<>();
         Map<String, String> errores = new HashMap<>();
 
+        Direccion direccion = obraPublica.getDireccion();
+        if(direccion.getBarrio()!= null && direccion.getBarrio()==""){
+            direccion.setBarrio(null);
+        }
+        if(direccion.getCalle()!= null && direccion.getCalle()==""){
+            direccion.setCalle(null);
+        }
+        if(direccion.getNumeroCalle() != null && direccion.getNumeroCalle()==0){
+            direccion.setNumeroCalle(null);
+        }
+
+        Optional<Direccion> optionalDireccion=direccionService.buscarDireccionFlexible(direccion.getLocalidad(),direccion.getBarrio(),direccion.getCalle(),direccion.getNumeroCalle());
+
+        if(!optionalDireccion.isPresent()){
+            direccion = direccionService.guardarDireccion(direccion);
+            obraPublica.setDireccion(direccion);
+        }else{
+            direccion=optionalDireccion.get();
+            obraPublica.setDireccion(direccion);
+        }
+
         if (result.hasErrors()) {
             result.getFieldErrors().forEach(error ->
                     errores.put(error.getField(), error.getDefaultMessage())

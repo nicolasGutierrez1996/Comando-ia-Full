@@ -24,7 +24,7 @@
         </button>
         <div class="subbotones">
           <button class="subboton" *ngIf="mostrarSubBotonObras" (click)="MostrarCrearObra()">Crear Obra</button>
-          <button class="subboton" *ngIf="mostrarSubBotonObras">Editar Obra</button>
+          <button class="subboton" *ngIf="mostrarSubBotonObras" (click)="MostrarEditarObra()">Editar Obra</button>
           <button class="subboton" *ngIf="mostrarSubBotonObras" (click)="mostrarAdjuntarExcelObras()">Adjuntar Excel</button>
         </div>
       </li>
@@ -109,15 +109,16 @@
                 </label>
               </ng-container>
             </div>
+            <div *ngIf="mensajeErrorReclamo" class="mensaje-error">
+              {{ mensajeErrorReclamo }}
+            </div>
           </fieldset>
 
           <div class="botones-formulario">
             <button type="submit" *ngIf="mostrarCrearReclamo" (click)="crearReclamo()">Crear Reclamo</button>
             <button type="button" *ngIf="mostrarEditarReclamo" (click)="editarReclamo()">Editar Reclamo</button>
           </div>
-          <div *ngIf="mensajeErrorReclamo" class="mensaje-error">
-            {{ mensajeErrorReclamo }}
-          </div>
+
         </form>
       </div>
       <div id="formulario-crear-obra" *ngIf="mostrarCrearObra || mostrarEditarObra" >
@@ -125,77 +126,99 @@
           <fieldset class="fieldset-form">
             <legend>Datos de la obra</legend>
             <div class="campos-en-linea">
+              <div style="position: relative;">
               <label>Nombre:
-                <input type="text"  [(ngModel)]="nombreObra">
+                <input type="text" name="nombreObra" [(ngModel)]="nombreObra" (input)="buscarObras(nombreObra)">
               </label>
-
-              <label>Tipo de obra:
-                <select name="tipoObra" [(ngModel)]="tipoObraSeleccionadoId">
-                  <option *ngFor="let tipoObra of tiposObra" [value]="tipoObra.id">
-                    {{ tipoObra.descripcion }}
-                  </option>
-                </select>
-              </label>
-
-              <label>Fecha de inicio:
-                <input type="date" name="fechaInicio" [(ngModel)]="fechaInicioObra">
-              </label>
-
-              <label>Fecha fin estimada:
-                <input type="date" name="fechaEstimadaFinalizacion" [(ngModel)]="fechaFinEstimada">
-              </label>
-
-              <label>Avance físico:
-                <input type="number" name="avanceFisico" step="any" min="0" max="100" [(ngModel)]="avanceFisico">
-              </label>
-
-              <label>Monto presupuestado:
-                <input type="number" name="montoPresupuestado" step="any" min="0" max="100" [(ngModel)]="montoPresupuestado">
-              </label>
-
-              <label>Monto ejecutado:
-                <input type="number" name="montoEjecutado" step="any" min="0" max="100" [(ngModel)]="montoEjecutado">
-              </label>
+                <ul *ngIf="mostrarEditarObra && obrasSugeridas && obrasSugeridas.length > 0" class="autocomplete-list">
+                  <li *ngFor="let obra of obrasSugeridas" (mousedown)="seleccionarObra(obra)">
+                    {{ obra.nombre }}
+                  </li>
+                </ul>
 
 
+              </div>
+              <!-- Agrupamos el resto -->
+              <ng-container *ngIf="mostrarCrearObra || mostrarDatosEdicionObra">
+                <label>Tipo de obra:
+                  <select name="tipoObra" [(ngModel)]="tipoObraSeleccionadoId">
+                    <option *ngFor="let tipoObra of tiposObra" [value]="tipoObra.id">
+                      {{ tipoObra.descripcion }}
+                    </option>
+                  </select>
+                </label>
 
+                <label>Fecha de inicio:
+                  <input type="date" name="fechaInicio" [(ngModel)]="fechaInicioObra">
+                </label>
 
-              <label>Fecha real de finalizacion:
-                <input type="date" name="fechaRealFinalizacion" [(ngModel)]="fechaFinReal">
-              </label>
+                <label>Fecha fin estimada:
+                  <input type="date" name="fechaEstimadaFinalizacion" [(ngModel)]="fechaFinEstimada">
+                </label>
 
-              <label>Localidad:
-                <input type="text" name="localidad" [(ngModel)]="localidadObra" required>
-              </label>
-              <label>Barrio:
-                <input type="text" name="barrio" [(ngModel)]="barrioObra" >
-              </label>
-              <label>Calle:
-                <input type="text" name="calle" [(ngModel)]="calleObra" >
-              </label>
-              <label>Numero de calle:
-                <input type="number" name="nroCalle" [(ngModel)]="nroCalleObra">
-              </label>
+                <label>Avance físico:
+                  <input type="number" name="avanceFisico" step="any" min="0" max="100" [(ngModel)]="avanceFisico">
+                </label>
+
+                <label>Monto presupuestado:
+                  <input type="number" name="montoPresupuestado" step="any" min="0" max="100" [(ngModel)]="montoPresupuestado">
+                </label>
+
+                <label>Monto ejecutado:
+                  <input type="number" name="montoEjecutado" step="any" min="0" max="100" [(ngModel)]="montoEjecutado">
+                </label>
+
+                <label>Fecha real de finalizacion:
+                  <input type="date" name="fechaRealFinalizacion" [(ngModel)]="fechaFinReal">
+                </label>
+
+                <label>Localidad:
+                  <input type="text" name="localidad" [(ngModel)]="localidadObra" required>
+                </label>
+
+                <label>Barrio:
+                  <input type="text" name="barrio" [(ngModel)]="barrioObra">
+                </label>
+
+                <label>Calle:
+                  <input type="text" name="calle" [(ngModel)]="calleObra">
+                </label>
+
+                <label>Numero de calle:
+                  <input type="number" name="nroCalle" [(ngModel)]="nroCalleObra">
+                </label>
+
+                <label>Estado:
+                  <select name="estadoObra" [(ngModel)]="estadoObraSeleccionadoId">
+                    <option *ngFor="let estadoObra of estadosObra" [value]="estadoObra.id">
+                      {{ estadoObra.descripcion }}
+                    </option>
+                  </select>
+                </label>
+
+                <label class="descripcion-label">Descripción:
+                  <textarea name="descripcion" rows="4" [(ngModel)]="descripcionObra"></textarea>
+                </label>
+              </ng-container>
             </div>
 
-            <label>Estado:
-              <select name="estadoObra" [(ngModel)]="estadoObraSeleccionadoId">
-                <option *ngFor="let estadoObra of estadosObra" [value]="estadoObra.id">
-                  {{ estadoObra.descripcion }}
-                </option>
-              </select>
-            </label>
+            <div *ngIf="mensajeErrorObra" class="mensaje-error">
+              {{ mensajeErrorObra }}
+            </div>
 
-            <label class="descripcion-label">Descripción:
-              <textarea name="descripcion" rows="4" [(ngModel)]="descripcionObra"></textarea>
-            </label>
           </fieldset>
-
           <div class="botones-formulario">
-            <button type="submit" *ngIf="mostrarCrearObra">Crear Obra</button>
-            <button type="button" *ngIf="mostrarEditarObra">Editar Obra</button>
+            <button type="submit" *ngIf="mostrarCrearObra" (click)="crearObra()">Crear Obra</button>
+            <button type="button" *ngIf="mostrarEditarObra" (click)="editarObra()">Editar Obra</button>
+
+
           </div>
-          <div class="mensaje-error"></div>
+
+
+
+
+
+
         </form>
       </div>
 
