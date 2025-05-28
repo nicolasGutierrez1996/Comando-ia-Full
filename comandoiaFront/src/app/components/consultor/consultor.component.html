@@ -1,1 +1,167 @@
-<p>consultor works!</p>
+
+<div class="aplicacion">
+  <div class="menu-lateral">
+    <h2>IA Malvinas</h2>
+    <ul class="lista-opciones">
+      <li>
+        <button type="button" class="menu-titulo">
+          <span class="texto">Consultar Reclamos</span>
+          <span class="flecha">▶</span>
+        </button>
+        <div class="subbotones">
+          <button class="subboton">Visualizar Graficos</button>
+          <button class="subboton">Visualizar Mapas</button>
+        </div>
+      </li>
+      <li>
+        <button type="button" class="menu-titulo">
+          <span class="texto">Consultar Obras</span>
+          <span class="flecha">▶</span>
+        </button>
+        <div class="subbotones">
+          <button class="subboton">Visualizar Graficos</button>
+          <button class="subboton">Visualizar Mapas</button>
+        </div>
+      </li>
+    </ul>
+    <button class="btn-ia-malvinas">
+      <span>💬 HABLAR CON IA MALVINAS</span>
+    </button>
+    <button class="boton-volver">Volver hacia atrás</button>
+  </div>
+
+  <div class="contenido-principal">
+    <div class="seccion-usuarios">
+      <div class="titulo">
+        <h2>CONSULTOR</h2>
+      </div>
+
+      <div id="formulario-crear-reclamo">
+        <form class="formulario" autocomplete="off">
+          <fieldset class="fieldset-form">
+            <legend>Datos del Reclamo</legend>
+            <div class="campos-en-linea">
+              <label>Nombre Reclamo:
+                <input type="text" name="nombreReclamo">
+              </label>
+              <label>Tipo de reclamo:
+                <select name="tipoReclamo">
+                  <option value="1">Tipo 1</option>
+                  <option value="2">Tipo 2</option>
+                </select>
+              </label>
+              <label>Fecha del reclamo:
+                <input type="date" name="fecha-reclamo">
+              </label>
+              <label>Estado:
+                <select name="estado-obra">
+                  <option value="1">Estado 1</option>
+                  <option value="2">Estado 2</option>
+                </select>
+              </label>
+              <label>Localidad:
+                <input type="text" name="localidad" required>
+              </label>
+              <label>Barrio:
+                <input type="text" name="barrio" required>
+              </label>
+              <label>Calle:
+                <input type="text" name="calle" required>
+              </label>
+              <label>Numero de calle:
+                <input type="number" name="nroCalle" min="0" required>
+              </label>
+              <label>Tiempo de resolución (en días):
+                <input type="number" name="tiempoResolucion" min="1" required>
+              </label>
+              <label>Nivel de Satisfacción:
+                <select name="satisfaccion" required>
+                  <option value="1">Alto</option>
+                  <option value="2">Medio</option>
+                  <option value="3">Bajo</option>
+                </select>
+              </label>
+              <label class="descripcion-label">Descripción:
+                <textarea name="descripcion" rows="4"></textarea>
+              </label>
+            </div>
+          </fieldset>
+          <div class="botones-formulario">
+            <button type="submit">Crear Reclamo</button>
+            <button type="button">Editar Reclamo</button>
+          </div>
+          <div class="mensaje-error">
+
+          </div>
+        </form>
+      </div>
+
+      <div id="formulario-crear-obra">
+        <form class="formulario" autocomplete="off">
+          <fieldset class="fieldset-form">
+            <legend>Datos de la obra</legend>
+            <div class="campos-en-linea">
+              <label>Nombre:
+                <input type="text" name="nombreObra">
+              </label>
+              <label>Tipo de obra:
+                <select name="tipoObra">
+                  <option value="1">Tipo A</option>
+                  <option value="2">Tipo B</option>
+                </select>
+              </label>
+              <label>Fecha de inicio:
+                <input type="date" name="fechaInicio">
+              </label>
+              <label>Fecha fin estimada:
+                <input type="date" name="fechaEstimadaFinalizacion">
+              </label>
+              <label>Avance físico:
+                <input type="number" name="avanceFisico" step="any" min="0" max="100">
+              </label>
+              <label>Monto presupuestado:
+                <input type="number" name="montoPresupuestado" step="any" min="0">
+              </label>
+              <label>Monto ejecutado:
+                <input type="number" name="montoEjecutado" step="any" min="0">
+              </label>
+              <label>Fecha real de finalización:
+                <input type="date" name="fechaRealFinalizacion">
+              </label>
+              <label>Localidad:
+                <input type="text" name="localidadObra" required>
+              </label>
+              <label>Barrio:
+                <input type="text" name="barrioObra">
+              </label>
+              <label>Calle:
+                <input type="text" name="calleObra">
+              </label>
+              <label>Numero de calle:
+                <input type="number" name="nroCalleObra">
+              </label>
+              <label>Estado:
+                <select name="estadoObra">
+                  <option value="1">En progreso</option>
+                  <option value="2">Finalizada</option>
+                </select>
+              </label>
+              <label class="descripcion-label">Descripción:
+                <textarea name="descripcionObra" rows="4"></textarea>
+              </label>
+            </div>
+          </fieldset>
+          <div class="botones-formulario">
+            <button type="submit">Crear Obra</button>
+            <button type="button">Editar Obra</button>
+          </div>
+          <div class="mensaje-error">
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+

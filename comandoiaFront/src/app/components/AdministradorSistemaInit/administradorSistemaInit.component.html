@@ -41,8 +41,7 @@
       </li>
     </ul>
 
-    <button class="boton-volver" (click)="volverAlLogin()">Volver hacia atrás</button>
-
+      <button class="boton-volver" (click)="volverAlLogin()">Volver hacia atrás</button>
   </div>
 
   <!-- CONTENIDO PRINCIPAL USUARIOS-->
@@ -59,7 +58,7 @@
     </div>
 
     <div id="formulario-crear-usuario" *ngIf="mostrarCargaDeUsuario ||  modoEdicion">
-      <form class="formulario">
+      <form class="formulario" autocomplete="off">
         <fieldset class="fieldset-form">
           <legend>Administrar Usuario</legend>
         <div style="position: relative;">
@@ -114,7 +113,7 @@
 
     </div>
       <div id="formulario-administrar-obra" *ngIf="administrarObra ||  modoEdicionTipoObra || modoEliminarTipoObra">
-      <form class="formulario">
+      <form class="formulario" autocomplete="off">
         <fieldset class="fieldset-form">
           <legend>Administrar Obra</legend>
         <div style="position: relative;">
@@ -154,7 +153,7 @@
     </div>
 
     <div id="formulario-administrar-reclamo" *ngIf="administrarReclamo ||  modoEdicionReclamo || modoEliminarReclamo">
-      <form class="formulario">
+      <form class="formulario" autocomplete="off">
         <fieldset class="fieldset-form">
           <legend>Administrar Reclamos</legend>
     <div style="position: relative;">
