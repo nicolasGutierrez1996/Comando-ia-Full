@@ -17,7 +17,18 @@ html, body {
     margin-top: 30px;
 
   }
-
+.mensaje-error {
+  color: #d32f2f;
+  font-weight: 600;
+  font-size: 15px;
+  margin-top: 12px;
+  text-align: center;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+  font-family: 'Roboto', sans-serif;
+}
 
   .subtitulo {
     color: #34b7f1;
@@ -27,7 +38,6 @@ html, body {
     margin: 0;
   }
 
->>>>>>> 86235c0634be0b5fd69c2ccd569b710df832691d
 .grupo-entrada {
   position: relative;
 }
