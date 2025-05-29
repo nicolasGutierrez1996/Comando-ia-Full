@@ -103,7 +103,10 @@ onUpload(): void {
   this.reclamosService.importarDesdeExcel(formData).subscribe({
     next: (res) => {
       console.log('Archivo subido correctamente:', res);
-      this.snackBar.open('Archivo subido correctamente', 'Cerrar', { duration: 3000 });
+      this.snackBar.open('El archivo fue subido con éxito', '', {
+              duration: 3000,
+              horizontalPosition: 'end',
+              verticalPosition: 'top'});
     },
     error: (err) => {
       console.error('Error al subir el archivo:', err);

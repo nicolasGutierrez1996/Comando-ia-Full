@@ -27,6 +27,32 @@ export interface Reclamo{
   };
 }
 
+export interface ReclamoConDescripciones{
+  id?:number;
+  nombre: string;
+  descripcion: string;
+  tipo_reclamo: {
+    id: number;
+    descripcion: string;
+  };
+  fecha_reclamo: string;
+  estado: {
+    id: number;
+    descripcion: string;
+  };
+  tiempo_resolucion: number;
+  nivel_satisfaccion: {
+    id: number;
+    descripcion: string;
+  };
+  direccion: {
+    localidad: string;
+    barrio: string;
+    calle: string;
+    numeroCalle: number | null;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -35,6 +61,10 @@ export class ReclamosService {
 
   constructor(private http: HttpClient) {}
 
+
+  obtenerReclamos(): Observable<ReclamoConDescripciones[]> {
+    return this.http.get<ReclamoConDescripciones[]>(`${this.baseUrl}`);
+  }
 
 importarDesdeExcel(formData: FormData): Observable<any> {
   return this.http.post<any>(`${this.baseUrl}/excel/upload`, formData);

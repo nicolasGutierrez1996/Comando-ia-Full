@@ -660,7 +660,10 @@
   }
 
 
-
+.grafico-container {
+  width: 80%;
+  margin: auto;
+}
 
 
 
