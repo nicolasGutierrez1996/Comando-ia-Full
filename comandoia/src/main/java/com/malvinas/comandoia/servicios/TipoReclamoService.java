@@ -45,6 +45,9 @@ public class TipoReclamoService {
         return listaTipoReclamo;
     }
 
+    public List<String> obtenerDescripcionesDeTipos() {
+        return tipoReclamoRepository.obtenerDescripcionesTipos();
+    }
 
 
 }

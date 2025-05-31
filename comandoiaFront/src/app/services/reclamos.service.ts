@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { HttpParams } from '@angular/common/http';
 
 
 export interface Reclamo{
@@ -86,6 +87,10 @@ return this.http.post<Reclamo>(`${this.baseUrl}`,reclamo);
              actualizarReclamo(id: number, reclamo: Reclamo): Observable<any> {
                return this.http.put(`${this.baseUrl}/${id}`, reclamo);
              }
+
+obtenerReclamosFiltrados(params: HttpParams) {
+  return this.http.get<ReclamoConDescripciones[]>(`${this.baseUrl}/filtrarReclamos`, { params });
+}
 
 }
 

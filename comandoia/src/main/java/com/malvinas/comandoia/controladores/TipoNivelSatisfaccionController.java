@@ -119,4 +119,10 @@ public class TipoNivelSatisfaccionController {
         List<TipoNivelSatisfaccion> listaNivelReclamo = tipoNivelSatisfaccionService.buscarTipoNivelPorDescripcion(descripcion);
         return ResponseEntity.ok(listaNivelReclamo);
     }
+
+    @GetMapping("/buscarNivelReclamoDescripciones")
+    public ResponseEntity<List<String>> buscarNivelReclamoDescripciones() {
+        List<String> listaDescripciones = tipoNivelSatisfaccionService.obtenerDescripcionesDeEsNiveles();
+        return ResponseEntity.ok(listaDescripciones);
+    }
 }

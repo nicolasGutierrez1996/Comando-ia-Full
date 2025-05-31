@@ -119,4 +119,12 @@ public class TipoReclamoController {
         List<TipoReclamo> listaTipoReclamo = tipoReclamoService.buscarTipoReclamoPorDescripcion(descripcion);
         return ResponseEntity.ok(listaTipoReclamo);
     }
+
+    @GetMapping("/buscarTipoReclamoDescripciones")
+    public ResponseEntity<List<String>> buscarTipoReclamoDescripciones() {
+        List<String> listaDescripciones = tipoReclamoService.obtenerDescripcionesDeTipos();
+        return ResponseEntity.ok(listaDescripciones);
+    }
+
+
 }

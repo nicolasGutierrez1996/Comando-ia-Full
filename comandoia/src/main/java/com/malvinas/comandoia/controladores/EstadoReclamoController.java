@@ -120,4 +120,10 @@ public class EstadoReclamoController {
         return ResponseEntity.ok(listaEstadoReclamo);
     }
 
+    @GetMapping("/buscarEstadoReclamoDescripciones")
+    public ResponseEntity<List<String>> buscarEstadoReclamoDescripciones() {
+        List<String> listaDescripciones = estadoReclamoService.obtenerDescripcionesDeEstados();
+        return ResponseEntity.ok(listaDescripciones);
+    }
+
 }

@@ -5,25 +5,25 @@
 
     }
 
-    .aplicacion {
-      font-family: 'Arial', sans-serif;
-      display: flex;
-      height: 100vh;
-      width: 100%;
+.aplicacion {
+  display: flex;
+  height: 100vh;
+  align-items: stretch;
+  width: 100%;
+}
 
-    }
 
-  .menu-lateral {
-   display: flex;
-   flex-direction: column;
-   width: 250px;
-   height: 100vh;
-   background: linear-gradient(180deg, #003366, #0055cc, #3399ff);
-   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-   padding-top: 20px;
-  /* position: relative;*/
-  /* padding-bottom: 100px;*/
-  }
+.menu-lateral {
+  width: 250px;
+  background: linear-gradient(180deg, #003366, #0055cc, #3399ff);
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  padding-top: 20px;
+  /* QUITAR height: 100vh; */
+  /* Eliminar para que el alto sea flexible */
+  height: auto; /* o simplemente no definirlo */
+  display: flex;
+  flex-direction: column;
+}
 
 
     .menu-lateral h2 {
@@ -195,7 +195,6 @@
    background-size: cover;
    background-position: center;
    background-repeat: no-repeat;
-   background-image: url('/assets/Fondo4.jpeg');
   }
 
 
@@ -660,12 +659,17 @@
   }
 
 
+
 .grafico-container {
-  width: 80%;
+  max-width: 600px;
   margin: auto;
+  padding: 20px;
 }
 
-
+.grafico {
+  max-width: 100% !important;
+  height: auto !important;
+}
 
 
 

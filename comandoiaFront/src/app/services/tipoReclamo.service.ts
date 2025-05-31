@@ -39,4 +39,8 @@ crearTipoReclamo(tipoReclamo: TipoReclamo): Observable<any> {
        return this.http.delete(`${this.baseUrl}/${id}`);
 
    }
+
+       obtenerDescripciones():Observable<string[]>{
+        return this.http.get<string[]>(`${this.baseUrl}/buscarTipoReclamoDescripciones`);
+       }
 }

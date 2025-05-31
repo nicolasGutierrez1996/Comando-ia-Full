@@ -45,4 +45,12 @@ public class DireccionService {
         // Si hay al menos una coincidencia, devolver la primera
         return coincidencias.isEmpty() ? Optional.empty() : Optional.of(coincidencias.get(0));
     }
+
+    public List<String> obtenerLocalidades() {
+        return direccionRepository.obtenerLocalidades();
+    }
+
+    public List<String> obtenerBarrios() {
+        return direccionRepository.obtenerBarrios();
+    }
 }

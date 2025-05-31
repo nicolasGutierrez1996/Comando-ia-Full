@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -110,6 +111,19 @@ public class DireccionController {
         response.put("mensaje", String.format("Direccion con ID %d eliminado correctamente", id));
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/obtenerLocalidades")
+    public ResponseEntity<List<String>> obtenerLocalidades() {
+        List<String> listaDescripciones = direccionService.obtenerLocalidades();
+        return ResponseEntity.ok(listaDescripciones);
+    }
+
+    @GetMapping("/obtenerBarrios")
+    public ResponseEntity<List<String>> obtenerBarrios() {
+        List<String> listaDescripciones = direccionService.obtenerBarrios();
+        return ResponseEntity.ok(listaDescripciones);
+    }
+
 
 
 }

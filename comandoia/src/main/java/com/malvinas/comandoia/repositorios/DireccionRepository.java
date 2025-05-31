@@ -21,4 +21,13 @@ public interface DireccionRepository extends CrudRepository<Direccion, Integer> 
                                             @Param("calle") String calle,
                                             @Param("numeroCalle") Integer numeroCalle);
 
+
+    @Query("SELECT DISTINCT  d.localidad FROM Direccion d")
+    List<String> obtenerLocalidades();
+
+    @Query("SELECT DISTINCT  d.barrio FROM Direccion d")
+    List<String> obtenerBarrios();
+
+
+
 }

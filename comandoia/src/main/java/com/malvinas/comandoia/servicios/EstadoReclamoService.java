@@ -46,4 +46,9 @@ public class EstadoReclamoService {
         iterableEstadoReclamo.forEach(listaEstadoReclamo::add);
         return listaEstadoReclamo;
     }
+
+    public List<String> obtenerDescripcionesDeEstados() {
+        return estadoReclamoRepository.obtenerDescripcionesEstados();
+    }
+
 }

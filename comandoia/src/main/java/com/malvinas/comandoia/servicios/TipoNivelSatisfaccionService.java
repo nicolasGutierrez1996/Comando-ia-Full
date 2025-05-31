@@ -45,4 +45,8 @@ public class TipoNivelSatisfaccionService {
         return listaNivelReclamo;
     }
 
+    public List<String> obtenerDescripcionesDeEsNiveles() {
+        return tipoNivelSatisfaccionRepository.obtenerDescripcionesNiveles();
+    }
+
 }

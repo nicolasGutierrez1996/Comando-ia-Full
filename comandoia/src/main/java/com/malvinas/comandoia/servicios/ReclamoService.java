@@ -6,9 +6,12 @@ import com.malvinas.comandoia.repositorios.ReclamoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class ReclamoService {
@@ -43,5 +46,31 @@ public class ReclamoService {
         return listaReclamo;
     }
 
+    public List<Reclamo> buscarConFiltros(
+            LocalDateTime fechaDesde,
+            LocalDateTime fechaHasta,
+            String estado,
+            String localidad,
+            String barrio,
+            String tipoReclamo,
+            String nivelSatisfaccion,
+            Integer tiempoResolucionMayor,
+            Integer tiempoResolucionMenor
+    ) {
+        Iterable<Reclamo> iterable = reclamoRepository.buscarConFiltros(
+                fechaDesde,
+                fechaHasta,
+                estado,
+                localidad,
+                barrio,
+                tipoReclamo,
+                nivelSatisfaccion,
+                tiempoResolucionMayor,
+                tiempoResolucionMenor
+        );
+        // Convertir Iterable a List
+        return StreamSupport.stream(iterable.spliterator(), false)
+                .collect(Collectors.toList());
+    }
 }
 

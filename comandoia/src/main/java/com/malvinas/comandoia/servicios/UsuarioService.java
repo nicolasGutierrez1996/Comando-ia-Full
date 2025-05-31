@@ -68,5 +68,7 @@ public class UsuarioService {
         iterableUsuarios.forEach(listaUsuarios::add);
         return listaUsuarios;
     }
+
+
 }
 

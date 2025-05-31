@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RestController
@@ -325,6 +326,34 @@ public class ReclamoController {
     public ResponseEntity<List<Reclamo>> buscarReclamoPorNombre(@PathVariable String nombre) {
         List<Reclamo> listaReclamo = reclamoService.buscarReclamoPorNombre(nombre);
         return ResponseEntity.ok(listaReclamo);
+    }
+
+
+    @GetMapping("/filtrarReclamos")
+    public List<Reclamo> buscarReclamos(
+           @RequestParam(required = false) String fechaDesde,
+            @RequestParam(required = false) String fechaHasta,
+            @RequestParam(required = false) String estado,
+            @RequestParam(required = false) String localidad,
+            @RequestParam(required = false) String barrio,
+            @RequestParam(required = false) String tipoReclamo,
+            @RequestParam(required = false) String nivelSatisfaccion,
+            @RequestParam(required = false) Integer tiempoResolucionMayor,
+            @RequestParam(required = false) Integer tiempoResolucionMenor
+    ) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
+        LocalDateTime fechaInicio = fechaDesde != null ? LocalDateTime.parse(fechaDesde, formatter) : null;
+        LocalDateTime fechaFin = fechaHasta != null ? LocalDateTime.parse(fechaHasta, formatter) : null;
+
+        System.out.println("adasdasdasdas:"+fechaInicio);
+        System.out.println("adasdasdasdas:"+fechaFin);
+
+        return reclamoService.buscarConFiltros(
+                fechaInicio,fechaFin ,estado, localidad, barrio,
+                tipoReclamo, nivelSatisfaccion, tiempoResolucionMayor, tiempoResolucionMenor
+        );
     }
 
 
