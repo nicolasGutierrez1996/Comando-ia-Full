@@ -182,5 +182,8 @@
   width: 100% !important;
   height: auto !important;
   max-height: 320px !important;
+    border: none !important;
+    opacity: 1 !important;
+    filter: none !important;
 }
 

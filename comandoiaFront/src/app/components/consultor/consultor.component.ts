@@ -71,14 +71,7 @@ chartData: ChartData<any> = {
   ]
 };
 
-chartOptions: ChartOptions = {
-  responsive: true,
-  plugins: {
-    legend: {
-      display: true
-    }
-  }
-};
+
 
 constructor(
   private router: Router,
@@ -99,6 +92,101 @@ constructor(
       this.cargarGraficoAgrupado();
     });
   }
+
+
+get chartOptions(): ChartOptions {
+  if (this.chartType === 'radar') {
+    return {
+      responsive: true,
+      plugins: {
+        legend: { display: true },
+      },
+      scales: {
+        r: {
+          angleLines: { display: true, color: '#ccc' },
+          grid: { display: true, color: '#ccc' },
+          pointLabels: { color: '#666' },
+          ticks: {
+            display: false,  // Oculta los numeritos
+            color: '#666',
+            backdropColor: 'transparent',
+          },
+          beginAtZero: true,
+        }
+      },
+      elements: {
+        line: { borderWidth: 2 }
+      },
+    };
+  } else if (this.chartType === 'polarArea') {
+    return {
+      responsive: true,
+      plugins: {
+        legend: { display: true },
+      },
+      scales: {
+        r: {
+          ticks: {
+            display: false,  // Oculta numeritos en polarArea
+          },
+          grid: { display: true, color: '#ccc' },
+        }
+      },
+    };
+  } else if (this.chartType === 'line') {
+    return {
+      responsive: true,
+      plugins: {
+        legend: { display: true },
+      },
+      scales: {
+        x: {
+          display: true,
+          grid: { display: true, color: '#ccc' },
+          ticks: { color: '#666', display: true },
+        },
+        y: {
+          display: true,
+          beginAtZero: true,
+          grid: { display: true, color: '#ccc' },
+          ticks: { color: '#666', display: true },
+        },
+      },
+      elements: {
+        line: { borderWidth: 2 }
+      },
+    };
+  } else if (this.chartType === 'bar') {
+    return {
+      responsive: true,
+      plugins: {
+        legend: { display: true },
+      },
+      scales: {
+        x: {
+          display: true,
+          grid: { display: true, color: '#ccc' },
+          ticks: { color: '#666', display: true },
+        },
+        y: {
+          display: true,
+          beginAtZero: true,
+          grid: { display: true, color: '#ccc' },
+          ticks: { color: '#666', display: true },
+        },
+      },
+      // No 'elements.line' para barras
+    };
+  } else {
+    return {
+      responsive: true,
+      plugins: {
+        legend: { display: true },
+      },
+      // Opcional: configura otras cosas para otros tipos
+    };
+  }
+}
 
 
   mostrarInicioBoton(){
@@ -302,6 +390,7 @@ mostrarMapaReclamosBoton() {
   this.mostrarMapaReclamos = !this.mostrarMapaReclamos;
   this.mostrarGraficosReclamos=false;
   this.mostrarInicio=false;
+  this.tipoGrafico=false;
 
   if (this.mostrarMapaReclamos) {
     setTimeout(() => {
