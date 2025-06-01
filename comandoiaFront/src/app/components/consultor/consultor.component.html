@@ -12,8 +12,8 @@
           <span class="flecha">▶</span>
         </button>
         <div class="subbotones">
-          <button class="subboton" (click)="mostrarGraficosReclamosBoton()">Visualizar Graficos</button>
-          <button class="subboton">Visualizar Mapas</button>
+          <button class="subboton" (click)="mostrarGraficosReclamosBoton()">Visualizar Gráficos</button>
+          <button class="subboton" (click)="mostrarMapaReclamosBoton()">Visualizar Mapas</button>
         </div>
       </li>
       <li>
@@ -22,86 +22,114 @@
           <span class="flecha">▶</span>
         </button>
         <div class="subbotones">
-          <button class="subboton">Visualizar Graficos</button>
+          <button class="subboton">Visualizar Gráficos</button>
           <button class="subboton">Visualizar Mapas</button>
         </div>
       </li>
     </ul>
+
     <button class="btn-ia-malvinas">
       <span>💬 HABLAR CON IA MALVINAS</span>
     </button>
     <button class="boton-volver">Volver hacia atrás</button>
   </div>
 
-  <!-- CONTENIDO PRINCIPAL A LA DERECHA -->
   <div class="contenido-principal">
     <div class="titulo">
-      <h2>GRAFICOS DE RECLAMOS</h2>
+      <h2>GRÁFICOS DE RECLAMOS</h2>
     </div>
 
-    <div class="Inicio" *ngIf="mostrarInicio">
+    <!-- SECCIÓN INICIO -->
+    <div *ngIf="mostrarInicio" class="inicio">
       <h1>INICIO</h1>
     </div>
 
-    <div class="graficosReclamo" *ngIf="mostrarGraficosReclamos">
+    <!-- SECCIÓN GRÁFICOS -->
+    <div *ngIf="mostrarGraficosReclamos" class="graficos-reclamos">
       <div class="filtros-container">
-        <label>Fecha desde:</label>
-        <input type="date" [(ngModel)]="fechaDesdeReclamo">
+        <div class="filtro-item">
+          <label>Fecha desde:</label>
+          <input type="date" [(ngModel)]="fechaDesdeReclamo" />
+        </div>
 
-        <label>Fecha hasta:</label>
-        <input type="date" [(ngModel)]="fechaHastaReclamo">
+        <div class="filtro-item">
+          <label>Fecha hasta:</label>
+          <input type="date" [(ngModel)]="fechaHastaReclamo" />
+        </div>
 
-        <label>Estado:</label>
-        <select [(ngModel)]="estadoReclamoSeleccionado">
-          <option value=""></option>
-          <option *ngFor="let estado of estadosReclamoDisponibles" [value]="estado">{{ estado }}</option>
-        </select>
+        <div class="filtro-item">
+          <label>Estado:</label>
+          <select [(ngModel)]="estadoReclamoSeleccionado">
+            <option value=""></option>
+            <option *ngFor="let estado of estadosReclamoDisponibles" [value]="estado">{{ estado }}</option>
+          </select>
+        </div>
 
-        <label>Localidad:</label>
-        <select [(ngModel)]="localidadSeleccionada">
-          <option value=""></option>
-          <option *ngFor="let loc of localidadesDisponibles" [value]="loc">{{ loc }}</option>
-        </select>
+        <div class="filtro-item">
+          <label>Localidad:</label>
+          <select [(ngModel)]="localidadSeleccionada">
+            <option value=""></option>
+            <option *ngFor="let loc of localidadesDisponibles" [value]="loc">{{ loc }}</option>
+          </select>
+        </div>
 
-        <label>Barrio:</label>
-        <select [(ngModel)]="barrioSeleccionado">
-          <option value=""></option>
-          <option *ngFor="let barrio of barriosDisponibles" [value]="barrio">{{ barrio }}</option>
-        </select>
+        <div class="filtro-item">
+          <label>Barrio:</label>
+          <select [(ngModel)]="barrioSeleccionado">
+            <option value=""></option>
+            <option *ngFor="let barrio of barriosDisponibles" [value]="barrio">{{ barrio }}</option>
+          </select>
+        </div>
 
-        <label>Tipo de reclamo:</label>
-        <select [(ngModel)]="tipoReclamoSeleccionado">
-          <option value=""></option>
-          <option *ngFor="let tipo of tiposReclamoDisponibles" [value]="tipo">{{ tipo }}</option>
-        </select>
+        <div class="filtro-item">
+          <label>Tipo de reclamo:</label>
+          <select [(ngModel)]="tipoReclamoSeleccionado">
+            <option value=""></option>
+            <option *ngFor="let tipo of tiposReclamoDisponibles" [value]="tipo">{{ tipo }}</option>
+          </select>
+        </div>
 
-        <label>Nivel de Satisfacción:</label>
-        <select [(ngModel)]="nivelReclamoSeleccionado">
-          <option value=""></option>
-          <option *ngFor="let nivel of nivelesReclamoDisponibles" [value]="nivel">{{ nivel }}</option>
-        </select>
+        <div class="filtro-item">
+          <label>Nivel de Satisfacción:</label>
+          <select [(ngModel)]="nivelReclamoSeleccionado">
+            <option value=""></option>
+            <option *ngFor="let nivel of nivelesReclamoDisponibles" [value]="nivel">{{ nivel }}</option>
+          </select>
+        </div>
 
-        <label>Tiempo de resolución mayor a (días):</label>
-        <input type="number" min="0" [(ngModel)]="tiempResoMayor">
+        <div class="filtro-item">
+          <label>Tiempo de resolución mayor a (días):</label>
+          <input type="number" min="0" [(ngModel)]="tiempResoMayor" />
+        </div>
 
-        <label>Tiempo de resolución menor a (días):</label>
-        <input type="number" min="0" [(ngModel)]="tiempResoMenor">
+        <div class="filtro-item">
+          <label>Tiempo de resolución menor a (días):</label>
+          <input type="number" min="0" [(ngModel)]="tiempResoMenor" />
+        </div>
 
-        <label>Agrupar por: </label>
-        <select [(ngModel)]="grupoPor" (change)="actualizarAgrupamiento()">
-          <option value="estado">Estado</option>
-          <option value="localidad">Localidad</option>
-          <option value="barrio">Barrio</option>
-          <option value="tipo">Tipo de Reclamo</option>
-          <option value="satisfaccion">Nivel de Satisfacción</option>
+        <div class="filtro-item">
+          <label>Agrupar por:</label>
+          <select [(ngModel)]="grupoPor" (change)="actualizarAgrupamiento()">
+            <option value="estado">Estado</option>
+            <option value="localidad">Localidad</option>
+            <option value="barrio">Barrio</option>
+            <option value="tipo">Tipo de Reclamo</option>
+            <option value="satisfaccion">Nivel de Satisfacción</option>
+            <option value="mes">Mes</option>
+            <option value="rangoResolucion">Tiempo de Resolución</option>
+          </select>
+        </div>
 
-          <option value="mes">Mes</option>
-          <option value="rangoResolucion">Tiempo de Resolución</option>
-        </select>
+        <div class="filtro-item">
+          <button (click)="aplicarFiltros()">Aplicar filtros</button>
+        </div>
 
-        <button (click)="aplicarFiltros()">Aplicar filtros</button>
+
+
       </div>
+    </div>
 
+    <div class="tipo-grafico" *ngIf="tipoGrafico">
       <label>Tipo de gráfico:</label>
       <select [(ngModel)]="tipoGraficoSeleccionado" (change)="actualizarGrafico()">
         <option value="bar">Barras</option>
@@ -111,16 +139,20 @@
         <option value="radar">Radar</option>
         <option value="polarArea">Área polar</option>
       </select>
-
-
-      <div class="grafico-container">
-        <h2>Reclamos por Estado</h2>
-        <canvas baseChart
-                [data]="chartData"
-                [options]="chartOptions"
-                [type]="chartType">
-        </canvas>
-      </div>
     </div>
-  </div>
+
+    <div class="grafico-container" [ngClass]="getChartSizeClass()" *ngIf="mostrarGraficosReclamos">
+      <canvas baseChart
+              [data]="chartData"
+              [options]="chartOptions"
+              [type]="chartType">
+      </canvas>
+    </div>
+
+    <!-- SECCIÓN MAPA -->
+    <div *ngIf="mostrarMapaReclamos" class="mapa-reclamos">
+      <h2>Mapa de Reclamos</h2>
+      <div class="mapa" id="map"></div>
+    </div>
+</div>
 </div>

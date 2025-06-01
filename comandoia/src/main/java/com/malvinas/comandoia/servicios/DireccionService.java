@@ -53,4 +53,8 @@ public class DireccionService {
     public List<String> obtenerBarrios() {
         return direccionRepository.obtenerBarrios();
     }
+
+    public List<Direccion> obtenerDireccionesSinCoordenadas(){
+        return direccionRepository.findDireccionesSinCoordenadas();
+    }
 }

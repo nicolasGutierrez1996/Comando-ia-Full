@@ -26,5 +26,11 @@ public class Direccion {
     private String calle;
 
     @Column(name = "numero_calle")
-    private Integer numeroCalle;  // permite null si no se sabe el número
+    private Integer numeroCalle;
+
+    @Column(name = "latitud")
+    private Double latitud;
+
+    @Column(name = "longitud")
+    private Double longitud;
 }

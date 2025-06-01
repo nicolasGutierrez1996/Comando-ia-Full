@@ -29,5 +29,8 @@ public interface DireccionRepository extends CrudRepository<Direccion, Integer> 
     List<String> obtenerBarrios();
 
 
+    @Query("SELECT d FROM Direccion d WHERE d.latitud IS NULL OR d.longitud IS NULL")
+    List<Direccion> findDireccionesSinCoordenadas();
+
 
 }
