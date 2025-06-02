@@ -25,6 +25,8 @@ export interface Reclamo{
     barrio: string;
     calle: string;
     numeroCalle: number | null;
+    latitud:number | null;
+    longitud:number | null;
   };
 }
 
@@ -51,6 +53,8 @@ export interface ReclamoConDescripciones{
     barrio: string;
     calle: string;
     numeroCalle: number | null;
+       latitud:number | null;
+        longitud:number | null;
   };
 }
 

@@ -187,3 +187,87 @@
     filter: none !important;
 }
 
+.Inicio {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 2rem;
+      background-color: #f8f9fc;
+      color: #1a1a1a;
+    }
+
+    .cards {
+          display: flex;
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
+
+        .card {
+          background-color: #fff;
+          border-radius: 12px;
+          padding: 1.2rem;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+          flex: 1;
+          min-width: 200px;
+          max-width: 220px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
+
+        .percentage {
+          font-size: 1.8rem;
+          font-weight: bold;
+          color: #1a1a1a;
+        }
+
+        .label {
+          font-size: 0.9rem;
+          color: #444;
+          margin: 0.5rem 0;
+          line-height: 1.2rem;
+        }
+
+        .change {
+          font-size: 0.85rem;
+          font-weight: bold;
+          margin-bottom: 0.8rem;
+        }
+
+        .change.positive {
+          color: #28a745;
+        }
+
+        .change.negative {
+          color: #dc3545;
+        }
+
+        .ver-btn {
+          margin-top: auto;
+          align-self: flex-end;
+          font-size: 0.85rem;
+          color: #666;
+          background-color: #f1f1f1;
+          border-radius: 10px;
+          padding: 0.2rem 0.6rem;
+          cursor: pointer;
+          transition: background-color 0.2s ease-in-out;
+        }
+
+        .ver-btn:hover {
+          background-color: #e0e0e0;
+        }
+        .container {
+              max-width: 1200px;
+              margin: 0 auto;
+            }
+
+            .title {
+              font-size: 1.5rem;
+              font-weight: bold;
+              color: #1a1a1a;
+            }
+
+            .subtitle {
+              font-size: 1rem;
+              color: #666;
+              margin-bottom: 2rem;
+            }

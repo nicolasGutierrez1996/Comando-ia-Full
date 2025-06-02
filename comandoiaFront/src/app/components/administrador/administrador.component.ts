@@ -279,6 +279,8 @@ const nuevoReclamo: Reclamo= {
                         barrio: this.barrio,
                         calle: this.calle,
                         numeroCalle: this.nroCalle,
+                        latitud:null,
+                        longitud:null
                       },
                     };
 
@@ -456,6 +458,8 @@ const nuevoReclamo: Reclamo= {
                         barrio: this.barrio,
                         calle: this.calle,
                         numeroCalle: this.nroCalle,
+                        latitud:null,
+                        longitud:null
                       },
                     };
 

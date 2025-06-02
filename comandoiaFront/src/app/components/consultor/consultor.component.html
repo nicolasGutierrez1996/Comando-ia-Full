@@ -40,12 +40,47 @@
     </div>
 
     <!-- SECCIÓN INICIO -->
-    <div *ngIf="mostrarInicio" class="inicio">
+    <div class="Inicio" *ngIf="mostrarInicio">
       <h1>INICIO</h1>
+      <div class="container">
+        <div class="title">COMANDO IA MALVINAS</div>
+        <div class="subtitle">Grand Bourg - Malvinas Argentinas</div>
+
+        <div class="cards">
+          <div class="card">
+            <div class="percentage">67%</div>
+            <div class="label">Imagen Positiva<br>del intendente</div>
+            <div class="change positive">↑ +1%</div>
+            <div class="ver-btn">Ver</div>
+          </div>
+
+          <div class="card">
+            <div class="percentage">55%</div>
+            <div class="label">Intención de Voto</div>
+            <div class="change positive">↑ 4%</div>
+            <div class="ver-btn">Ver</div>
+          </div>
+
+          <div class="card">
+            <div class="percentage">32</div>
+            <div class="label">Obras públicas<br>en ejecución</div>
+            <div class="change positive">↑ 3%</div>
+            <div class="ver-btn">Ver</div>
+          </div>
+
+          <div class="card">
+            <div class="percentage">3.425</div>
+            <div class="label">Reclamos Vecinales</div>
+            <div class="change negative">↓ -2%</div>
+            <div class="ver-btn">Ver</div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- SECCIÓN GRÁFICOS -->
-    <div *ngIf="mostrarGraficosReclamos" class="graficos-reclamos">
+    <div *ngIf="mostrarGraficosReclamos || mostrarMapaReclamos" class="graficos-reclamos">
       <div class="filtros-container">
         <div class="filtro-item">
           <label>Fecha desde:</label>

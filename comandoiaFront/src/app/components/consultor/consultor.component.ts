@@ -202,7 +202,7 @@ get chartOptions(): ChartOptions {
     this.mostrarInicio=false;
   this.mostrarMapaReclamos=false;
 
-    this.cargarFiltrosReclamo()
+    this.cargarFiltrosReclamo();
   }
 
   cargarFiltrosReclamo(){
@@ -349,9 +349,18 @@ params = params.set('tiempoResolucionMenor', this.tiempResoMenor != null ? this.
 this.reclamosService.obtenerReclamosFiltrados(params).subscribe((data: ReclamoConDescripciones[]) => {
   this.reclamos = data;
   console.log("reclamos obtenidos:",this.reclamos);
+  if(this.mostrarGraficosReclamos){
   this.cargarGraficoAgrupado();
+  }
+  if(this.mostrarMapaReclamos){
+      this.agregarMarcadoresReclamos();
+
+  }
+
 });
 }
+
+
 
 actualizarAgrupamiento(){
 this.cargarGraficoAgrupado();
@@ -369,21 +378,24 @@ async inicializarMapa() {
 
   this.L = await import('leaflet');
 
-  this.map = this.L.map('map').setView([-34.505, -58.49], 13);
+  // Coordenadas por defecto si no hay reclamos
+  const coordenadasIniciales = this.reclamos?.length
+    ? [this.reclamos[0].direccion.latitud, this.reclamos[0].direccion.longitud]
+    : [-34.505, -58.49];
+
+  this.map = this.L.map('map').setView(coordenadasIniciales as [number, number], 13);
 
   this.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
   }).addTo(this.map);
 
-  this.L.marker([-34.505, -58.49]).addTo(this.map)
-    .bindPopup('<b>Ejemplo de Reclamo</b><br>Estado: Abierto')
-    .openPopup();
+  // Agregar marcadores de reclamos
+  this.agregarMarcadoresReclamos();
 
-setTimeout(() => {
-  if (this.map) {
-    this.map.invalidateSize();
-  }
-}, 400);
+  // Asegurarse que el mapa se renderice correctamente
+  setTimeout(() => {
+    this.map?.invalidateSize();
+  }, 400);
 }
 
 mostrarMapaReclamosBoton() {
@@ -391,6 +403,7 @@ mostrarMapaReclamosBoton() {
   this.mostrarGraficosReclamos=false;
   this.mostrarInicio=false;
   this.tipoGrafico=false;
+  this.cargarFiltrosReclamo();
 
   if (this.mostrarMapaReclamos) {
     setTimeout(() => {
@@ -403,6 +416,31 @@ mostrarMapaReclamosBoton() {
     }
   }
 }
+
+private agregarMarcadoresReclamos() {
+  if (!this.map || !this.reclamos) return;
+
+  // Primero, limpiar los marcadores previos para no duplicar
+  // Si guardás los marcadores en un array, podés iterar y removerlos
+  // Aquí te hago simple, eliminamos todas las capas que no sean tileLayer (base)
+  this.map.eachLayer((layer) => {
+    if (layer instanceof this.L.Marker) {
+      this.map!.removeLayer(layer);
+    }
+  });
+
+  // Agregar marcador por cada reclamo
+  this.reclamos.forEach(reclamo => {
+    // Suponiendo que reclamo tiene latitud y longitud como números
+    if (reclamo.direccion.latitud && reclamo.direccion.longitud) {
+      const marker = this.L.marker([reclamo.direccion.latitud, reclamo.direccion.longitud])
+        .addTo(this.map)
+        .bindPopup(`<b>${reclamo.nombre || 'Reclamo'}</b><br>Estado: ${reclamo.estado.descripcion || 'N/D'}`);
+    }
+  });
+}
+
+
 getChartSizeClass(): string {
   switch (this.chartType) {
     case 'pie':
