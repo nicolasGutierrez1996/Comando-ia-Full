@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -22,7 +22,8 @@ import * as L from 'leaflet';
   standalone: true,
   imports: [CommonModule,FormsModule, NgChartsModule],
   templateUrl: './consultor.component.html',
-  styleUrl: './consultor.component.css'
+  styleUrl: './consultor.component.css',
+  encapsulation: ViewEncapsulation.None
 })
 export class ConsultorComponent {
 
@@ -52,7 +53,8 @@ grupoPor: string = 'estado';
 map: L.Map | null = null;
 
 L: any;
-
+leyendaVisible:boolean = true;
+private legend: any;
 tipoGrafico:boolean=false;
 private mapaInicializado = false;
 private markerClusterGroup: any;
@@ -474,15 +476,84 @@ async inicializarMapa() {
 
 // Agregar al control de capas
 const overlayMaps = {
-  '📍 Reclamos (Cluster)': this.markerClusterGroup,
-  '🔥 Mapa de Calor (Reclamos no cerrados)': heatLayer
+  '🧩 Reclamos Agrupados': this.markerClusterGroup,
+  '🔥 Mapa de Calor (No Cerrados)': heatLayer
 };
 
 this.L.control.layers(undefined, overlayMaps, { collapsed: false }).addTo(this.map);
 
+ const legend = this.L.control({ position: 'bottomright' });
+
+ legend.onAdd = (map: any) => {
+   const div = this.L.DomUtil.create('div', 'info legend');
+
+   const estados = [
+     { iconUrl: 'assets/leaflet/marker-icon-green.png', label: 'Cerrados' },
+     { iconUrl: 'assets/leaflet/marker-icon-yellow.png', label: 'En proceso' },
+     { iconUrl: 'assets/leaflet/marker-icon-red.png', label: 'Pendientes' }
+   ];
+
+   // Contenedor del contenido (los estados)
+   const contenidoHtml = estados.map(e => `
+     <div style="display: flex; align-items: center; margin-bottom: 6px;">
+       <img src="${e.iconUrl}" style="width: 25px; height: 41px; margin-right: 8px;" />
+       <span>${e.label}</span>
+     </div>
+   `).join('');
+
+   div.innerHTML = `
+     <div id="legendContent">
+     <h4>Estado de Reclamos</h4>
+
+       ${contenidoHtml}
+     </div>
+     <button id="btnToggleLegend" style="
+       margin-top: 10px;
+       padding: 5px 10px;
+       cursor: pointer;
+       width: 100%;
+       background-color: #007bff;
+       color: white;
+       border: none;
+       border-radius: 4px;
+     ">Ocultar Leyenda</button>
+   `;
+
+   this.L.DomEvent.disableClickPropagation(div);
+
+   // Esperar que el div se agregue para asignar evento
+   setTimeout(() => {
+     const btn = document.getElementById('btnToggleLegend');
+     const content = document.getElementById('legendContent');
+
+     if (btn && content) {
+       btn.onclick = () => {
+         if (content.style.display === 'none') {
+           content.style.display = 'block';
+           btn.textContent = 'Ocultar Leyenda';
+         } else {
+           content.style.display = 'none';
+           btn.textContent = 'Mostrar Leyenda';
+         }
+       };
+     }
+   }, 100);
+
+   return div;
+ };
+
+ legend.addTo(this.map);
   setTimeout(() => {
     this.map?.invalidateSize();
   }, 400);
+}
+
+toggleLeyenda() {
+  this.leyendaVisible = !this.leyendaVisible;
+  const leyendaDiv = document.getElementById('leyenda-reclamos');
+  if (leyendaDiv) {
+    leyendaDiv.style.display = this.leyendaVisible ? 'block' : 'none';
+  }
 }
 
 mostrarMapaReclamosBoton() {
@@ -514,17 +585,23 @@ private agregarMarcadoresReclamos() {
     this.markerClusterGroup = null;
   }
 
-  // Crear nuevo grupo cluster
+  // Crear grupo cluster con estilo por defecto
   this.markerClusterGroup = this.L.markerClusterGroup();
 
+  // Agregar marcadores con estado como opción
   this.reclamos.forEach(reclamo => {
-    if (reclamo.direccion.latitud && reclamo.direccion.longitud) {
-      const esCerrado = reclamo.estado.descripcion === 'Cerrado';
+    if (reclamo.direccion?.latitud && reclamo.direccion?.longitud) {
+      const estado = reclamo.estado?.descripcion;
+      let iconUrl = 'assets/leaflet/marker-icon-red.png'; // default
+
+      if (estado === 'Cerrado') {
+        iconUrl = 'assets/leaflet/marker-icon-green.png';
+      } else if (estado === 'En Proceso') {
+        iconUrl = 'assets/leaflet/marker-icon-yellow.png';
+      }
 
       const icono = this.L.icon({
-        iconUrl: esCerrado
-          ? 'assets/leaflet/marker-icon-green.png'
-          : 'assets/leaflet/marker-icon-red.png',
+        iconUrl,
         shadowUrl: 'assets/leaflet/marker-shadow.png',
         iconSize: [25, 41],
         iconAnchor: [12, 41],
@@ -534,15 +611,54 @@ private agregarMarcadoresReclamos() {
 
       const marker = this.L.marker(
         [reclamo.direccion.latitud, reclamo.direccion.longitud],
-        { icon: icono }
-      ).bindPopup(`<b>${reclamo.nombre || 'Reclamo'}</b><br>Estado: ${reclamo.estado.descripcion || 'N/D'}`);
+        { icon: icono, estado: estado || 'Otro' }
+      ).bindPopup(`
+         <b>${reclamo.nombre || ''}</b><br>
+         <b>Estado:</b> ${estado || ''}<br>
+         <b>Tipo:</b> ${reclamo.tipo_reclamo?.descripcion || ''}<br>
+         <b>Tiempo de resolución:</b> ${reclamo.tiempo_resolucion || ''}<br>
+         <b>Fecha:</b> ${reclamo.fecha_reclamo ? new Date(reclamo.fecha_reclamo).toISOString().slice(0, 10) : 'N/D'}<br>
+         <b>Nivel de satisfacción:</b> ${reclamo.nivel_satisfaccion?.descripcion || ''}<br>
+         <b>Localidad:</b> ${reclamo.direccion?.localidad || ''}<br>
+         <b>Barrio:</b> ${reclamo.direccion?.barrio || ''}<br>
+         <b>Calle y número:</b> ${reclamo.direccion?.calle || ''} ${reclamo.direccion?.numeroCalle || ''}
+       `);
 
       this.markerClusterGroup.addLayer(marker);
     }
   });
 
-  this.markerClusterGroup.addTo(this.map);
+  // Tooltip en clusters con desglose por estado
+  this.markerClusterGroup.on('clustermouseover', (a: any) => {
+    const markers = a.layer.getAllChildMarkers();
+    const conteo = { Cerrado: 0, 'En Proceso': 0, Otro: 0 };
+
+    markers.forEach((marker: any) => {
+      const estado = marker.options.estado;
+      if (estado === 'Cerrado') conteo.Cerrado++;
+      else if (estado === 'En Proceso') conteo['En Proceso']++;
+      else conteo.Otro++;
+    });
+
+    const popup = this.L.popup()
+      .setLatLng(a.layer.getLatLng())
+      .setContent(`
+        <b>Reclamos agrupados:</b><br>
+        ✅ Cerrados: ${conteo.Cerrado}<br>
+        ⏳ En Proceso: ${conteo['En Proceso']}<br>
+        ❗ Otros: ${conteo.Otro}
+      `)
+      .openOn(this.map);
+  });
+
+  this.markerClusterGroup.on('clustermouseout', () => {
+    this.map!.closePopup();
+  });
+
+  // Agregar al mapa
+  this.map.addLayer(this.markerClusterGroup);
 }
+
 getChartSizeClass(): string {
   switch (this.chartType) {
     case 'pie':
