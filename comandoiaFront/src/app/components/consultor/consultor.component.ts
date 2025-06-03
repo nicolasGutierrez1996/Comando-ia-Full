@@ -54,8 +54,8 @@ map: L.Map | null = null;
 L: any;
 
 tipoGrafico:boolean=false;
-
-
+private mapaInicializado = false;
+private markerClusterGroup: any;
 
 
 
@@ -366,33 +366,91 @@ actualizarAgrupamiento(){
 this.cargarGraficoAgrupado();
 }
 
+async cargarLeafletYCluster() {
+  if (this.mapaInicializado) return;
 
-//MAPAS
+  this.L = await import('leaflet');
+  const markerClusterModule = await import('leaflet.markercluster');
+
+  // Forzar que el L importado tenga markerClusterGroup
+  if (!this.L.markerClusterGroup && markerClusterModule) {
+    // markerClusterModule extiende L globalmente, pero puede que no lo haya reflejado en this.L
+    // Entonces reasignamos:
+    this.L.markerClusterGroup = (window as any).L.markerClusterGroup;
+
+      delete (L.Icon.Default.prototype as any)._getIconUrl;
+
+
+
+
+  }
+
+  this.mapaInicializado = true;
+}
+
 async inicializarMapa() {
   if (typeof window === 'undefined') return;
+
+  await this.cargarLeafletYCluster();
 
   if (this.map) {
     this.map.remove();
     this.map = null;
   }
 
-  this.L = await import('leaflet');
 
-  // Coordenadas por defecto si no hay reclamos
   const coordenadasIniciales = this.reclamos?.length
     ? [this.reclamos[0].direccion.latitud, this.reclamos[0].direccion.longitud]
     : [-34.505, -58.49];
 
-  this.map = this.L.map('map').setView(coordenadasIniciales as [number, number], 13);
-
-  this.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  // Estilos base
+  const osm = this.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
-  }).addTo(this.map);
+  });
 
-  // Agregar marcadores de reclamos
+  const esriSat = this.L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    attribution: 'Tiles © Esri'
+  });
+
+  const esriSatLabels = this.L.layerGroup([
+    esriSat,
+    this.L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+      attribution: '© Esri, HERE, Garmin, OpenStreetMap contributors'
+    })
+  ]);
+
+  const topo = this.L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenTopoMap contributors'
+  });
+
+  const cartoLight = this.L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; CartoDB'
+  });
+
+  const cartoDark = this.L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; CartoDB'
+  });
+
+  // Inicializar mapa con capa base
+  this.map = this.L.map('map', {
+    center: coordenadasIniciales as [number, number],
+    zoom: 13,
+    layers: [osm]
+  });
+
+  const baseMaps = {
+    "🗺️ OpenStreetMap": osm,
+    "🛰️ Satélite (ESRI)": esriSat,
+    "📷 Satélite + Nombres (ESRI)": esriSatLabels,
+    "🏔️ Topográfico (OpenTopoMap)": topo,
+    "🔳 Claro (Carto Positron)": cartoLight,
+    "🌙 Oscuro (Carto Dark Matter)": cartoDark
+  };
+
+  this.L.control.layers(baseMaps).addTo(this.map);
+
   this.agregarMarcadoresReclamos();
 
-  // Asegurarse que el mapa se renderice correctamente
   setTimeout(() => {
     this.map?.invalidateSize();
   }, 400);
@@ -420,26 +478,26 @@ mostrarMapaReclamosBoton() {
 private agregarMarcadoresReclamos() {
   if (!this.map || !this.reclamos) return;
 
-  // Primero, limpiar los marcadores previos para no duplicar
-  // Si guardás los marcadores en un array, podés iterar y removerlos
-  // Aquí te hago simple, eliminamos todas las capas que no sean tileLayer (base)
-  this.map.eachLayer((layer) => {
-    if (layer instanceof this.L.Marker) {
-      this.map!.removeLayer(layer);
-    }
-  });
+  // Remover cluster previo si existe
+  if (this.markerClusterGroup) {
+    this.markerClusterGroup.clearLayers();
+    this.map.removeLayer(this.markerClusterGroup);
+    this.markerClusterGroup = null;
+  }
 
-  // Agregar marcador por cada reclamo
+  // Crear nuevo grupo cluster
+  this.markerClusterGroup = this.L.markerClusterGroup();
+
   this.reclamos.forEach(reclamo => {
-    // Suponiendo que reclamo tiene latitud y longitud como números
     if (reclamo.direccion.latitud && reclamo.direccion.longitud) {
       const marker = this.L.marker([reclamo.direccion.latitud, reclamo.direccion.longitud])
-        .addTo(this.map)
         .bindPopup(`<b>${reclamo.nombre || 'Reclamo'}</b><br>Estado: ${reclamo.estado.descripcion || 'N/D'}`);
+      this.markerClusterGroup.addLayer(marker);
     }
   });
-}
 
+  this.markerClusterGroup.addTo(this.map);
+}
 
 getChartSizeClass(): string {
   switch (this.chartType) {
