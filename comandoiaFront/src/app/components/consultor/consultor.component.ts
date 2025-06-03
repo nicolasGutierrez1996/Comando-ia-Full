@@ -372,6 +372,7 @@ async cargarLeafletYCluster() {
   // Importás leaflet y el plugin
   await import('leaflet');
   await import('leaflet.markercluster');
+  await import('leaflet.heat');
 
   // Usar el objeto global window.L, porque el plugin extiende ese objeto
   this.L = (window as any).L;
@@ -450,6 +451,35 @@ async inicializarMapa() {
 
   this.agregarMarcadoresReclamos();
 
+
+
+
+ const heatPoints = this.reclamos
+   .filter(r => r.estado.descripcion !== 'Cerrado')
+   .map(r => [r.direccion.latitud, r.direccion.longitud]);
+
+ const heatLayer = (this.L as any).heatLayer(heatPoints, {
+  radius: 100,
+    blur: 0,
+    gradient: {
+      0.1: '#cc0000',
+      0.3: '#cc0000',
+      0.5: '#cc0000',
+      0.7: '#cc0000',
+      1.0: '#cc0000'
+   }
+ });
+
+
+
+// Agregar al control de capas
+const overlayMaps = {
+  '📍 Reclamos (Cluster)': this.markerClusterGroup,
+  '🔥 Mapa de Calor (Reclamos no cerrados)': heatLayer
+};
+
+this.L.control.layers(undefined, overlayMaps, { collapsed: false }).addTo(this.map);
+
   setTimeout(() => {
     this.map?.invalidateSize();
   }, 400);
@@ -489,15 +519,30 @@ private agregarMarcadoresReclamos() {
 
   this.reclamos.forEach(reclamo => {
     if (reclamo.direccion.latitud && reclamo.direccion.longitud) {
-      const marker = this.L.marker([reclamo.direccion.latitud, reclamo.direccion.longitud])
-        .bindPopup(`<b>${reclamo.nombre || 'Reclamo'}</b><br>Estado: ${reclamo.estado.descripcion || 'N/D'}`);
+      const esCerrado = reclamo.estado.descripcion === 'Cerrado';
+
+      const icono = this.L.icon({
+        iconUrl: esCerrado
+          ? 'assets/leaflet/marker-icon-green.png'
+          : 'assets/leaflet/marker-icon-red.png',
+        shadowUrl: 'assets/leaflet/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+      });
+
+      const marker = this.L.marker(
+        [reclamo.direccion.latitud, reclamo.direccion.longitud],
+        { icon: icono }
+      ).bindPopup(`<b>${reclamo.nombre || 'Reclamo'}</b><br>Estado: ${reclamo.estado.descripcion || 'N/D'}`);
+
       this.markerClusterGroup.addLayer(marker);
     }
   });
 
   this.markerClusterGroup.addTo(this.map);
 }
-
 getChartSizeClass(): string {
   switch (this.chartType) {
     case 'pie':
