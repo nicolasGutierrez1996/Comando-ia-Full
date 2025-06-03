@@ -369,21 +369,20 @@ this.cargarGraficoAgrupado();
 async cargarLeafletYCluster() {
   if (this.mapaInicializado) return;
 
-  this.L = await import('leaflet');
-  const markerClusterModule = await import('leaflet.markercluster');
+  // Importás leaflet y el plugin
+  await import('leaflet');
+  await import('leaflet.markercluster');
 
-  // Forzar que el L importado tenga markerClusterGroup
-  if (!this.L.markerClusterGroup && markerClusterModule) {
-    // markerClusterModule extiende L globalmente, pero puede que no lo haya reflejado en this.L
-    // Entonces reasignamos:
-    this.L.markerClusterGroup = (window as any).L.markerClusterGroup;
+  // Usar el objeto global window.L, porque el plugin extiende ese objeto
+  this.L = (window as any).L;
 
-      delete (L.Icon.Default.prototype as any)._getIconUrl;
+  // Fix para iconos rotos, si querés mantenerlo
+  delete (this.L.Icon.Default.prototype as any)._getIconUrl;
 
-
-
-
-  }
+  this.L.Icon.Default.mergeOptions({
+    iconUrl: 'assets/leaflet/marker-icon.png',
+    shadowUrl: 'assets/leaflet/marker-shadow.png',
+  });
 
   this.mapaInicializado = true;
 }
