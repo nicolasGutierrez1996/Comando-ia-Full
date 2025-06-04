@@ -36,7 +36,7 @@
 
   <div class="contenido-principal">
     <div class="titulo">
-      <h2>Mapa de Reclamos</h2>
+      <!--<h2>Mapa de Reclamos</h2>-->
     </div>
 
     <!-- SECCIÓN INICIO -->
@@ -75,12 +75,45 @@
             <div class="ver-btn">Ver</div>
           </div>
         </div>
-        <div class="btn-container">
-          <button class="btn-hablar-ia">💬 Hablar con IA Malvinas</button>
       </div>
+      <div class="contenedor-principal">
+        <div class="tarjeta alerta">
+          <h3>🔴 ALERTA CRÍTICA</h3>
+          <p><strong>Incremento Delictivo en Villa de Mayo</strong></p>
+          <p>+29% de robos reportados en los últimos 15 días, con epicentro en el eje Gervasio Méndez - Mitre</p>
+          <p><strong>⚠ Acción:</strong> activar Comité de Crisis con Seguridad, sumar rondines con móviles y presencia institucional</p>
+        </div>
+
+        <div class="tarjeta recomendacion">
+          <h3>🟡 RECOMENDACIÓN</h3>
+          <p><strong>Refuerzo Comunicacional de Obras en Ejecución</strong></p>
+          <p>Muchas obras con alta inversión no están siendo visibilizadas.</p>
+          <p><strong>✔ Recomendación:</strong> Implementar señalética territorial + posteos sectoriales con testimonio vecino</p>
+        </div>
+
+        <div class="tarjeta sugerencia">
+          <h3>🔵 SUGERENCIA</h3>
+          <p><strong>Segmentar la narrativa política por grupo etario</strong></p>
+          <p>No todos los públicos responden igual al mensaje de gestión.</p>
+          <p><strong>💡 Sugerencia:</strong> Jóvenes: futuro y empleo. Adultos: seguridad y limpieza. Mayores: cercanía y salud</p>
+        </div>
       </div>
 
+      <div class="chat-container">
+        <input type="checkbox" id="chat-toggle">
+        <label for="chat-toggle" class="chat-button">💬</label>
+
+        <div class="chat-box">
+          <div class="chat-header">IA CHAT</div>
+          <div class="chat-body">
+            <p>Hola, ¿en qué puedo ayudarte?<br>Pregunta lo que quieras…</p>
+            <input type="text" placeholder="Escribe un mensaje…">
+          </div>
+        </div>
+      </div>
     </div>
+
+
 
     <!-- SECCIÓN GRÁFICOS -->
     <div *ngIf="mostrarGraficosReclamos || mostrarMapaReclamos" class="graficos-reclamos">

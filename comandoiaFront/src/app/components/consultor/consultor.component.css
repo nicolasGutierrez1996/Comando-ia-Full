@@ -526,7 +526,7 @@ grid-template-columns: repeat(4, minmax(120px, 1fr));
          padding: 1.2rem 1.5rem;
          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
          flex: 1 1 160px;
-         max-width: 180px;
+         max-width: 80px;
          display: flex;
          flex-direction: column;
          justify-content: space-between;
@@ -612,69 +612,123 @@ grid-template-columns: repeat(4, minmax(120px, 1fr));
          font-style: italic;
        }
 
-.btn-container {
-    display: flex;
-    justify-content: flex-end; /* alinea el botón a la derecha */
-    margin-top: 20px;
-  }
+.contenedor-principal {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px;
+}
 
-   .btn-container {
-     display: flex;
-     justify-content: flex-end;
-     margin-top: 20px;
-   }
+.tarjeta {
+  flex: 1;
+  padding: 15px;
+  border-radius: 8px;
+  color: white;
+  font-family: sans-serif;
+}
 
-   .btn-hablar-ia {
-     position: relative;
-     background: linear-gradient(45deg, #7b6cff, #4bc0c8, #7b6cff);
-     background-size: 300% 300%;
-     color: white;
-     border: none;
-     padding: 10px 22px;
-     font-size: 1rem;
-     font-weight: 700;
-     border-radius: 25px;
-     cursor: pointer;
-     box-shadow: 0 0 15px rgba(123, 108, 255, 0.6);
-     text-transform: uppercase;
-     letter-spacing: 1.2px;
-     user-select: none;
-     transition: transform 0.3s ease, box-shadow 0.3s ease;
-     animation: magicGradient 6s ease infinite;
-     overflow: hidden;
-   }
+.alerta {
+  background-color: #e53935; /* rojo */
+}
 
-   /* Animación de fondo degradado que cambia */
-   @keyframes magicGradient {
-     0% {background-position: 0% 50%;}
-     50% {background-position: 100% 50%;}
-     100% {background-position: 0% 50%;}
-   }
+.recomendacion {
+  background-color: #fbc02d; /* amarillo */
+  color: black;
+}
 
-   /* Brillo parpadeante */
-   .btn-hablar-ia::before {
-     content: "";
-     position: absolute;
-     top: -20%;
-     left: -50%;
-     width: 200%;
-     height: 140%;
-     background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), transparent 70%);
-     filter: blur(15px);
-     opacity: 0.6;
-     pointer-events: none;
-     animation: sparkle 3.5s ease-in-out infinite;
-   }
+.sugerencia {
+  background-color: #1e88e5; /* azul */
+}
 
-   @keyframes sparkle {
-     0%, 100% {opacity: 0.6; transform: translateX(0) translateY(0) rotate(0deg);}
-     50% {opacity: 0.2; transform: translateX(15%) translateY(10%) rotate(15deg);}
-   }
 
-   .btn-hablar-ia:hover {
-     transform: scale(1.15);
-     box-shadow: 0 0 30px rgba(123, 108, 255, 1);
-   }
+
+
+
+       /* CHAT FIJO DESPLEGABLE */
+      .chat-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 999;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      #chat-toggle {
+        display: none;
+      }
+
+      .chat-button {
+        background: #1e88e5;
+        color: white;
+        padding: 14px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 22px;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        transition: background 0.3s ease;
+      }
+
+      .chat-button:hover {
+        background: #1565c0;
+      }
+
+      .chat-box {
+        position: absolute;
+        bottom: 70px;
+        right: 0;
+        width: 320px;
+        background: #fff;
+        border-radius: 15px;
+        display: none;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        overflow: hidden;
+        animation: fadeIn 0.3s ease;
+      }
+
+      #chat-toggle:checked + .chat-button + .chat-box {
+        display: block;
+      }
+
+      .chat-header {
+        background: #1e88e5;
+        color: white;
+        padding: 15px;
+        font-weight: 600;
+        text-align: center;
+        font-size: 16px;
+      }
+
+      .chat-body {
+        padding: 15px;
+        background-color: #f9f9f9;
+      }
+
+      .chat-body p {
+        margin-bottom: 12px;
+        line-height: 1.5;
+        color: #333;
+      }
+
+      .chat-body input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      .chat-body input:focus {
+        border-color: #1e88e5;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+
+
 
 
 .leaflet-control.info.legend {
