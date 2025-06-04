@@ -49,16 +49,17 @@ fechaHastaReclamo: string | null = null;
 tiempResoMayor: number | null =null;
 tiempResoMenor:number | null =null;
 grupoPor: string = 'estado';
+grupoPorCalor:string='estado';
 
 map: L.Map | null = null;
-
+heatLayer: any;
 L: any;
 leyendaVisible:boolean = true;
 private legend: any;
 tipoGrafico:boolean=false;
 private mapaInicializado = false;
 private markerClusterGroup: any;
-
+private layersControl: any = null;
 
 
 
@@ -456,91 +457,104 @@ async inicializarMapa() {
 
 
 
- const heatPoints = this.reclamos
-   .filter(r => r.estado.descripcion !== 'Cerrado')
-   .map(r => [r.direccion.latitud, r.direccion.longitud]);
-
- const heatLayer = (this.L as any).heatLayer(heatPoints, {
-  radius: 100,
-    blur: 0,
-    gradient: {
-      0.1: '#cc0000',
-      0.3: '#cc0000',
-      0.5: '#cc0000',
-      0.7: '#cc0000',
-      1.0: '#cc0000'
-   }
- });
+ this.actualizarMapaCalor();
 
 
+if (this.layersControl) {
+  this.map!.removeControl(this.layersControl);
+}
 
 // Agregar al control de capas
 const overlayMaps = {
   '🧩 Reclamos Agrupados': this.markerClusterGroup,
-  '🔥 Mapa de Calor (No Cerrados)': heatLayer
+  '🔥 Mapa de Calor': this.heatLayer
 };
 
-this.L.control.layers(undefined, overlayMaps, { collapsed: false }).addTo(this.map);
+this.layersControl = this.L.control.layers(undefined, overlayMaps, { collapsed: false }).addTo(this.map);
 
- const legend = this.L.control({ position: 'bottomright' });
+const legend = this.L.control({ position: 'bottomright' });
 
- legend.onAdd = (map: any) => {
-   const div = this.L.DomUtil.create('div', 'info legend');
+legend.onAdd = (map: any) => {
+  const container = this.L.DomUtil.create('div', 'leaflet-control leaflet-bar');
 
-   const estados = [
-     { iconUrl: 'assets/leaflet/marker-icon-green.png', label: 'Cerrados' },
-     { iconUrl: 'assets/leaflet/marker-icon-yellow.png', label: 'En proceso' },
-     { iconUrl: 'assets/leaflet/marker-icon-red.png', label: 'Pendientes' }
-   ];
+  container.style.position = 'relative';
 
-   // Contenedor del contenido (los estados)
-   const contenidoHtml = estados.map(e => `
-     <div style="display: flex; align-items: center; margin-bottom: 6px;">
-       <img src="${e.iconUrl}" style="width: 25px; height: 41px; margin-right: 8px;" />
-       <span>${e.label}</span>
-     </div>
-   `).join('');
+  const legendBox = this.L.DomUtil.create('div', '', container);
+  legendBox.id = 'legendBox';
+  legendBox.style.padding = '6px';
+  legendBox.style.background = 'rgba(255,255,204,0.95)';
+  legendBox.style.borderRadius = '8px';
+  legendBox.style.boxShadow = '0 0 5px #999';
+  legendBox.style.marginBottom = '5px';
 
-   div.innerHTML = `
-     <div id="legendContent">
-     <h4>Estado de Reclamos</h4>
+  const legendTitle = document.createElement('h4');
+  legendTitle.textContent = 'Estado de Reclamos';
+  legendTitle.style.margin = '5px 0';
+  legendTitle.id = 'legendTitle';
+  legendBox.appendChild(legendTitle);
 
-       ${contenidoHtml}
-     </div>
-     <button id="btnToggleLegend" style="
-       margin-top: 10px;
-       padding: 5px 10px;
-       cursor: pointer;
-       width: 100%;
-       background-color: #007bff;
-       color: white;
-       border: none;
-       border-radius: 4px;
-     ">Ocultar Leyenda</button>
-   `;
+  const legendContent = document.createElement('div');
+  legendContent.id = 'legendContent';
 
-   this.L.DomEvent.disableClickPropagation(div);
+  const estados = [
+    { iconUrl: 'assets/leaflet/marker-icon-green.png', label: 'Cerrados' },
+    { iconUrl: 'assets/leaflet/marker-icon-yellow.png', label: 'En proceso' },
+    { iconUrl: 'assets/leaflet/marker-icon-red.png', label: 'Pendientes' }
+  ];
 
-   // Esperar que el div se agregue para asignar evento
-   setTimeout(() => {
-     const btn = document.getElementById('btnToggleLegend');
-     const content = document.getElementById('legendContent');
+  estados.forEach(e => {
+    const item = document.createElement('div');
+    item.style.display = 'flex';
+    item.style.alignItems = 'center';
+    item.style.marginBottom = '6px';
 
-     if (btn && content) {
-       btn.onclick = () => {
-         if (content.style.display === 'none') {
-           content.style.display = 'block';
-           btn.textContent = 'Ocultar Leyenda';
-         } else {
-           content.style.display = 'none';
-           btn.textContent = 'Mostrar Leyenda';
-         }
-       };
-     }
-   }, 100);
+    const img = document.createElement('img');
+    img.src = e.iconUrl;
+    img.style.width = '25px';
+    img.style.height = '41px';
+    img.style.marginRight = '8px';
 
-   return div;
- };
+    const span = document.createElement('span');
+    span.textContent = e.label;
+
+    item.appendChild(img);
+    item.appendChild(span);
+    legendContent.appendChild(item);
+  });
+
+  legendBox.appendChild(legendContent);
+
+  const toggleBtn = document.createElement('button');
+  toggleBtn.id = 'btnToggleLegend';
+  toggleBtn.title = 'Ocultar leyenda';
+  toggleBtn.textContent = '➖';
+  toggleBtn.style.backgroundColor = 'white';
+  toggleBtn.style.border = '2px solid #ccc';
+  toggleBtn.style.borderRadius = '50%';
+  toggleBtn.style.width = '32px';
+  toggleBtn.style.height = '32px';
+  toggleBtn.style.cursor = 'pointer';
+  toggleBtn.style.fontSize = '18px';
+  toggleBtn.style.boxShadow = '0 0 5px #999';
+  toggleBtn.style.display = 'flex';
+  toggleBtn.style.justifyContent = 'center';
+  toggleBtn.style.alignItems = 'center';
+  toggleBtn.style.margin = 'auto';
+
+  let visible = true;
+
+  toggleBtn.onclick = () => {
+    visible = !visible;
+    legendBox.style.display = visible ? 'block' : 'none';
+    toggleBtn.textContent = visible ? '➖' : '➕';
+    toggleBtn.title = visible ? 'Ocultar leyenda' : 'Mostrar leyenda';
+  };
+
+  container.appendChild(toggleBtn);
+
+  this.L.DomEvent.disableClickPropagation(container);
+  return container;
+};
 
  legend.addTo(this.map);
   setTimeout(() => {
@@ -657,6 +671,64 @@ private agregarMarcadoresReclamos() {
 
   // Agregar al mapa
   this.map.addLayer(this.markerClusterGroup);
+}
+
+actualizarAgrupamientoMapa() {
+  this.actualizarMapaCalor();
+}
+
+actualizarMapaCalor(): void {
+  if (!this.map || !this.reclamos) return;
+
+  // Eliminar heatLayer anterior si existe
+  if (this.heatLayer) {
+    this.map.removeLayer(this.heatLayer);
+  }
+
+  // Crear puntos según filtro
+  let heatPoints: [number, number][] = [];
+  if (this.grupoPorCalor === 'estado') {
+    heatPoints = this.reclamos
+      .filter(r => r.estado?.descripcion !== 'Cerrado' && r.direccion.latitud && r.direccion.longitud)
+      .map(r => [r.direccion.latitud!, r.direccion.longitud!] as [number, number]);
+  } else if (this.grupoPorCalor === 'satisfaccion') {
+    heatPoints = this.reclamos
+      .filter(r => (
+        r.nivel_satisfaccion.descripcion === 'Muy Insatisfecho' ||
+        r.nivel_satisfaccion.descripcion === 'Insatisfecho' ||
+        r.nivel_satisfaccion.descripcion === 'Muy Insatisfecha'
+      ) && r.direccion.latitud && r.direccion.longitud)
+      .map(r => [r.direccion.latitud!, r.direccion.longitud!] as [number, number]);
+  }
+
+  // Crear heatLayer nuevo
+  this.heatLayer = (this.L as any).heatLayer(heatPoints, {
+    radius: 100,
+    blur: 0,
+    gradient: {
+      0.1: '#cc0000',
+      0.3: '#cc0000',
+      0.5: '#cc0000',
+      0.7: '#cc0000',
+      1.0: '#cc0000'
+    }
+  });
+
+  // Si ya hay control de capas, eliminarlo para actualizar referencias
+  if (this.layersControl) {
+    this.map.removeControl(this.layersControl);
+  }
+
+  // Agregar heatLayer nuevo al mapa (esto marca el checkbox)
+  this.heatLayer.addTo(this.map);
+
+  // Crear nuevo control de capas con heatLayer actualizado
+  const overlayMaps = {
+    '🧩 Reclamos Agrupados': this.markerClusterGroup,
+    '🔥 Mapa de Calor': this.heatLayer
+  };
+
+  this.layersControl = this.L.control.layers(undefined, overlayMaps, { collapsed: false }).addTo(this.map);
 }
 
 getChartSizeClass(): string {
