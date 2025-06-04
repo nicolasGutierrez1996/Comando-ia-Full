@@ -178,7 +178,7 @@
           <input type="number" min="0" [(ngModel)]="tiempResoMenor" />
         </div>
 
-        <div class="filtro-item">
+        <div class="filtro-item" *ngIf="mostrarGraficosReclamos">
           <label>Agrupar por:</label>
           <select [(ngModel)]="grupoPor" (change)="actualizarAgrupamiento()">
             <option value="estado">Estado</option>
@@ -188,6 +188,14 @@
             <option value="satisfaccion">Nivel de Satisfacción</option>
             <option value="mes">Mes</option>
             <option value="rangoResolucion">Tiempo de Resolución</option>
+          </select>
+        </div>
+
+        <div class="filtro-item" *ngIf="mostrarMapaReclamos">
+          <label>Mapa de calor por:</label>
+          <select [(ngModel)]="grupoPorCalor" (change)="actualizarAgrupamientoMapa()">
+            <option value="estado">Estado</option>
+            <option value="satisfaccion">Nivel de Satisfacción</option>
           </select>
         </div>
 
