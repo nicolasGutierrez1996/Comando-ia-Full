@@ -49,4 +49,9 @@ public class TipoObraService {
         return listaTipoObra;
     }
 
+    public List<String> obtenerDescripcionesDeTipos() {
+        return tipoObraRepository.obtenerDescripcionesTipos();
+    }
+
+
 }

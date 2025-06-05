@@ -22,12 +22,11 @@ public interface DireccionRepository extends CrudRepository<Direccion, Integer> 
                                             @Param("numeroCalle") Integer numeroCalle);
 
 
-    @Query("SELECT DISTINCT  d.localidad FROM Direccion d")
+    @Query("SELECT DISTINCT LOWER(d.localidad) FROM Direccion d WHERE d.localidad IS NOT NULL")
     List<String> obtenerLocalidades();
 
-    @Query("SELECT DISTINCT  d.barrio FROM Direccion d")
+    @Query("SELECT DISTINCT LOWER(d.barrio) FROM Direccion d WHERE d.barrio IS NOT NULL")
     List<String> obtenerBarrios();
-
 
     @Query("SELECT d FROM Direccion d WHERE d.latitud IS NULL OR d.longitud IS NULL")
     List<Direccion> findDireccionesSinCoordenadas();

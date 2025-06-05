@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RestController
@@ -329,6 +330,55 @@ public class ObraPublicaController {
         return null;
     }
 
+
+    @GetMapping("/buscarObras")
+    public List<ObraPublica> buscarObras(
+            @RequestParam String fechaInicioDesde,
+            @RequestParam String fechaInicioHasta,
+            @RequestParam String fechaEstimadaFinDesde,
+            @RequestParam String fechaEstimadaFinHasta,
+            @RequestParam String fechaRealFinDesde,
+            @RequestParam String fechaRealFinHasta,
+            @RequestParam(required = false) String tipoObra,
+            @RequestParam(required = false) String estado,
+            @RequestParam(required = false) Double avanceFisicoMayor,
+            @RequestParam(required = false) Double avanceFisicoMenor,
+            @RequestParam(required = false) BigDecimal montoPresupuestadoMayor,
+            @RequestParam(required = false) BigDecimal montoPresupuestadoMenor,
+            @RequestParam(required = false) BigDecimal montoEjecutadoMayor,
+            @RequestParam(required = false) BigDecimal montoEjecutadoMenor,
+            @RequestParam(required = false) String localidad,
+            @RequestParam(required = false) String barrio
+    ) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
+        LocalDateTime inicioDesde = LocalDateTime.parse(fechaInicioDesde, formatter);
+        LocalDateTime inicioHasta = LocalDateTime.parse(fechaInicioHasta, formatter);
+        LocalDateTime estimadaDesde = LocalDateTime.parse(fechaEstimadaFinDesde, formatter);
+        LocalDateTime estimadaHasta = LocalDateTime.parse(fechaEstimadaFinHasta, formatter);
+        LocalDateTime realDesde = LocalDateTime.parse(fechaRealFinDesde, formatter);
+        LocalDateTime realHasta = LocalDateTime.parse(fechaRealFinHasta, formatter);
+
+        return obraPublicaService.buscarConFiltros(
+                inicioDesde,
+                inicioHasta,
+                estimadaDesde,
+                estimadaHasta,
+                realDesde,
+                realHasta,
+                tipoObra,
+                estado,
+                avanceFisicoMayor,
+                avanceFisicoMenor,
+                montoPresupuestadoMayor,
+                montoPresupuestadoMenor,
+                montoEjecutadoMayor,
+                montoEjecutadoMenor,
+                localidad,
+                barrio
+        );
+    }
 
 
 }

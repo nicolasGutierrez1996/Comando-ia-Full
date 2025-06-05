@@ -38,4 +38,8 @@ crearEstadoObra(estadoObra: EstadoObra): Observable<any> {
     eliminarEstadoObra(id: number): Observable<any> {
       return this.http.delete(`${this.baseUrl}/${id}`);
     }
+
+        obtenerDescripciones():Observable<string[]>{
+         return this.http.get<string[]>(`${this.baseUrl}/buscarEstadoObraDescripciones`);
+        }
 }

@@ -3,14 +3,19 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { map } from 'rxjs/operators';
-import { ObrasService,Obra} from '../../services/obras.service';
+import { ObrasService,ObraConDescripciones} from '../../services/obras.service';
 import { ReclamosService,ReclamoConDescripciones} from '../../services/reclamos.service';
+
 import { HttpParams } from '@angular/common/http';
 
 import { DireccionesService} from '../../services/direcciones.service';
-import { EstadoReclamoService} from '../../services/estadoReclamo.service';
+
 import { NivelSatisfaccionService} from '../../services/nivelSatisfaccion.service';
 import { TipoReclamosService} from '../../services/tipoReclamo.service';
+import { EstadoReclamoService} from '../../services/estadoReclamo.service';
+import { TipoObrasService} from '../../services/tipoObras.service';
+import { EstadoObrasService} from '../../services/estadoObras.service';
+
 
 import { ChartData, ChartOptions,ChartType  } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
@@ -50,7 +55,7 @@ tiempResoMayor: number | null =null;
 tiempResoMenor:number | null =null;
 grupoPor: string = 'estado';
 grupoPorCalor:string='estado';
-
+tipoGraficoObra:boolean=false;
 map: L.Map | null = null;
 heatLayer: any;
 L: any;
@@ -65,7 +70,7 @@ private layersControl: any = null;
 
 
 reclamos: ReclamoConDescripciones[] = [];
-obras:Obra [] = [];
+obras:ObraConDescripciones [] = [];
 
 chartData: ChartData<any> = {
   labels: [],
@@ -74,14 +79,44 @@ chartData: ChartData<any> = {
   ]
 };
 
+chartDataObras: ChartData<any> = {
+  labels: [],
+  datasets: [
+    { data: [], label: 'Cantidad por Estado' }
+  ]
+};
 
+
+//OBRAS
+mostrarGraficosObras:boolean=false;
+mostrarMapaObras:boolean=false;
+
+fechaDesdeInicioObra: string | null = null;
+fechaHastaInicioObra: string | null = null;
+tipoObraSeleccionado:string='';
+tiposObraDisponibles:string []=[];
+estadoObraSeleccionado:string='';
+estadosObraDisponibles:string []=[];
+tiempAvanceMayor:number | null=null;
+tiempAvanceMenor:number | null=null;
+montoPresuMayor:number| null=null;
+montoPresuMenor:number| null=null;
+montoEjeMayor:number| null=null;
+montoEjeMenor:number| null=null;
+fechaDesdeEstiObra: string | null = null;
+fechaHastaEstiObra: string | null = null;
+fechaDesdeRealObra: string | null = null;
+fechaHastaRealObra: string | null = null;
+grupoPorObra: string = 'estado';
 
 constructor(
   private router: Router,
   private reclamosService: ReclamosService,
-  private obrasService: ObrasService,
+  private obrasService:ObrasService,
   private direccionesService: DireccionesService,
   private estadoReclamoService: EstadoReclamoService,
+  private estadoObrasService: EstadoObrasService,
+  private tipoObrasSservice:TipoObrasService,
   private nivelSatisfaccionService: NivelSatisfaccionService,
   private tipoReclamosService: TipoReclamosService
 ) {}
@@ -92,8 +127,17 @@ constructor(
 
       this.reclamos = data;
        console.log('Reclamos recibidos:', this.reclamos);
-      this.cargarGraficoAgrupado();
-    });
+        });
+       this.obrasService.obtenerObras().subscribe((data: ObraConDescripciones[]) => {
+
+
+        this.obras = data;
+              console.log('Obras recibidas:', this.obras);
+
+
+        });
+
+
   }
 
 
@@ -196,7 +240,10 @@ get chartOptions(): ChartOptions {
   this.mostrarInicio=!this.mostrarInicio;
   this.mostrarGraficosReclamos=false;
   this.mostrarMapaReclamos=false;
+  this.mostrarMapaObras=false;
+  this.mostrarGraficosObras=false;
   this.tipoGrafico=false;
+  this.tipoGraficoObra=false;
 
   }
   mostrarGraficosReclamosBoton(){
@@ -204,6 +251,9 @@ get chartOptions(): ChartOptions {
     this.tipoGrafico=!this.tipoGrafico;
     this.mostrarInicio=false;
   this.mostrarMapaReclamos=false;
+  this.mostrarGraficosObras=false;
+  this.mostrarMapaObras=false;
+  this.tipoGraficoObra=false;
 
     this.cargarFiltrosReclamo();
   }
@@ -311,8 +361,35 @@ get chartOptions(): ChartOptions {
      conteo[clave] = (conteo[clave] || 0) + 1;
    });
 
-      const labels = Object.keys(conteo);
-      const dataValues = Object.values(conteo);
+let labels: string[] = [];
+let dataValues: number[] = [];
+
+if (
+  this.grupoPor === 'mes'
+) {
+  const auxiliar: { label: string, date: Date, cantidad: number }[] = [];
+
+  for (const label in conteo) {
+    // Reconvertimos el label a fecha robusta (año y mes)
+    const partes = label.split(' de ');
+    if (partes.length === 2) {
+      const mes = partes[0];
+      const anio = partes[1];
+      const fecha = new Date(`${anio}-${this.nombreMesAMesNumero(mes)}-01`);
+      auxiliar.push({ label, date: fecha, cantidad: conteo[label] });
+    } else {
+      auxiliar.push({ label, date: new Date(0), cantidad: conteo[label] }); // fallback para "Sin fecha"
+    }
+  }
+
+  auxiliar.sort((a, b) => a.date.getTime() - b.date.getTime());
+
+  labels = auxiliar.map(item => item.label);
+  dataValues = auxiliar.map(item => item.cantidad);
+} else {
+  labels = Object.keys(conteo);
+  dataValues = Object.values(conteo);
+}
 const backgroundColors = labels.map((_, index) => coloresVisibles[index % coloresVisibles.length]);
 const borderColors = backgroundColors.map(color => color); // usa el mismo color que el fondo
 
@@ -575,6 +652,9 @@ mostrarMapaReclamosBoton() {
   this.mostrarGraficosReclamos=false;
   this.mostrarInicio=false;
   this.tipoGrafico=false;
+  this.mostrarGraficosObras=false;
+  this.mostrarMapaObras=false;
+  this.tipoGraficoObra=false;
   this.cargarFiltrosReclamo();
 
   if (this.mostrarMapaReclamos) {
@@ -742,6 +822,250 @@ getChartSizeClass(): string {
     default: // bar, line, etc.
       return 'grafico-grande';
   }
+}
+
+
+//OBRAS
+
+  mostrarGraficosObrasBoton(){
+    this.mostrarGraficosObras=!this.mostrarGraficosObras;
+    this.mostrarGraficosReclamos=false;
+    this.mostrarInicio=false;
+    this.mostrarMapaReclamos=false;
+    this.mostrarMapaObras=false;
+    this.tipoGrafico=false;
+    this.tipoGraficoObra=!this.tipoGraficoObra;
+
+    this.cargarFiltrosObra();
+  }
+
+  mostrarMapaObrasBoton(){
+     this.mostrarMapaObras=!this.mostrarMapaObras;
+     this.mostrarGraficosObras=false;
+     this.mostrarInicio=false;
+     this.mostrarMapaReclamos=false;
+     this.mostrarGraficosReclamos=false;
+     this.tipoGrafico=false;
+     this.tipoGraficoObra=false;
+
+     this.cargarFiltrosObra();
+  }
+
+cargarFiltrosObra(){
+   this.direccionesService.obtenerLocalidades().subscribe({
+          next: (data: string[]) => {
+            this.localidadesDisponibles = data;
+            console.log('localidades cargadas:', this.localidadesDisponibles);
+          },
+          error: (err) => {
+            console.error('Error al cargar localidades:', err);
+          }
+        });
+
+           this.direccionesService.obtenerBarrios().subscribe({
+                 next: (data: string[]) => {
+                   this.barriosDisponibles = data;
+                   console.log('barrios cargados:', this.barriosDisponibles);
+                 },
+                 error: (err) => {
+                   console.error('Error al cargar barrios:', err);
+                 }
+               });
+
+
+
+              this.estadoObrasService.obtenerDescripciones().subscribe({
+                              next: (data: string[]) => {
+                                this.estadosObraDisponibles = data;
+                                console.log('estados cargados:', this.estadosObraDisponibles);
+                              },
+                              error: (err) => {
+                                console.error('Error al cargar estados:', err);
+                              }
+                            });
+                      this.tipoObrasSservice.obtenerDescripciones().subscribe({
+                                next: (data: string[]) => {
+                                  this.tiposObraDisponibles = data;
+                                  console.log('tipos cargados:', this.tiposObraDisponibles);
+                                },
+                                error: (err) => {
+                                  console.error('Error al cargar tipos:', err);
+                                }
+                              });
+
+}
+
+
+aplicarFiltrosObra(){
+let params = new HttpParams();
+
+
+
+
+
+
+  // Fechas obligatorias (siempre se envían)
+  params = params.set('fechaInicioDesde', this.fechaDesdeInicioObra ? this.fechaDesdeInicioObra+ 'T00:00:00': '1900-01-01T00:00:00');
+  params = params.set('fechaInicioHasta', this.fechaHastaInicioObra ? this.fechaHastaInicioObra+ 'T23:59:59': '2100-12-31T23:59:59');
+  params = params.set('fechaEstimadaFinDesde', this.fechaDesdeEstiObra ? this.fechaDesdeEstiObra+ 'T00:00:00': '1900-01-01T00:00:00');
+  params = params.set('fechaEstimadaFinHasta', this.fechaHastaEstiObra ? this.fechaHastaEstiObra+ 'T23:59:59': '2100-12-31T23:59:59');
+  params = params.set('fechaRealFinDesde', this.fechaDesdeRealObra  ? this.fechaDesdeRealObra+ 'T00:00:00': '1900-01-01T00:00:00');
+  params = params.set('fechaRealFinHasta', this.fechaHastaRealObra ? this.fechaHastaRealObra+ 'T23:59:59': '2100-12-31T23:59:59');
+
+  params = params.set('tipoObra', this.tipoObraSeleccionado || '');
+  params = params.set('estado', this.estadoObraSeleccionado || '');
+  params = params.set('avanceFisicoMayor', this.tiempAvanceMayor != null ? this.tiempAvanceMayor.toString() : '');
+  params = params.set('avanceFisicoMenor', this.tiempAvanceMenor != null ? this.tiempAvanceMenor.toString() : '');
+  params = params.set('montoPresupuestadoMayor', this.montoPresuMayor != null ? this.montoPresuMayor.toString() : '');
+  params = params.set('montoPresupuestadoMenor', this.montoPresuMenor != null ? this.montoPresuMenor.toString() : '');
+  params = params.set('montoEjecutadoMayor', this.montoEjeMayor != null ? this.montoEjeMayor.toString() : '');
+  params = params.set('montoEjecutadoMenor', this.montoEjeMenor != null ? this.montoEjeMenor.toString() : '');
+  params = params.set('localidad', this.localidadSeleccionada || '');
+  params = params.set('barrio', this.barrioSeleccionado || '');
+
+  this.obrasService.obtenerObrasFiltradas(params).subscribe((data: ObraConDescripciones[]) => {
+    this.obras = data;
+    console.log("obras obtenidas:", this.obras);
+
+    if (this.mostrarGraficosObras) {
+      this.cargarGraficoObras();
+    }
+
+    if (this.mostrarMapaObras) {
+      //this.agregarMarcadoresObras();
+    }
+  });
+
+
+
+}
+cargarGraficoObras(): void {
+  const conteo: { [clave: string]: number } = {};
+  const coloresVisibles = [
+    '#a3c9f1', '#b6e3ac', '#ffd59e', '#f7a6b0',
+    '#ffe39f', '#c3eaf7', '#dab6fc', '#ffbfa3'
+  ];
+
+  this.obras.forEach(obra => {
+    let clave = 'Desconocido';
+
+    switch (this.grupoPorObra) {
+      case 'estado':
+        clave = obra.estado?.descripcion || 'Desconocido';
+        break;
+      case 'localidad':
+        clave = obra.direccion.localidad || 'Desconocido';
+        break;
+      case 'barrio':
+        clave = obra.direccion.barrio || 'Desconocido';
+        break;
+      case 'tipo':
+        clave = obra.tipo_obra?.descripcion || 'Desconocido';
+        break;
+
+      case 'mes':
+        clave = this.getClavePorMes(obra.fecha_inicio);
+        break;
+      case 'mesFinReal':
+        clave = this.getClavePorMes(obra.fecha_real_finalizacion);
+        break;
+      case 'mesFinEstimad':
+        clave = this.getClavePorMes(obra.fecha_estimada_finalizacion);
+        break;
+
+      case 'avanceFisico':
+        const avance = obra.avance_fisico || 0;
+        if (avance < 25) clave = 'Menos de 25%';
+        else if (avance <= 65) clave = 'menos de 65%';
+        else clave = 'Más de 65%';
+        break;
+
+      case 'montoPresupuestado':
+        const presupuesto = obra.monto_presupuestado || 0;
+        if (presupuesto < 500000) clave = 'Menos de 500000$';
+        else if (presupuesto <= 2000000) clave = 'menos de 2000000$';
+        else clave = 'Más de 2000000$';
+        break;
+
+      case 'montoEjecutado':
+        const ejecutado = obra.monto_ejecutado || 0;
+        if (ejecutado < 500000) clave = 'Menos de 500000$';
+        else if (ejecutado <= 2000000) clave = 'menos de 2000000$';
+        else clave = 'Más de 2000000$';
+        break;
+
+      default:
+        clave = 'Otro';
+    }
+
+    conteo[clave] = (conteo[clave] || 0) + 1;
+  });
+
+  // ORDENAR si se agrupa por mes
+ let labels: string[];
+ let dataValues: number[];
+
+ if (
+   this.grupoPorObra === 'mes' ||
+   this.grupoPorObra === 'mesFinReal' ||
+   this.grupoPorObra === 'mesFinEstimad'
+ ) {
+   const auxiliar: { label: string, date: Date, cantidad: number }[] = [];
+
+   for (const label in conteo) {
+     const partes = label.split(' de ');
+     if (partes.length === 2) {
+       const mes = partes[0].toLowerCase();
+       const anio = partes[1];
+       const mesNum = this.nombreMesAMesNumero(mes);
+       const fecha = new Date(`${anio}-${mesNum}-01`);
+       auxiliar.push({ label, date: fecha, cantidad: conteo[label] });
+     } else {
+       auxiliar.push({ label, date: new Date(0), cantidad: conteo[label] }); // fallback
+     }
+   }
+
+   auxiliar.sort((a, b) => a.date.getTime() - b.date.getTime());
+   labels = auxiliar.map(item => item.label);
+   dataValues = auxiliar.map(item => item.cantidad);
+ } else {
+   labels = Object.keys(conteo);
+   dataValues = labels.map(label => conteo[label]);
+ }
+  const backgroundColors = labels.map((_, index) => coloresVisibles[index % coloresVisibles.length]);
+  const borderColors = backgroundColors.map(color => color);
+
+  this.chartDataObras = {
+    labels: labels,
+    datasets: [
+      {
+        data: dataValues,
+        label: 'Cantidad por ' + this.grupoPorObra,
+        backgroundColor: backgroundColors,
+        borderColor: borderColors,
+        borderWidth: 1
+      }
+    ]
+  };
+}
+ actualizarAgrupamientoObras(){
+  this.cargarGraficoObras();
+ }
+
+private getClavePorMes(fechaStr: string | null): string {
+  if (!fechaStr) return 'Sin fecha';
+  const fecha = new Date(fechaStr);
+  if (isNaN(fecha.getTime())) return 'Sin fecha';
+  return fecha.toLocaleString('default', { month: 'long', year: 'numeric' });
+}
+
+private nombreMesAMesNumero(nombreMes: string): string {
+  const meses: { [key: string]: string } = {
+    'enero': '01', 'febrero': '02', 'marzo': '03', 'abril': '04',
+    'mayo': '05', 'junio': '06', 'julio': '07', 'agosto': '08',
+    'septiembre': '09', 'octubre': '10', 'noviembre': '11', 'diciembre': '12'
+  };
+  return meses[nombreMes.toLowerCase()] || '01';
 }
 
 }

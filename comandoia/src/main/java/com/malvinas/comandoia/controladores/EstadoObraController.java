@@ -119,4 +119,11 @@ public class EstadoObraController {
         List<EstadoObra> listaEstadoObra = estadoObraService.buscarEstadoObraPorDescripcion(descripcion);
         return ResponseEntity.ok(listaEstadoObra);
     }
+
+
+    @GetMapping("/buscarEstadoObraDescripciones")
+    public ResponseEntity<List<String>> buscarEstadoObraDescripciones() {
+        List<String> listaDescripciones = estadoObraService.obtenerDescripcionesDeEstados();
+        return ResponseEntity.ok(listaDescripciones);
+    }
 }

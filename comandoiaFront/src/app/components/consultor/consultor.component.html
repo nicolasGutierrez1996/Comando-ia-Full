@@ -22,8 +22,8 @@
           <span class="flecha">▶</span>
         </button>
         <div class="subbotones">
-          <button class="subboton">Visualizar Gráficos</button>
-          <button class="subboton">Visualizar Mapas</button>
+          <button class="subboton" (click)="mostrarGraficosObrasBoton()">Visualizar Gráficos</button>
+          <button class="subboton" (click)="mostrarMapaObrasBoton()">Visualizar Mapas</button>
         </div>
       </li>
     </ul>
@@ -36,7 +36,10 @@
 
   <div class="contenido-principal">
     <div class="titulo">
-      <!--<h2>Mapa de Reclamos</h2>-->
+      <h2 *ngIf="mostrarGraficosObras">Graficos de Obras</h2>
+      <h2 *ngIf="mostrarGraficosReclamos">Graficos de Reclamos</h2>
+      <h2 *ngIf="mostrarMapaObras">Mapa de Obras</h2>
+      <h2 *ngIf="mostrarMapaReclamos">Mapa de Reclamos</h2>
     </div>
 
     <!-- SECCIÓN INICIO -->
@@ -208,7 +211,148 @@
       </div>
     </div>
 
+
+    <!-- SECCIÓN GRÁFICOS OBRAS-->
+
+    <div *ngIf="mostrarGraficosObras || mostrarMapaObras" class="graficos-reclamos">
+      <div class="filtros-container">
+        <div class="filtro-item">
+          <label>Fecha de inicio desde:</label>
+          <input type="date" [(ngModel)]="fechaDesdeInicioObra" />
+        </div>
+
+        <div class="filtro-item">
+          <label>Fecha de inicio hasta:</label>
+          <input type="date" [(ngModel)]="fechaHastaInicioObra" />
+        </div>
+
+        <div class="filtro-item">
+          <label>Tipo de obra:</label>
+          <select [(ngModel)]="tipoObraSeleccionado">
+            <option value=""></option>
+            <option *ngFor="let tipo of tiposObraDisponibles" [value]="tipo">{{ tipo }}</option>
+          </select>
+        </div>
+
+        <div class="filtro-item">
+          <label>Estado:</label>
+          <select [(ngModel)]="estadoObraSeleccionado">
+            <option value=""></option>
+            <option *ngFor="let estado of estadosObraDisponibles" [value]="estado">{{ estado }}</option>
+          </select>
+        </div>
+
+        <div class="filtro-item">
+          <label>Avance Fisico mayor a:</label>
+          <input type="number" min="0" step="any" [(ngModel)]="tiempAvanceMayor" />
+        </div>
+
+        <div class="filtro-item">
+          <label>Avance Fisico menor a:</label>
+          <input type="number" min="0" step="any" [(ngModel)]="tiempAvanceMenor" />
+        </div>
+
+        <div class="filtro-item">
+          <label>Monto presupuestado mayor a:</label>
+          <input type="number" min="0" step="any" [(ngModel)]="montoPresuMayor" />
+        </div>
+
+        <div class="filtro-item">
+          <label>Monto presupuestado menor a:</label>
+          <input type="number" min="0" step="any" [(ngModel)]="montoPresuMenor" />
+        </div>
+
+        <div class="filtro-item">
+          <label>Monto ejecutado mayor a:</label>
+          <input type="number" min="0" step="any" [(ngModel)]="montoEjeMayor" />
+        </div>
+
+        <div class="filtro-item">
+          <label>Monto ejecutado menor a:</label>
+          <input type="number" min="0" step="any" [(ngModel)]="montoEjeMenor" />
+        </div>
+        <div class="filtro-item">
+        <label>Fecha estimada fin desde:</label>
+        <input type="date" [(ngModel)]="fechaDesdeEstiObra" />
+        </div>
+
+
+      <div class="filtro-item">
+        <label>Fecha estimada fin hasta:</label>
+        <input type="date" [(ngModel)]="fechaHastaEstiObra" />
+      </div>
+      <div class="filtro-item">
+      <label>Fecha real fin desde:</label>
+      <input type="date" [(ngModel)]="fechaDesdeRealObra" />
+    </div>
+
+    <div class="filtro-item">
+      <label>Fecha real fin  hasta:</label>
+      <input type="date" [(ngModel)]="fechaHastaRealObra" />
+    </div>
+
+        <div class="filtro-item">
+          <label>Localidad:</label>
+          <select [(ngModel)]="localidadSeleccionada">
+            <option value=""></option>
+            <option *ngFor="let loc of localidadesDisponibles" [value]="loc">{{ loc }}</option>
+          </select>
+        </div>
+
+        <div class="filtro-item">
+          <label>Barrio:</label>
+          <select [(ngModel)]="barrioSeleccionado">
+            <option value=""></option>
+            <option *ngFor="let barrio of barriosDisponibles" [value]="barrio">{{ barrio }}</option>
+          </select>
+        </div>
+
+        <div class="filtro-item" *ngIf="mostrarGraficosObras">
+          <label>Agrupar por:</label>
+          <select [(ngModel)]="grupoPorObra" (change)="actualizarAgrupamientoObras()">
+            <option value="estado">Estado</option>
+            <option value="localidad">Localidad</option>
+            <option value="barrio">Barrio</option>
+            <option value="tipo">Tipo de Obra</option>
+            <option value="mes">Mes inicio</option>
+            <option value="mesFinReal">Mes fin real</option>
+            <option value="mesFinEstimad">Mes fin estimado</option>
+            <option value="montoPresupuestado">Monto Presupuestado</option>
+            <option value="montoEjecutado">Monto Ejecutado</option>
+            <option value="avanceFisico">Avance fisico</option>
+          </select>
+        </div>
+
+        <div class="filtro-item" *ngIf="mostrarMapaObras">
+          <label>Mapa de calor por:</label>
+          <select [(ngModel)]="grupoPorCalor" (change)="actualizarAgrupamientoMapa()">
+            <option value="estado">Estado</option>
+          </select>
+        </div>
+
+        <div class="filtro-item">
+          <button (click)="aplicarFiltrosObra()">Aplicar filtros</button>
+        </div>
+      </div>
+
+
+
+    </div>
+
     <div class="tipo-grafico" *ngIf="tipoGrafico">
+      <label>Tipo de gráfico:</label>
+      <select [(ngModel)]="tipoGraficoSeleccionado" (change)="actualizarGrafico()">
+        <option value="bar">Barras</option>
+        <option value="pie">Torta</option>
+        <option value="line">Líneas</option>
+        <option value="doughnut">Dona</option>
+        <option value="radar">Radar</option>
+        <option value="polarArea">Área polar</option>
+      </select>
+    </div>
+
+
+    <div class="tipo-grafico" *ngIf="tipoGraficoObra">
       <label>Tipo de gráfico:</label>
       <select [(ngModel)]="tipoGraficoSeleccionado" (change)="actualizarGrafico()">
         <option value="bar">Barras</option>
@@ -228,10 +372,22 @@
       </canvas>
     </div>
 
+    <div class="grafico-container" [ngClass]="getChartSizeClass()" *ngIf="mostrarGraficosObras">
+      <canvas baseChart
+              [data]="chartDataObras"
+              [options]="chartOptions"
+              [type]="chartType">
+      </canvas>
+    </div>
+
     <!-- SECCIÓN MAPA -->
     <div *ngIf="mostrarMapaReclamos" class="mapa-reclamos">
 
       <div class="mapa" id="map"></div>
     </div>
+
+
+  </div>
 </div>
-</div>
+
+

@@ -121,5 +121,12 @@ public class TipoObraController {
     }
 
 
+    @GetMapping("/buscarTipoObraDescripciones")
+    public ResponseEntity<List<String>> buscarTipoObraDescripciones() {
+        List<String> listaDescripciones = tipoObraService.obtenerDescripcionesDeTipos();
+        return ResponseEntity.ok(listaDescripciones);
+    }
+
+
 
 }

@@ -5,27 +5,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.malvinas.comandoia.modelo.Coordenada;
 import com.malvinas.comandoia.modelo.Direccion;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.springframework.http.HttpHeaders;
 @Service
 public class GeocodingService {
+
     @Autowired
     private DireccionService direccionService;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final WebClient webClient;
     private final ObjectMapper mapper = new ObjectMapper();
+
+    public GeocodingService() {
+        this.webClient = WebClient.builder()
+                .baseUrl("https://nominatim.openstreetmap.org")
+                .defaultHeader("User-Agent", "Mozilla/5.0 (IA Malvinas - contacto@ejemplo.com)")
+                .defaultHeader("Accept", "application/json")
+                .build();
+    }
 
     @Scheduled(fixedRate = 300000)
     public void actualizarCoordenadasPendientes() throws InterruptedException {
@@ -33,102 +36,105 @@ public class GeocodingService {
         System.out.println("Total direcciones sin coordenadas: " + direcciones.size());
 
         for (Direccion dir : direcciones) {
-            String direccionCompleta = construirDireccion(dir);
-            System.out.println("Dirección construida: [" + direccionCompleta + "]");
-
-            if (direccionCompleta.isBlank()) {
-                System.out.println("Dirección vacía, se saltea");
-                continue;
-            }
-
-            Coordenada coordenada = consultarNominatim(direccionCompleta);
+            Coordenada coordenada = consultarNominatimConFallback(dir);
             if (coordenada != null) {
-                System.out.println("Coordenadas obtenidas: lat=" + coordenada.getLat() + ", lon=" + coordenada.getLon());
+                System.out.println("📌 Coordenadas obtenidas: lat=" + coordenada.getLat() + ", lon=" + coordenada.getLon());
                 dir.setLatitud(coordenada.getLat());
                 dir.setLongitud(coordenada.getLon());
                 direccionService.guardarDireccion(dir);
             } else {
-                System.out.println("No se encontraron coordenadas para: " + direccionCompleta);
+                System.out.println("⚠️ No se encontraron coordenadas para: " + construirDireccionCompleta(dir));
             }
 
-            Thread.sleep(1000);
+            Thread.sleep(1000); // Delay entre requests
         }
     }
 
-    private String construirDireccion(Direccion dir) {
-        StringBuilder sb = new StringBuilder();
+    public Coordenada consultarNominatimConFallback(Direccion dir) {
+        List<String> variantes = construirDireccionesFallback(dir);
 
-        if (dir.getCalle() != null && !dir.getCalle().isBlank()) {
-            sb.append(dir.getCalle());
-            if (dir.getNumeroCalle() != null) {
-                sb.append(" ").append(dir.getNumeroCalle());
+        for (String direccion : variantes) {
+            Coordenada coord = consultarNominatim(direccion);
+            if (coord != null) {
+                System.out.println("✅ Dirección resuelta con: " + direccion);
+                return coord;
             }
-            sb.append(" ");
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ignored) {}
         }
 
-        if (dir.getBarrio() != null && !dir.getBarrio().isBlank()) {
-            sb.append(dir.getBarrio()).append(" ");
-        }
-
-        if (dir.getLocalidad() != null && !dir.getLocalidad().isBlank()) {
-            sb.append(dir.getLocalidad()).append(" ");
-        }
-
-        sb.append("Buenos Aires Argentina");
-        return sb.toString().trim();
+        System.out.println("❌ No se pudo geolocalizar ninguna variante.");
+        return null;
     }
 
-    public Coordenada consultarNominatim(String direccionOriginal) {
+    private List<String> construirDireccionesFallback(Direccion dir) {
+        String localidad = dir.getLocalidad() != null ? dir.getLocalidad().trim() : "";
+        String calle = dir.getCalle() != null ? dir.getCalle().trim() : "";
+        String numero = dir.getNumeroCalle() != null ? dir.getNumeroCalle().toString().trim() : "";
+
+        List<String> direcciones = new ArrayList<>();
+
+        if (!localidad.isBlank() && !calle.isBlank() && !numero.isBlank()) {
+            direcciones.add(calle + " " + numero + ", " + localidad + ", Buenos Aires, Argentina");
+        }
+        if (!localidad.isBlank() && !calle.isBlank()) {
+            direcciones.add(calle + ", " + localidad + ", Buenos Aires, Argentina");
+        }
+        if (!localidad.isBlank()) {
+            direcciones.add(localidad + ", Buenos Aires, Argentina");
+        }
+
+        return direcciones;
+    }
+
+    public Coordenada consultarNominatim(String direccion) {
         try {
-            // Normaliza y capitaliza dirección
-            String direccion = capitalizarDireccion(direccionOriginal);
-            System.out.println("Dirección construida: [" + direccion + "]");
+            Mono<String> responseMono = webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/search")
+                            .queryParam("q", direccion)
+                            .queryParam("format", "json")
+                            .build())
+                    .retrieve()
+                    .bodyToMono(String.class);
 
-            String url = "https://nominatim.openstreetmap.org/search?q=" +
-                    URLEncoder.encode(direccion, StandardCharsets.UTF_8) +
-                    "&format=json";
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/123.0.0.0 Safari/537.36");
-            headers.add("Accept", "application/json");
-            headers.add("Accept-Language", "es-ES,es;q=0.9");
-
-            HttpEntity<String> entity = new HttpEntity<>(headers);
-
-            System.out.println("Consultando Nominatim con URL: " + url);
-
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-            JsonNode array = mapper.readTree(response.getBody());
-
-            // Retry en caso de respuesta vacía
-            if (array.isEmpty()) {
-                System.out.println("⚠️ Primera llamada vacía, intentando retry...");
-                Thread.sleep(1000); // breve espera para retry
-                response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-                array = mapper.readTree(response.getBody());
-            }
+            String responseBody = responseMono.block();
+            JsonNode array = mapper.readTree(responseBody);
 
             if (array.isArray() && array.size() > 0) {
                 JsonNode nodo = array.get(0);
                 double lat = nodo.get("lat").asDouble();
                 double lon = nodo.get("lon").asDouble();
-                System.out.println("✅ Coordenadas encontradas: lat=" + lat + ", lon=" + lon);
                 return new Coordenada(lat, lon);
-            } else {
-                System.out.println("❌ Nominatim no devolvió resultados para: " + direccion);
             }
-
         } catch (Exception e) {
-            System.out.println("🛑 Error geolocalizando: " + direccionOriginal + " - " + e.getMessage());
+            System.out.println("🛑 Error consultando Nominatim con dirección: " + direccion + " - " + e.getMessage());
         }
-        System.out.println("No se encontraron coordenadas para: " + direccionOriginal);
+
         return null;
     }
 
-    private String capitalizarDireccion(String direccion) {
-        return Arrays.stream(direccion.split(" "))
-                .map(s -> s.isEmpty() ? s :
-                        Character.toUpperCase(s.charAt(0)) + s.substring(1).toLowerCase())
-                .collect(Collectors.joining(" "));
+    private String construirDireccionCompleta(Direccion dir) {
+        StringBuilder sb = new StringBuilder();
+
+        if (dir.getCalle() != null && !dir.getCalle().isBlank()) {
+            sb.append(dir.getCalle().trim());
+            if (dir.getNumeroCalle() != null) {
+                sb.append(" ").append(dir.getNumeroCalle());
+            }
+        }
+
+        if (dir.getBarrio() != null && !dir.getBarrio().isBlank()) {
+            sb.append(", ").append(dir.getBarrio().trim());
+        }
+
+        if (dir.getLocalidad() != null && !dir.getLocalidad().isBlank()) {
+            sb.append(", ").append(dir.getLocalidad().trim());
+        }
+
+        sb.append(", Buenos Aires, Argentina");
+        return sb.toString().replaceAll("\\s+", " ").trim();
     }
 }

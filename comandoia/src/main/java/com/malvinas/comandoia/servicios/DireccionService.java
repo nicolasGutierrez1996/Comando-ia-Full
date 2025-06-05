@@ -6,8 +6,11 @@ import com.malvinas.comandoia.repositorios.DireccionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DireccionService {
@@ -47,12 +50,28 @@ public class DireccionService {
     }
 
     public List<String> obtenerLocalidades() {
-        return direccionRepository.obtenerLocalidades();
+
+        return direccionRepository.obtenerLocalidades().stream()
+                .filter(Objects::nonNull)
+                .map(s -> Arrays.stream(s.split(" "))
+                        .map(w -> w.isBlank() ? w : Character.toUpperCase(w.charAt(0)) + w.substring(1).toLowerCase())
+                        .collect(Collectors.joining(" ")))
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     public List<String> obtenerBarrios() {
-        return direccionRepository.obtenerBarrios();
-    }
+
+
+        return direccionRepository.obtenerBarrios().stream()
+                .filter(Objects::nonNull)
+                .map(s -> Arrays.stream(s.split(" "))
+                        .map(w -> w.isBlank() ? w : Character.toUpperCase(w.charAt(0)) + w.substring(1).toLowerCase())
+                        .collect(Collectors.joining(" ")))
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());    }
 
     public List<Direccion> obtenerDireccionesSinCoordenadas(){
         return direccionRepository.findDireccionesSinCoordenadas();

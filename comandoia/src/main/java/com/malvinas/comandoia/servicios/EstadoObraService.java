@@ -45,5 +45,10 @@ public class EstadoObraService {
         iterableEstadoObra.forEach(listaEstadoObra::add);
         return listaEstadoObra;
     }
+
+    public List<String> obtenerDescripcionesDeEstados() {
+        return estadoObraRepository.obtenerDescripcionesEstados();
+    }
+
 }
 
