@@ -65,7 +65,7 @@ tipoGrafico:boolean=false;
 private mapaInicializado = false;
 private markerClusterGroup: any;
 private layersControl: any = null;
-
+grupoPorCalorObra:string='estado';
 
 
 
@@ -256,6 +256,7 @@ get chartOptions(): ChartOptions {
   this.tipoGraficoObra=false;
 
     this.cargarFiltrosReclamo();
+    this.cargarGraficoAgrupado();
   }
 
   cargarFiltrosReclamo(){
@@ -415,9 +416,10 @@ const borderColors = backgroundColors.map(color => color); // usa el mismo color
 
 aplicarFiltros() {
 let params = new HttpParams();
+    params = params.set('fechaInicioDesde', this.fechaDesdeInicioObra != null ? this.fechaDesdeInicioObra + 'T00:00:00' : 'null');
 
-params = params.set('fechaDesde', this.fechaDesdeReclamo ? this.fechaDesdeReclamo + 'T00:00:00' : '1900-01-01T00:00:00');
-params = params.set('fechaHasta', this.fechaHastaReclamo ? this.fechaHastaReclamo + 'T23:59:59' : '2100-12-31T23:59:59');
+params = params.set('fechaDesde', this.fechaDesdeReclamo != null ? this.fechaDesdeReclamo + 'T00:00:00' : 'null');
+params = params.set('fechaHasta', this.fechaHastaReclamo != null ? this.fechaHastaReclamo + 'T00:00:00' : 'null');
 params = params.set('estado', this.estadoReclamoSeleccionado || '');
 params = params.set('localidad', this.localidadSeleccionada || '');
 params = params.set('barrio', this.barrioSeleccionado || '');
@@ -477,12 +479,21 @@ async inicializarMapa() {
     this.map.remove();
     this.map = null;
   }
+  let coordenadasIniciales: [number, number] = [-34.505, -58.49]; // valor por defecto
 
-
-  const coordenadasIniciales = this.reclamos?.length
-    ? [this.reclamos[0].direccion.latitud, this.reclamos[0].direccion.longitud]
-    : [-34.505, -58.49];
-
+  if (this.mostrarMapaReclamos && this.reclamos?.length) {
+    const lat = this.reclamos[0].direccion.latitud;
+    const lon = this.reclamos[0].direccion.longitud;
+    if (lat != null && lon != null) {
+      coordenadasIniciales = [lat, lon];
+    }
+  } else if (this.mostrarMapaObras && this.obras?.length) {
+    const lat = this.obras[0].direccion.latitud;
+    const lon = this.obras[0].direccion.longitud;
+    if (lat != null && lon != null) {
+      coordenadasIniciales = [lat, lon];
+    }
+  }
   // Estilos base
   const osm = this.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
@@ -529,7 +540,14 @@ async inicializarMapa() {
 
   this.L.control.layers(baseMaps).addTo(this.map);
 
+  if(this.mostrarMapaReclamos && this.reclamos?.length){
   this.agregarMarcadoresReclamos();
+  }else if (this.mostrarMapaObras && this.obras?.length) {
+     this.agregarMarcadoresObras();
+
+
+  }
+
 
 
 
@@ -565,7 +583,12 @@ legend.onAdd = (map: any) => {
   legendBox.style.marginBottom = '5px';
 
   const legendTitle = document.createElement('h4');
-  legendTitle.textContent = 'Estado de Reclamos';
+  if(this.mostrarMapaObras){
+    legendTitle.textContent = 'Estado de Obras';
+  }else{
+       legendTitle.textContent = 'Estado de Reclamos';
+
+  }
   legendTitle.style.margin = '5px 0';
   legendTitle.id = 'legendTitle';
   legendBox.appendChild(legendTitle);
@@ -765,8 +788,9 @@ actualizarMapaCalor(): void {
     this.map.removeLayer(this.heatLayer);
   }
 
-  // Crear puntos según filtro
+
   let heatPoints: [number, number][] = [];
+  if(this.mostrarMapaReclamos){
   if (this.grupoPorCalor === 'estado') {
     heatPoints = this.reclamos
       .filter(r => r.estado?.descripcion !== 'Cerrado' && r.direccion.latitud && r.direccion.longitud)
@@ -780,7 +804,26 @@ actualizarMapaCalor(): void {
       ) && r.direccion.latitud && r.direccion.longitud)
       .map(r => [r.direccion.latitud!, r.direccion.longitud!] as [number, number]);
   }
+}else if(this.mostrarMapaObras){
+if (this.grupoPorCalorObra === 'estado') {
+    heatPoints = this.obras
+      .filter(o => o.estado?.descripcion !== 'Finalizada' && o.direccion.latitud && o.direccion.longitud)
+      .map(o => [o.direccion.latitud!, o.direccion.longitud!] as [number, number]);
+  }  else if (this.grupoPorCalorObra === 'fechaEstimadaAtrasada') {
+          const hoy = new Date();
 
+          heatPoints = this.obras
+            .filter(o =>
+              o.fecha_estimada_finalizacion &&
+              new Date(o.fecha_estimada_finalizacion) < hoy &&
+              (!o.fecha_real_finalizacion || new Date(o.fecha_real_finalizacion)>hoy) &&
+              o.direccion.latitud != null &&
+              o.direccion.longitud != null
+            )
+            .map(o => [o.direccion.latitud!, o.direccion.longitud!] as [number, number]);
+        }
+
+}
   // Crear heatLayer nuevo
   this.heatLayer = (this.L as any).heatLayer(heatPoints, {
     radius: 100,
@@ -803,10 +846,20 @@ actualizarMapaCalor(): void {
   this.heatLayer.addTo(this.map);
 
   // Crear nuevo control de capas con heatLayer actualizado
-  const overlayMaps = {
-    '🧩 Reclamos Agrupados': this.markerClusterGroup,
-    '🔥 Mapa de Calor': this.heatLayer
-  };
+  let overlayMaps=null;
+  if(this.mostrarMapaReclamos){
+     overlayMaps = {
+        '🧩 Reclamos Agrupados': this.markerClusterGroup,
+        '🔥 Mapa de Calor': this.heatLayer
+      };
+  }else if(this.mostrarMapaObras){
+       overlayMaps = {
+          '🧩 Obras Agrupadas': this.markerClusterGroup,
+          '🔥 Mapa de Calor': this.heatLayer
+        };
+  }
+
+
 
   this.layersControl = this.L.control.layers(undefined, overlayMaps, { collapsed: false }).addTo(this.map);
 }
@@ -837,6 +890,8 @@ getChartSizeClass(): string {
     this.tipoGraficoObra=!this.tipoGraficoObra;
 
     this.cargarFiltrosObra();
+    this.cargarGraficoObras();
+
   }
 
   mostrarMapaObrasBoton(){
@@ -849,6 +904,17 @@ getChartSizeClass(): string {
      this.tipoGraficoObra=false;
 
      this.cargarFiltrosObra();
+
+      if (this.mostrarMapaObras) {
+         setTimeout(() => {
+           this.inicializarMapa();
+         }, 300);
+       } else {
+         if (this.map) {
+           this.map.remove();
+           this.map = null;
+         }
+       }
   }
 
 cargarFiltrosObra(){
@@ -905,12 +971,12 @@ let params = new HttpParams();
 
 
   // Fechas obligatorias (siempre se envían)
-  params = params.set('fechaInicioDesde', this.fechaDesdeInicioObra ? this.fechaDesdeInicioObra+ 'T00:00:00': '1900-01-01T00:00:00');
-  params = params.set('fechaInicioHasta', this.fechaHastaInicioObra ? this.fechaHastaInicioObra+ 'T23:59:59': '2100-12-31T23:59:59');
-  params = params.set('fechaEstimadaFinDesde', this.fechaDesdeEstiObra ? this.fechaDesdeEstiObra+ 'T00:00:00': '1900-01-01T00:00:00');
-  params = params.set('fechaEstimadaFinHasta', this.fechaHastaEstiObra ? this.fechaHastaEstiObra+ 'T23:59:59': '2100-12-31T23:59:59');
-  params = params.set('fechaRealFinDesde', this.fechaDesdeRealObra  ? this.fechaDesdeRealObra+ 'T00:00:00': '1900-01-01T00:00:00');
-  params = params.set('fechaRealFinHasta', this.fechaHastaRealObra ? this.fechaHastaRealObra+ 'T23:59:59': '2100-12-31T23:59:59');
+  params = params.set('fechaInicioDesde', this.fechaDesdeInicioObra != null ? this.fechaDesdeInicioObra + 'T00:00:00' : 'null');
+  params = params.set('fechaInicioHasta', this.fechaHastaInicioObra != null ? this.fechaHastaInicioObra + 'T23:59:59' : 'null');
+  params = params.set('fechaEstimadaFinDesde', this.fechaDesdeEstiObra != null ? this.fechaDesdeEstiObra + 'T00:00:00' : 'null');
+  params = params.set('fechaEstimadaFinHasta', this.fechaHastaEstiObra != null ? this.fechaHastaEstiObra + 'T23:59:59' : 'null');
+  params = params.set('fechaRealFinDesde', this.fechaDesdeRealObra != null ? this.fechaDesdeRealObra + 'T00:00:00' : 'null');
+  params = params.set('fechaRealFinHasta', this.fechaHastaRealObra != null ? this.fechaHastaRealObra + 'T23:59:59' : 'null');
 
   params = params.set('tipoObra', this.tipoObraSeleccionado || '');
   params = params.set('estado', this.estadoObraSeleccionado || '');
@@ -932,7 +998,7 @@ let params = new HttpParams();
     }
 
     if (this.mostrarMapaObras) {
-      //this.agregarMarcadoresObras();
+      this.agregarMarcadoresObras();
     }
   });
 
@@ -1067,5 +1133,95 @@ private nombreMesAMesNumero(nombreMes: string): string {
   };
   return meses[nombreMes.toLowerCase()] || '01';
 }
+
+
+private agregarMarcadoresObras() {
+  if (!this.map || !this.obras) return;
+
+  if (this.markerClusterGroup) {
+    this.markerClusterGroup.clearLayers();
+    this.map.removeLayer(this.markerClusterGroup);
+    this.markerClusterGroup = null;
+  }
+
+  this.markerClusterGroup = this.L.markerClusterGroup();
+
+  this.obras.forEach(obra => {
+    const direccion = obra.direccion;
+    if (direccion?.latitud && direccion?.longitud) {
+      const estado = obra.estado?.descripcion;
+      let iconUrl = 'assets/leaflet/marker-icon-red.png';
+      if (estado === 'Finalizada') {
+        iconUrl = 'assets/leaflet/marker-icon-green.png';
+      } else if (estado === 'En ejecución') {
+        iconUrl = 'assets/leaflet/marker-icon-yellow.png';
+      }
+
+      const icono = this.L.icon({
+        iconUrl,
+        shadowUrl: 'assets/leaflet/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+      });
+
+      const marker = this.L.marker(
+        [direccion.latitud, direccion.longitud],
+        { icon: icono, estado: estado || 'Otro' }
+      ).bindPopup(`
+         <b>${obra.nombre || ''}</b><br>
+         <b>Estado:</b> ${estado || ''}<br>
+         <b>Tipo:</b> ${obra.tipo_obra?.descripcion || ''}<br>
+         <b>Avance:</b> ${obra.avance_fisico || 0}%<br>
+         <b>Monto presupuestado:</b> ${obra.monto_presupuestado || 0}%<br>
+         <b>Monto ejecutado:</b> ${obra.monto_ejecutado || 0}%<br>
+         <b>Inicio:</b> ${obra.fecha_inicio?.slice(0, 10) || 'N/D'}<br>
+         <b>Finalizacion estimada:</b> ${obra.fecha_estimada_finalizacion?.slice(0, 10) || 'N/D'}<br>
+<b>Finalización real:</b> ${
+  obra.fecha_real_finalizacion &&
+  new Date(obra.fecha_real_finalizacion) < new Date()
+    ? obra.fecha_real_finalizacion.slice(0, 10)
+    : 'N/D'
+}<br>         <b>Localidad:</b> ${obra.direccion.localidad || ''}<br>
+         <b>Barrio:</b> ${obra.direccion.barrio || ''}<br>
+         <b>Calle y número:</b> ${obra.direccion.calle || ''} ${obra.direccion.numeroCalle || ''}
+       `);
+
+      this.markerClusterGroup.addLayer(marker);
+    }
+  });
+    // Tooltip en clusters con desglose por estado
+    this.markerClusterGroup.on('clustermouseover', (a: any) => {
+      const markers = a.layer.getAllChildMarkers();
+      const conteo = { Finalizada: 0, 'En ejecución': 0, Otro: 0 };
+
+      markers.forEach((marker: any) => {
+        const estado = marker.options.estado;
+        if (estado === 'Finalizada') conteo.Finalizada++;
+        else if (estado === 'En ejecución') conteo['En ejecución']++;
+        else conteo.Otro++;
+      });
+
+      const popup = this.L.popup()
+        .setLatLng(a.layer.getLatLng())
+        .setContent(`
+          <b>Obras agrupadas:</b><br>
+          ✅ Finalizadas: ${conteo.Finalizada}<br>
+          ⏳ En Ejecucion: ${conteo['En ejecución']}<br>
+          ❗ Otras: ${conteo.Otro}
+        `)
+        .openOn(this.map);
+    });
+
+    this.markerClusterGroup.on('clustermouseout', () => {
+      this.map!.closePopup();
+    });
+
+    // Agregar al mapa
+    this.map.addLayer(this.markerClusterGroup);
+  }
+
+
 
 }

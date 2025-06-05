@@ -333,12 +333,12 @@ public class ObraPublicaController {
 
     @GetMapping("/buscarObras")
     public List<ObraPublica> buscarObras(
-            @RequestParam String fechaInicioDesde,
-            @RequestParam String fechaInicioHasta,
-            @RequestParam String fechaEstimadaFinDesde,
-            @RequestParam String fechaEstimadaFinHasta,
-            @RequestParam String fechaRealFinDesde,
-            @RequestParam String fechaRealFinHasta,
+            @RequestParam(required = false) String fechaInicioDesde,
+            @RequestParam(required = false) String fechaInicioHasta,
+            @RequestParam(required = false) String fechaEstimadaFinDesde,
+            @RequestParam(required = false) String fechaEstimadaFinHasta,
+            @RequestParam(required = false) String fechaRealFinDesde,
+            @RequestParam(required = false) String fechaRealFinHasta,
             @RequestParam(required = false) String tipoObra,
             @RequestParam(required = false) String estado,
             @RequestParam(required = false) Double avanceFisicoMayor,
@@ -350,15 +350,14 @@ public class ObraPublicaController {
             @RequestParam(required = false) String localidad,
             @RequestParam(required = false) String barrio
     ) {
-
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
-        LocalDateTime inicioDesde = LocalDateTime.parse(fechaInicioDesde, formatter);
-        LocalDateTime inicioHasta = LocalDateTime.parse(fechaInicioHasta, formatter);
-        LocalDateTime estimadaDesde = LocalDateTime.parse(fechaEstimadaFinDesde, formatter);
-        LocalDateTime estimadaHasta = LocalDateTime.parse(fechaEstimadaFinHasta, formatter);
-        LocalDateTime realDesde = LocalDateTime.parse(fechaRealFinDesde, formatter);
-        LocalDateTime realHasta = LocalDateTime.parse(fechaRealFinHasta, formatter);
+        LocalDateTime inicioDesde = parseFecha(fechaInicioDesde, formatter);
+        LocalDateTime inicioHasta = parseFecha(fechaInicioHasta, formatter);
+        LocalDateTime estimadaDesde = parseFecha(fechaEstimadaFinDesde, formatter);
+        LocalDateTime estimadaHasta = parseFecha(fechaEstimadaFinHasta, formatter);
+        LocalDateTime realDesde = parseFecha(fechaRealFinDesde, formatter);
+        LocalDateTime realHasta = parseFecha(fechaRealFinHasta, formatter);
 
         return obraPublicaService.buscarConFiltros(
                 inicioDesde,
@@ -378,6 +377,12 @@ public class ObraPublicaController {
                 localidad,
                 barrio
         );
+    }
+    private LocalDateTime parseFecha(String valor, DateTimeFormatter formatter) {
+        if (valor == null || valor.equalsIgnoreCase("null")) {
+            return null;
+        }
+        return LocalDateTime.parse(valor, formatter);
     }
 
 

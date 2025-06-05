@@ -197,8 +197,8 @@
         <div class="filtro-item" *ngIf="mostrarMapaReclamos">
           <label>Mapa de calor por:</label>
           <select [(ngModel)]="grupoPorCalor" (change)="actualizarAgrupamientoMapa()">
-            <option value="estado">Estado</option>
-            <option value="satisfaccion">Nivel de Satisfacción</option>
+            <option value="estado">Reclamos abiertos</option>
+            <option value="satisfaccion">Nivel de Satisfacción Bajo</option>
           </select>
         </div>
 
@@ -325,8 +325,9 @@
 
         <div class="filtro-item" *ngIf="mostrarMapaObras">
           <label>Mapa de calor por:</label>
-          <select [(ngModel)]="grupoPorCalor" (change)="actualizarAgrupamientoMapa()">
-            <option value="estado">Estado</option>
+          <select [(ngModel)]="grupoPorCalorObra" (change)="actualizarAgrupamientoMapa()">
+            <option value="estado">Obras pendientes</option>
+            <option value="fechaEstimadaAtrasada">Fecha estimada de finalización sobrepasada</option>
           </select>
         </div>
 
@@ -381,7 +382,7 @@
     </div>
 
     <!-- SECCIÓN MAPA -->
-    <div *ngIf="mostrarMapaReclamos" class="mapa-reclamos">
+    <div *ngIf="mostrarMapaReclamos || mostrarMapaObras" class="mapa-reclamos">
 
       <div class="mapa" id="map"></div>
     </div>

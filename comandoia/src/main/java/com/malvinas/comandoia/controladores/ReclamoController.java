@@ -344,17 +344,21 @@ public class ReclamoController {
 
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
-        LocalDateTime fechaInicio = fechaDesde != null ? LocalDateTime.parse(fechaDesde, formatter) : null;
-        LocalDateTime fechaFin = fechaHasta != null ? LocalDateTime.parse(fechaHasta, formatter) : null;
+        LocalDateTime fechaInicio =parseFecha(fechaDesde, formatter);
+        LocalDateTime fechaFin = parseFecha(fechaHasta, formatter);
 
-        System.out.println("adasdasdasdas:"+fechaInicio);
-        System.out.println("adasdasdasdas:"+fechaFin);
+
 
         return reclamoService.buscarConFiltros(
                 fechaInicio,fechaFin ,estado, localidad, barrio,
                 tipoReclamo, nivelSatisfaccion, tiempoResolucionMayor, tiempoResolucionMenor
         );
     }
-
+    private LocalDateTime parseFecha(String valor, DateTimeFormatter formatter) {
+        if (valor == null || valor.equalsIgnoreCase("null")) {
+            return null;
+        }
+        return LocalDateTime.parse(valor, formatter);
+    }
 
 }
