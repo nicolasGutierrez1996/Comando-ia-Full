@@ -424,8 +424,8 @@ aplicarFiltros() {
 let params = new HttpParams();
     params = params.set('fechaInicioDesde', this.fechaDesdeInicioObra != null ? this.fechaDesdeInicioObra + 'T00:00:00' : 'null');
 
-params = params.set('fechaDesde', this.fechaDesdeReclamo != null ? this.fechaDesdeReclamo + 'T00:00:00' : 'null');
-params = params.set('fechaHasta', this.fechaHastaReclamo != null ? this.fechaHastaReclamo + 'T00:00:00' : 'null');
+params = params.set('fechaDesde', this.fechaDesdeReclamo != null &&  this.fechaDesdeReclamo!=''? this.fechaDesdeReclamo + 'T00:00:00' : 'null');
+params = params.set('fechaHasta', this.fechaHastaReclamo != null &&  this.fechaHastaReclamo!=''? this.fechaHastaReclamo + 'T00:00:00' : 'null');
 params = params.set('estado', this.estadoReclamoSeleccionado || '');
 params = params.set('localidad', this.localidadSeleccionada || '');
 params = params.set('barrio', this.barrioSeleccionado || '');
@@ -1051,12 +1051,12 @@ let params = new HttpParams();
 
 
   // Fechas obligatorias (siempre se envían)
-  params = params.set('fechaInicioDesde', this.fechaDesdeInicioObra != null ? this.fechaDesdeInicioObra + 'T00:00:00' : 'null');
-  params = params.set('fechaInicioHasta', this.fechaHastaInicioObra != null ? this.fechaHastaInicioObra + 'T23:59:59' : 'null');
-  params = params.set('fechaEstimadaFinDesde', this.fechaDesdeEstiObra != null ? this.fechaDesdeEstiObra + 'T00:00:00' : 'null');
-  params = params.set('fechaEstimadaFinHasta', this.fechaHastaEstiObra != null ? this.fechaHastaEstiObra + 'T23:59:59' : 'null');
-  params = params.set('fechaRealFinDesde', this.fechaDesdeRealObra != null ? this.fechaDesdeRealObra + 'T00:00:00' : 'null');
-  params = params.set('fechaRealFinHasta', this.fechaHastaRealObra != null ? this.fechaHastaRealObra + 'T23:59:59' : 'null');
+  params = params.set('fechaInicioDesde', this.fechaDesdeInicioObra != null &&  this.fechaDesdeInicioObra!='' ? this.fechaDesdeInicioObra + 'T00:00:00' : 'null');
+  params = params.set('fechaInicioHasta', this.fechaHastaInicioObra != null &&  this.fechaHastaInicioObra!='' ? this.fechaHastaInicioObra + 'T23:59:59' : 'null');
+  params = params.set('fechaEstimadaFinDesde', this.fechaDesdeEstiObra != null &&  this.fechaDesdeEstiObra!=''  ? this.fechaDesdeEstiObra + 'T00:00:00' : 'null');
+  params = params.set('fechaEstimadaFinHasta', this.fechaHastaEstiObra != null &&  this.fechaHastaEstiObra!='' ? this.fechaHastaEstiObra + 'T23:59:59' : 'null');
+  params = params.set('fechaRealFinDesde', this.fechaDesdeRealObra != null &&  this.fechaDesdeRealObra!='' ? this.fechaDesdeRealObra + 'T00:00:00' : 'null');
+  params = params.set('fechaRealFinHasta', this.fechaHastaRealObra != null &&  this.fechaHastaRealObra!='' ? this.fechaHastaRealObra + 'T23:59:59' : 'null');
 
   params = params.set('tipoObra', this.tipoObraSeleccionado || '');
   params = params.set('estado', this.estadoObraSeleccionado || '');
