@@ -134,7 +134,7 @@ public class GeocodingService {
             sb.append(", ").append(dir.getLocalidad().trim());
         }
 
-        sb.append(", Buenos Aires, Argentina");
+        sb.append(", Malvinas Argentinas, Buenos Aires, Argentina");
         return sb.toString().replaceAll("\\s+", " ").trim();
     }
 }

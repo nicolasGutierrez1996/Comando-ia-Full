@@ -102,18 +102,7 @@
         </div>
       </div>
 
-      <div class="chat-container">
-        <input type="checkbox" id="chat-toggle">
-        <label for="chat-toggle" class="chat-button">💬</label>
 
-        <div class="chat-box">
-          <div class="chat-header">IA CHAT</div>
-          <div class="chat-body">
-            <p>Hola, ¿en qué puedo ayudarte?<br>Pregunta lo que quieras…</p>
-            <input type="text" placeholder="Escribe un mensaje…">
-          </div>
-        </div>
-      </div>
     </div>
 
 
@@ -388,6 +377,36 @@
     </div>
 
 
+
+  </div>
+
+  <div class="chat-container">
+    <input type="checkbox" id="chat-toggle">
+    <label for="chat-toggle" class="chat-button">💬</label>
+
+    <div class="chat-box">
+      <div class="chat-header">IA CHAT</div>
+
+      <div class="chat-body">
+        <p *ngIf="!respuestaIA">
+          Hola, ¿en qué puedo ayudarte?<br>Pregunta lo que quieras…
+        </p>
+
+        <!-- Mostrar respuesta en Markdown si existe -->
+        <div *ngIf="respuestaIA">
+          <markdown [data]="respuestaIA"></markdown>
+        </div>
+
+        <!-- Input del usuario -->
+        <input
+          type="text"
+          [(ngModel)]="mensajeUsuario"
+          (keydown.enter)="enviarMensaje()"
+          placeholder="Escribe un mensaje…"
+          class="form-control mt-2"
+        />
+      </div>
+    </div>
   </div>
 </div>
 

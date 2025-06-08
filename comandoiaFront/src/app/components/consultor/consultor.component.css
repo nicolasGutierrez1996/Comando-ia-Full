@@ -652,11 +652,12 @@ grid-template-columns: repeat(4, minmax(120px, 1fr));
 
        /* CHAT FIJO DESPLEGABLE */
       .chat-container {
-        position: fixed;
         bottom: 20px;
         right: 20px;
         z-index: 999;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        position: absolute;
+          z-index: 9999; /* Asegurá también este */
       }
 
       #chat-toggle {
@@ -689,11 +690,22 @@ grid-template-columns: repeat(4, minmax(120px, 1fr));
         box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         overflow: hidden;
         animation: fadeIn 0.3s ease;
+
+         max-height: 80vh;
+          display: flex;
+          flex-direction: column;
+          z-index: 9999;
       }
 
-      #chat-toggle:checked + .chat-button + .chat-box {
-        display: block;
-      }
+  #chat-toggle:not(:checked) ~ .chat-box {
+    display: none;
+  }
+
+  /* visible cuando está tildado */
+  #chat-toggle:checked ~ .chat-box {
+    display: flex;
+    flex-direction: column;
+  }
 
       .chat-header {
         background: #1e88e5;
@@ -707,12 +719,18 @@ grid-template-columns: repeat(4, minmax(120px, 1fr));
       .chat-body {
         padding: 15px;
         background-color: #f9f9f9;
+          max-height: 60vh;
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+
       }
 
       .chat-body p {
         margin-bottom: 12px;
         line-height: 1.5;
         color: #333;
+
       }
 
       .chat-body input {

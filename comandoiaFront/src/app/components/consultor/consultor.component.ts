@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { map } from 'rxjs/operators';
 import { ObrasService,ObraConDescripciones} from '../../services/obras.service';
 import { ReclamosService,ReclamoConDescripciones} from '../../services/reclamos.service';
+import { MarkdownModule } from 'ngx-markdown';
 
 import { HttpParams } from '@angular/common/http';
 
@@ -15,7 +16,7 @@ import { TipoReclamosService} from '../../services/tipoReclamo.service';
 import { EstadoReclamoService} from '../../services/estadoReclamo.service';
 import { TipoObrasService} from '../../services/tipoObras.service';
 import { EstadoObrasService} from '../../services/estadoObras.service';
-
+import { GptService } from '../../services/gpt.service';
 
 import { ChartData, ChartOptions,ChartType  } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
@@ -25,14 +26,18 @@ import * as L from 'leaflet';
 @Component({
   selector: 'app-consultor',
   standalone: true,
-  imports: [CommonModule,FormsModule, NgChartsModule],
+  imports: [CommonModule,FormsModule, NgChartsModule,MarkdownModule],
   templateUrl: './consultor.component.html',
   styleUrl: './consultor.component.css',
   encapsulation: ViewEncapsulation.None
 })
 export class ConsultorComponent {
 
-mostrarInicio:boolean=false;
+//GPT
+mensajeUsuario = '';
+respuestaIA = '';
+
+mostrarInicio:boolean=true;
 mostrarGraficosReclamos:boolean=false;
 mostrarMapaReclamos:boolean=false;
 
@@ -118,7 +123,8 @@ constructor(
   private estadoObrasService: EstadoObrasService,
   private tipoObrasSservice:TipoObrasService,
   private nivelSatisfaccionService: NivelSatisfaccionService,
-  private tipoReclamosService: TipoReclamosService
+  private tipoReclamosService: TipoReclamosService,
+  private gptService: GptService
 ) {}
 
  ngOnInit(): void {
@@ -455,6 +461,10 @@ async cargarLeafletYCluster() {
   await import('leaflet');
   await import('leaflet.markercluster');
   await import('leaflet.heat');
+  await import('leaflet.fullscreen');
+
+
+
 
   // Usar el objeto global window.L, porque el plugin extiende ese objeto
   this.L = (window as any).L;
@@ -524,10 +534,66 @@ async inicializarMapa() {
 
   // Inicializar mapa con capa base
   this.map = this.L.map('map', {
+
     center: coordenadasIniciales as [number, number],
     zoom: 13,
     layers: [osm]
   });
+
+if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+  const customFullscreenControl = this.L.control({ position: 'topleft' });
+
+  customFullscreenControl.onAdd = () => {
+    const container = this.L.DomUtil.create('div', 'leaflet-bar');
+
+    const boton = document.createElement('button');
+    boton.title = 'Pantalla completa';
+    boton.style.backgroundImage = 'url("assets/leaflet/agrandar-mapa.png")';
+    boton.style.backgroundSize = '26px 26px';
+    boton.style.backgroundRepeat = 'no-repeat';
+    boton.style.backgroundPosition = 'center';
+    boton.style.width = '34px';
+    boton.style.height = '34px';
+    boton.style.border = 'none';
+    boton.style.cursor = 'pointer';
+    boton.style.display = 'block';
+
+    container.appendChild(boton);
+
+    let estaEnFullscreen = false;
+
+    boton.addEventListener('click', (e: MouseEvent) => {
+      e.stopPropagation();
+
+     const elem = document.getElementById('map');
+     if (!elem) return;
+
+      if (!estaEnFullscreen) {
+        if (elem.requestFullscreen) elem.requestFullscreen();
+        else if ((elem as any).webkitRequestFullscreen) (elem as any).webkitRequestFullscreen();
+        else if ((elem as any).mozRequestFullScreen) (elem as any).mozRequestFullScreen();
+        else if ((elem as any).msRequestFullscreen) (elem as any).msRequestFullscreen();
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if ((document as any).webkitExitFullscreen) (document as any).webkitExitFullscreen();
+        else if ((document as any).mozCancelFullScreen) (document as any).mozCancelFullScreen();
+        else if ((document as any).msExitFullscreen) (document as any).msExitFullscreen();
+      }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+      estaEnFullscreen = !!document.fullscreenElement;
+      boton.style.backgroundImage = estaEnFullscreen
+        ? 'url("assets/leaflet/achicar-mapa.png")'
+        : 'url("assets/leaflet/agrandar-mapa.png")';
+    });
+
+    return container;
+  };
+
+  customFullscreenControl.addTo(this.map);
+}
+
 
   const baseMaps = {
     "🗺️ OpenStreetMap": osm,
@@ -559,9 +625,11 @@ if (this.layersControl) {
   this.map!.removeControl(this.layersControl);
 }
 
-// Agregar al control de capas
+
+
+
 const overlayMaps = {
-  '🧩 Reclamos Agrupados': this.markerClusterGroup,
+  '🧩 Puntos en el mapa': this.markerClusterGroup,
   '🔥 Mapa de Calor': this.heatLayer
 };
 
@@ -595,12 +663,24 @@ legend.onAdd = (map: any) => {
 
   const legendContent = document.createElement('div');
   legendContent.id = 'legendContent';
+   let estados: { iconUrl: string; label: string }[] = [];
+  if(this.mostrarMapaReclamos){
+     estados = [
+         { iconUrl: 'assets/leaflet/marker-icon-green.png', label: 'Cerrados' },
+         { iconUrl: 'assets/leaflet/marker-icon-yellow.png', label: 'En proceso' },
+         { iconUrl: 'assets/leaflet/marker-icon-red.png', label: 'Pendientes' },
+         { iconUrl: 'assets/leaflet/marker-icon-grey.png', label: 'Otros' }
+       ];
+  }else if(this.mostrarMapaObras){
+  estados = [
+           { iconUrl: 'assets/leaflet/marker-icon-green.png', label: 'Finalizada' },
+           { iconUrl: 'assets/leaflet/marker-icon-yellow.png', label: 'En ejecucion' },
+           { iconUrl: 'assets/leaflet/marker-icon-red.png', label: 'Planificada' },
+           { iconUrl: 'assets/leaflet/marker-icon-grey.png', label: 'Otros' }
+         ];
+  }
 
-  const estados = [
-    { iconUrl: 'assets/leaflet/marker-icon-green.png', label: 'Cerrados' },
-    { iconUrl: 'assets/leaflet/marker-icon-yellow.png', label: 'En proceso' },
-    { iconUrl: 'assets/leaflet/marker-icon-red.png', label: 'Pendientes' }
-  ];
+
 
   estados.forEach(e => {
     const item = document.createElement('div');
@@ -702,20 +782,20 @@ private agregarMarcadoresReclamos() {
     this.markerClusterGroup = null;
   }
 
-  // Crear grupo cluster con estilo por defecto
   this.markerClusterGroup = this.L.markerClusterGroup();
 
-  // Agregar marcadores con estado como opción
   this.reclamos.forEach(reclamo => {
     if (reclamo.direccion?.latitud && reclamo.direccion?.longitud) {
       const estado = reclamo.estado?.descripcion;
-      let iconUrl = 'assets/leaflet/marker-icon-red.png'; // default
+      let iconUrl = 'assets/leaflet/marker-icon-grey.png'; // default
 
       if (estado === 'Cerrado') {
         iconUrl = 'assets/leaflet/marker-icon-green.png';
       } else if (estado === 'En Proceso') {
         iconUrl = 'assets/leaflet/marker-icon-yellow.png';
-      }
+      }else if (estado === 'Abierto') {
+               iconUrl = 'assets/leaflet/marker-icon-red.png';
+             }
 
       const icono = this.L.icon({
         iconUrl,
@@ -1150,12 +1230,14 @@ private agregarMarcadoresObras() {
     const direccion = obra.direccion;
     if (direccion?.latitud && direccion?.longitud) {
       const estado = obra.estado?.descripcion;
-      let iconUrl = 'assets/leaflet/marker-icon-red.png';
+      let iconUrl = 'assets/leaflet/marker-icon-grey.png';
       if (estado === 'Finalizada') {
         iconUrl = 'assets/leaflet/marker-icon-green.png';
       } else if (estado === 'En ejecución') {
         iconUrl = 'assets/leaflet/marker-icon-yellow.png';
-      }
+      }else if (estado === 'Planificada') {
+               iconUrl = 'assets/leaflet/marker-icon-red.png';
+             }
 
       const icono = this.L.icon({
         iconUrl,
@@ -1174,8 +1256,8 @@ private agregarMarcadoresObras() {
          <b>Estado:</b> ${estado || ''}<br>
          <b>Tipo:</b> ${obra.tipo_obra?.descripcion || ''}<br>
          <b>Avance:</b> ${obra.avance_fisico || 0}%<br>
-         <b>Monto presupuestado:</b> ${obra.monto_presupuestado || 0}%<br>
-         <b>Monto ejecutado:</b> ${obra.monto_ejecutado || 0}%<br>
+         <b>Monto presupuestado:</b> ${obra.monto_presupuestado || 0}<br>
+         <b>Monto ejecutado:</b> ${obra.monto_ejecutado || 0}<br>
          <b>Inicio:</b> ${obra.fecha_inicio?.slice(0, 10) || 'N/D'}<br>
          <b>Finalizacion estimada:</b> ${obra.fecha_estimada_finalizacion?.slice(0, 10) || 'N/D'}<br>
 <b>Finalización real:</b> ${
@@ -1222,6 +1304,23 @@ private agregarMarcadoresObras() {
     this.map.addLayer(this.markerClusterGroup);
   }
 
+
+
+//GPT
+
+   enviarMensaje() {
+     const prompt = this.mensajeUsuario.trim();
+     if (!prompt) return;
+
+     this.respuestaIA = '⏳ Pensando...';
+
+     this.gptService.preguntar(prompt).subscribe(
+       res => this.respuestaIA = res.respuesta || '🤖 No se encontró respuesta.',
+       err => this.respuestaIA = '❌ Error al consultar la IA.'
+     );
+
+     this.mensajeUsuario = '';
+   }
 
 
 }

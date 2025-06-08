@@ -14,5 +14,8 @@ public interface ReclamoRepository  extends CrudRepository<Reclamo, Integer>,Rec
 
     Iterable<Reclamo> findByNombreContainingIgnoreCase(String nombre);
 
+    @Query("SELECT r.direccion.localidad, COUNT(r) FROM Reclamo r GROUP BY r.direccion.localidad")
+    List<Object[]> contarReclamosPorLocalidad();
+
 
 }

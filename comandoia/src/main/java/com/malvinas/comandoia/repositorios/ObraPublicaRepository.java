@@ -17,6 +17,10 @@ public interface ObraPublicaRepository extends CrudRepository<ObraPublica, Integ
     Iterable<ObraPublica> findByNombreContainingIgnoreCase(String nombre);
 
 
+    @Query("SELECT o.direccion.localidad, COUNT(o) FROM ObraPublica o where o.estado.descripcion='Planificada' GROUP BY o.direccion.localidad")
+    List<Object[]> contarObrasPendientesPorLocalidad();
+
+    List<ObraPublica> findByEstadoDescripcionContainingIgnoreCase(String descripcion);
 
 
 

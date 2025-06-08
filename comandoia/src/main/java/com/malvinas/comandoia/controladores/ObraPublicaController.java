@@ -121,6 +121,30 @@ public class ObraPublicaController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
+        Direccion dirExistente = existente.get().getDireccion();
+        Direccion dirNueva = obraPublica.getDireccion();
+
+        boolean cambioDireccion =
+                (dirExistente.getLocalidad() == null ? dirNueva.getLocalidad() != null : !dirExistente.getLocalidad().equals(dirNueva.getLocalidad())) ||
+                        (dirExistente.getBarrio() == null ? dirNueva.getBarrio() != null : !dirExistente.getBarrio().equals(dirNueva.getBarrio())) ||
+                        (dirExistente.getCalle() == null ? dirNueva.getCalle() != null : !dirExistente.getCalle().equals(dirNueva.getCalle())) ||
+                        (dirExistente.getNumeroCalle() == null ? dirNueva.getNumeroCalle() != null : !dirExistente.getNumeroCalle().equals(dirNueva.getNumeroCalle()));
+
+        if (cambioDireccion) {
+            System.out.println("Cambio la direccion");
+            dirExistente.setCalle(dirNueva.getCalle());
+            dirExistente.setBarrio(dirNueva.getBarrio());
+            dirExistente.setLocalidad(dirNueva.getLocalidad());
+            dirExistente.setNumeroCalle(dirNueva.getNumeroCalle());
+            dirExistente.setLatitud(null);
+            dirExistente.setLongitud(null);
+            direccionService.guardarDireccion(dirExistente);
+        }
+
+
+
+        obraPublica.setDireccion(dirExistente);
+
         obraPublica.setId(id);
         ObraPublica actualizada = obraPublicaService.guardarObraPublica(obraPublica);
         response.put("success", true);

@@ -29,4 +29,21 @@ public class FuncionesVarias {
         return sb.toString();
 
     }
+
+
+    public boolean esPreguntaPermitida(String prompt) {
+        String lower = prompt.toLowerCase();
+
+        return lower.contains("reclamo") ||
+                lower.contains("obra") ||
+                lower.contains("intendente") ||
+                lower.contains("solucionar") ||
+                lower.contains("satisfacción") ||
+                lower.contains("mapa") ||
+                lower.contains("malvinas") ||
+                lower.contains("seguridad") ||
+                lower.contains("educación") ||
+                lower.contains("infraestructura") ||
+                lower.contains("municipio");
+    }
 }
