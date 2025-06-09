@@ -1,0 +1,14 @@
+<div class="chat-container">
+  <div class="chat-mensajes">
+    <div class="mensaje" *ngFor="let msg of mensajes" [ngClass]="msg.autor">
+      <markdown [data]="msg.texto"></markdown>
+
+    </div>
+
+  <div class="input-container">
+    <input [(ngModel)]="inputTexto" (keydown.enter)="enviarMensaje()" placeholder="Escribí tu consulta..." />
+    <button (click)="enviarMensaje()">Enviar</button>
+  </div>
+</div>
+</div>
+

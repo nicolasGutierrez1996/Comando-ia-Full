@@ -28,7 +28,7 @@
       </li>
     </ul>
 
-    <button class="btn-ia-malvinas">
+    <button class="btn-ia-malvinas" (click)="mostrarChatGpt()">
       <span>💬 HABLAR CON IA MALVINAS</span>
     </button>
     <button class="boton-volver">Volver hacia atrás</button>
@@ -54,51 +54,47 @@
             <div class="percentage">67%</div>
             <div class="label">Imagen Positiva<br>del intendente</div>
             <div class="change positive">↑ +1%</div>
-            <div class="ver-btn">Ver</div>
           </div>
 
           <div class="card">
             <div class="percentage">55%</div>
             <div class="label">Intención de Voto</div>
             <div class="change positive">↑ 4%</div>
-            <div class="ver-btn">Ver</div>
           </div>
 
           <div class="card">
             <div class="percentage">32</div>
             <div class="label">Obras públicas<br>en ejecución</div>
             <div class="change positive">↑ 3%</div>
-            <div class="ver-btn">Ver</div>
           </div>
 
           <div class="card">
             <div class="percentage">3.425</div>
             <div class="label">Reclamos Vecinales</div>
             <div class="change negative">↓ -2%</div>
-            <div class="ver-btn">Ver</div>
           </div>
         </div>
       </div>
       <div class="contenedor-principal">
         <div class="tarjeta alerta">
           <h3>🔴 ALERTA CRÍTICA</h3>
-          <p><strong>Incremento Delictivo en Villa de Mayo</strong></p>
-          <p>+29% de robos reportados en los últimos 15 días, con epicentro en el eje Gervasio Méndez - Mitre</p>
-          <p><strong>⚠ Acción:</strong> activar Comité de Crisis con Seguridad, sumar rondines con móviles y presencia institucional</p>
+          <p><strong>Incremento Delictivo en Grand Bourg</strong></p>
+          <p>+29% de robos reportados en los últimos 15 días en Grand Bourg</p>
+          <p><strong>⚠ Acción:</strong> activar Comité de Crisis con Seguridad</p>
         </div>
 
         <div class="tarjeta recomendacion">
           <h3>🟡 RECOMENDACIÓN</h3>
           <p><strong>Refuerzo Comunicacional de Obras en Ejecución</strong></p>
-          <p>Muchas obras con alta inversión no están siendo visibilizadas.</p>
-          <p><strong>✔ Recomendación:</strong> Implementar señalética territorial + posteos sectoriales con testimonio vecino</p>
+          <p>Muchas obras con alta inversión no son visibles.</p>
+          <p><strong>✔ Recomendación:</strong> Implementar señalética territorial</p>
         </div>
 
         <div class="tarjeta sugerencia">
           <h3>🔵 SUGERENCIA</h3>
-          <p><strong>Segmentar la narrativa política por grupo etario</strong></p>
-          <p>No todos los públicos responden igual al mensaje de gestión.</p>
-          <p><strong>💡 Sugerencia:</strong> Jóvenes: futuro y empleo. Adultos: seguridad y limpieza. Mayores: cercanía y salud</p>
+          <p><strong>Segmentar discurso político a grupos etarios</strong></p>
+          <p>No todos los sectores responden igual.</p>
+          <p><strong>💡 Sugerencia:</strong> Jóvenes: empleo. Adultos: seguridad. Mayores: salud</p>
         </div>
       </div>
 
@@ -376,38 +372,44 @@
       <div class="mapa" id="map"></div>
     </div>
 
+    <div class="chat-container" *ngIf="!chatGpt">
+      <input type="checkbox" id="chat-toggle">
+      <label for="chat-toggle" class="chat-button">💬</label>
 
+      <div class="chat-box">
+        <div class="chat-header">IA CHAT</div>
 
-  </div>
+        <div class="chat-body">
+          <p *ngIf="!respuestaIA">
+            Hola, ¿en qué puedo ayudarte?<br>Pregunta lo que quieras…
+          </p>
 
-  <div class="chat-container">
-    <input type="checkbox" id="chat-toggle">
-    <label for="chat-toggle" class="chat-button">💬</label>
+          <!-- Mostrar respuesta en Markdown si existe -->
+          <div *ngIf="respuestaIA">
+            <markdown [data]="respuestaIA"></markdown>
+          </div>
 
-    <div class="chat-box">
-      <div class="chat-header">IA CHAT</div>
-
-      <div class="chat-body">
-        <p *ngIf="!respuestaIA">
-          Hola, ¿en qué puedo ayudarte?<br>Pregunta lo que quieras…
-        </p>
-
-        <!-- Mostrar respuesta en Markdown si existe -->
-        <div *ngIf="respuestaIA">
-          <markdown [data]="respuestaIA"></markdown>
+          <!-- Input del usuario -->
+          <input
+            type="text"
+            [(ngModel)]="mensajeUsuario"
+            (keydown.enter)="enviarMensaje()"
+            placeholder="Escribe un mensaje…"
+            class="form-control mt-2"
+          />
         </div>
-
-        <!-- Input del usuario -->
-        <input
-          type="text"
-          [(ngModel)]="mensajeUsuario"
-          (keydown.enter)="enviarMensaje()"
-          placeholder="Escribe un mensaje…"
-          class="form-control mt-2"
-        />
       </div>
     </div>
+
+    <div *ngIf="chatGpt">
+      <app-chat-ia></app-chat-ia>
+    </div>
+
   </div>
+
+
+
+
 </div>
 
 

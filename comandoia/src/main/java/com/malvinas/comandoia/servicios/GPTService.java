@@ -162,7 +162,7 @@ public class GPTService {
                  Por ejemplo, si el primer SELECT tiene 11 columnas, el segundo también debe tener 11, aunque algunas sean NULL.
                  
                  🛠️ Ejemplo :
-              
+                              
                  SELECT
                    op.descripcion AS descripcion_obra,
                    op.nombre AS nombre_obra,
@@ -202,7 +202,7 @@ public class GPTService {
                 📌 Comparación de texto:
                                            
                 Nunca uses =, siempre ILIKE '%valor%'.
-                
+                                
                 Si necesitás filtrar por el estado de una obra (por ejemplo, "finalizada", "en ejecución"), no lo hagas sobre estado_id directamente. Primero hacé JOIN con la tabla estado_obra, y filtrá por estado_obra.descripcion.
                                            
                 📌 Fechas:
@@ -404,8 +404,32 @@ public class GPTService {
                 Ejemplo: si reclamos tiene nivel_satisfaccion y obras no, agregá NULL AS nivel_satisfaccion en la parte de obras.
                                 
                 Usá UNION ALL para evitar pérdida de registros por deduplicación.
+                                
+                IMPORTANTE – INSTRUCCIÓN SOBRE NIVELES DE SATISFACCIÓN:
+                               
+                Cuando se soliciten porcentajes o promedios relacionados con el nivel de satisfacción de los reclamos:
+                               
+                1. Recordá que el campo `tipo_nivel_satisfaccion.descripcion` es un VARCHAR y sus valores pueden incluir sinónimos.\s
+                2. No agrupes directamente por `descripcion`. En su lugar, aplicá esta lógica semántica:
+                               
+                   - Satisfecho: incluye descripciones que contengan '%satisfecho%' (como "Satisfecho", "Muy satisfecho", etc.)
+                   - Insatisfecho: incluye descripciones que contengan '%insatisfecho%' (como "Insatisfecho", "Muy insatisfecho", etc.)
+                   - Neutral: cualquier descripción que NO contenga ni '%satisfecho%' ni '%insatisfecho%'
+                               
+                3. Si el análisis es sobre reclamos cerrados, primero filtrá por `estado_reclamo.descripcion ILIKE '%cerrado%'`, contá el total, y calculá el porcentaje de cada categoría sobre ese total.
+                               
+                4. Devolvé los porcentajes agrupados únicamente como: **Satisfecho, Neutral, Insatisfecho**.
+                               
+                Ejemplo de agrupación válida:
+                               
+                - Satisfecho: 50.0%
+                - Neutral: 33.3%
+                - Insatisfecho: 16.7%
                 
-                
+                IMPORTANTE LEELO:
+                Si hay riesgo de errores por acentos, sugerí:
+                - eliminar los acentos del texto antes de usarlo en la condición ILIKE.
+                Por ejemplo para Pablo Nogués
                                 
                                 """
 
@@ -645,6 +669,15 @@ public class GPTService {
                                                                                                                                                             
                                                                                                                                                             “En estas localidades se registran reclamos con satisfacción neutral. Esto representa una oportunidad para mejorar la percepción ciudadana, aunque podrían existir también reclamos positivos o negativos que requieren análisis complementario.”
                                                                                                                                                             
+                                                                                                                                                            IMPORTANTE:
+                                                                                                                                                            SI TE LLEGA UN COUNT O UN NUMERO COMO RESPUESTA VINCULA ESE NUMERO CON LA CONSULTA DEL USUARIO POR EJEMPLO:
+                                                                                                                                                            - Respuesta SQL: 10
+                                                                                                                                                            - Consulta: ¿Cuantos reclamos de luz se registraron en los ultimos 5 años?
+                                                                                                                                                            - Respuesta: se registraron 10 reclamos de luz en los ultimos 5 años
+                                                                                                                                                            
+                                                                                                                                                            
+                                                                                                                                                            IMPORTANTE:
+                                                                                                                                                            AGRUPA LOS RESULTADOS DE SATISFECHO Y MUY SATISFECHO SI ES QUE EL USUARIO NO SOLICITO
                 """;
 
         String datos = resultados.isEmpty()

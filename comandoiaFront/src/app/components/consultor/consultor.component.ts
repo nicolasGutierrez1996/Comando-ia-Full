@@ -20,13 +20,15 @@ import { GptService } from '../../services/gpt.service';
 
 import { ChartData, ChartOptions,ChartType  } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
+import { ChatIaComponent } from './chat-ia/chat-ia.component';
+
 
 import * as L from 'leaflet';
 
 @Component({
   selector: 'app-consultor',
   standalone: true,
-  imports: [CommonModule,FormsModule, NgChartsModule,MarkdownModule],
+  imports: [CommonModule,FormsModule, NgChartsModule,MarkdownModule,ChatIaComponent],
   templateUrl: './consultor.component.html',
   styleUrl: './consultor.component.css',
   encapsulation: ViewEncapsulation.None
@@ -113,6 +115,10 @@ fechaHastaEstiObra: string | null = null;
 fechaDesdeRealObra: string | null = null;
 fechaHastaRealObra: string | null = null;
 grupoPorObra: string = 'estado';
+
+
+//IA CHAT
+chatGpt:boolean=false;
 
 constructor(
   private router: Router,
@@ -250,6 +256,7 @@ get chartOptions(): ChartOptions {
   this.mostrarGraficosObras=false;
   this.tipoGrafico=false;
   this.tipoGraficoObra=false;
+  this.chatGpt=false;
 
   }
   mostrarGraficosReclamosBoton(){
@@ -260,6 +267,7 @@ get chartOptions(): ChartOptions {
   this.mostrarGraficosObras=false;
   this.mostrarMapaObras=false;
   this.tipoGraficoObra=false;
+  this.chatGpt=false;
 
     this.cargarFiltrosReclamo();
     this.cargarGraficoAgrupado();
@@ -758,6 +766,7 @@ mostrarMapaReclamosBoton() {
   this.mostrarGraficosObras=false;
   this.mostrarMapaObras=false;
   this.tipoGraficoObra=false;
+  this.chatGpt=false;
   this.cargarFiltrosReclamo();
 
   if (this.mostrarMapaReclamos) {
@@ -967,6 +976,7 @@ getChartSizeClass(): string {
     this.mostrarMapaReclamos=false;
     this.mostrarMapaObras=false;
     this.tipoGrafico=false;
+    this.chatGpt=false;
     this.tipoGraficoObra=!this.tipoGraficoObra;
 
     this.cargarFiltrosObra();
@@ -982,6 +992,7 @@ getChartSizeClass(): string {
      this.mostrarGraficosReclamos=false;
      this.tipoGrafico=false;
      this.tipoGraficoObra=false;
+     this.chatGpt=false;
 
      this.cargarFiltrosObra();
 
@@ -1321,6 +1332,23 @@ private agregarMarcadoresObras() {
 
      this.mensajeUsuario = '';
    }
+
+//CHAT CON HISTORIAL GPT
+
+ mostrarChatGpt(){
+
+ this.chatGpt=!this.chatGpt;
+
+   this.mostrarInicio=false;
+   this.mostrarGraficosReclamos=false;
+   this.mostrarMapaReclamos=false;
+   this.mostrarMapaObras=false;
+   this.mostrarGraficosObras=false;
+   this.tipoGrafico=false;
+   this.tipoGraficoObra=false;
+
+
+ }
 
 
 }
