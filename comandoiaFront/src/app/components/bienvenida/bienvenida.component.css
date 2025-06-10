@@ -8,15 +8,14 @@ html, body {
 }
 
 .titulo {
-   color: white;
-     font-size: 2rem;
-     font-weight: bold;
-     margin: 0;
-     letter-spacing: 2px;
-    text-align: center;
-    margin-top: 30px;
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 30px 0 0;
+  letter-spacing: 2px;
+  text-align: center;
+}
 
-  }
 .mensaje-error {
   color: #d32f2f;
   font-weight: 600;
@@ -30,20 +29,18 @@ html, body {
   font-family: 'Roboto', sans-serif;
 }
 
-  .subtitulo {
-    color: #34b7f1;
-    font-size: 24px;
-    font-weight: 500;
-    letter-spacing: 6px;
-    margin: 0;
-  }
-
-.grupo-entrada {
-  position: relative;
+.subtitulo {
+  color: #34b7f1;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: 6px;
+  margin: 0;
+  text-align: center;
 }
 
 .grupo-entrada {
   position: relative;
+  width: 100%;
 }
 
 .grupo-entrada input {
@@ -51,16 +48,17 @@ html, body {
   padding-right: 40px; /* espacio para el ojito */
 }
 
+
 .toggle-ojito {
   position: absolute;
   top: 50%;
-  right: 10px; /* más a la derecha */
+  right: 10px;
   transform: translateY(-50%);
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 18px;
-  color: #555;
+  font-size: 1.2rem;
+  color: #ccc;
   z-index: 2;
 }
 
@@ -79,12 +77,11 @@ nav {
 .seccion-inicio-sesion {
   width: 100%;
   min-height: 100vh;
+  padding: 0 5vw;
   background-color: #004080;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-sizing: border-box;
-
   background-image: url('/assets/Fondo4.jpeg');
   background-size: cover;
   background-position: center;
@@ -96,36 +93,37 @@ nav {
   border: 1px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(15px);
   border-radius: 20px;
-  padding: 4vw 3vw; /* se adapta al ancho del viewport */
-  width: min(90vw, 380px); /* nunca más grande que 380px */
+  padding: 5vw;
+  width: 100%;
+  max-width: 380px;
+  min-height: 320px;
   color: #fff;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-
-  min-height: 320px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-top: 5vh;
 }
 
 .caja-inicio-sesion h2 {
   text-align: center;
-  margin-bottom: 30px;
-  font-size: 24px;
+  margin-bottom: 2rem;
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
 }
 
 .grupo-entrada {
   position: relative;
-  margin-bottom: 30px;
+  margin-bottom: 2rem;
 }
 
 .grupo-entrada input {
   width: 100%;
-  padding: 10px 5px;
+  padding: 0.8rem 2.5rem 0.8rem 0.5rem;
   background: transparent;
   border: none;
   border-bottom: 2px solid #ccc;
   color: white;
-  font-size: 16px;
+  font-size: 1rem;
   outline: none;
 }
 
@@ -136,26 +134,26 @@ nav {
   color: #ccc;
   pointer-events: none;
   transition: 0.3s ease;
+  font-size: 1rem;
 }
 
 .grupo-entrada input:focus + label,
 .grupo-entrada input:valid + label {
   top: -12px;
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #5ad1f3;
 }
 
 .ingresar {
   width: 100%;
-  padding: 14px;
+  padding: clamp(0.8rem, 2.5vw, 1.2rem);
   background: linear-gradient(135deg, #5ad1f3, #2196f3);
   color: white;
-  font-size: 18px;
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
   font-weight: bold;
-  font-family: 'Segoe UI', sans-serif;
   letter-spacing: 1px;
   border: none;
-  border-radius: 30px;
+  border-radius: 2rem;
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -169,17 +167,16 @@ nav {
 .ingresar:active {
   transform: scale(0.98);
 }
-.olvido-contrasena{
-    background-color: transparent;
-    text-align:center;
 
 
+.olvido-contrasena {
+  background-color: transparent;
+  text-align: center;
+  margin-top: 1rem;
 }
 
 .olvidoContra {
-  text-align: center;
-  margin-top: 15px;
-  font-size: 14px;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
   color: #ccc;
   text-decoration: none;
   background-color: transparent;
@@ -188,62 +185,174 @@ nav {
   cursor: pointer;
 }
 
-
 .olvidoContra:hover {
   text-decoration: underline;
 }
+
 
 .mensaje-bienvenida {
   position: absolute;
   top: 20px;
   text-align: center;
   width: 100%;
- font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
 }
 
 
-/* 📐 Ajustes generales responsivos */
+* 📐 Ajustes generales responsivos */
 .seccion-inicio-sesion {
   padding: 0 20px; /* margen lateral para pantallas pequeñas */
   box-sizing: border-box;
 }
 
-/* 📏 Limita el ancho para que no se estire en pantallas grandes */
 .caja-inicio-sesion {
   width: 100%;
   max-width: 380px; /* ancho máximo para monitores grandes */
   margin-top: 60px;
 }
 
-/* 📱 Mejora para celulares muy chicos */
-@media (max-width: 400px) {
+
+/* Media Queries para hacerlo responsive */
+@media (max-width: 768px) {
+  .titulo {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .titulo {
+    font-size: 1.2rem;
+  }
+}
+
+  .subtitulo {
+    font-size: 18px;
+    letter-spacing: 3px;
+  }
+
+  .mensaje-error {
+    font-size: 13px;
+  }
+
+  .toggle-ojito {
+    font-size: 16px;
+    right: 8px;
+  }
+}
+
+
+  .subtitulo {
+    font-size: 16px;
+    letter-spacing: 2px;
+  }
+
+  .mensaje-error {
+    font-size: 12px;
+  }
+
+  .toggle-ojito {
+    font-size: 14px;
+    right: 6px;
+  }
+}
+
+@media (max-width: 480px) {
   .caja-inicio-sesion {
-    padding: 40px 20px;
-    border-radius: 15px;
+    padding: 6vw 5vw;
+    margin-top: 3vh;
+  }
+  @media (max-width: 768px) {
+   .caja-inicio-sesion {
+     width: 90vw;
+     padding: 5vw 4vw;
+     min-height: 300px;
+   }
+
+
+
+  .caja-inicio-sesion h2 {
+    font-size: 20px;
+    margin-bottom: 25px;
+  }
+
+  .grupo-entrada input {
+    font-size: 15px;
+    padding: 9px 5px;
   }
 
   .ingresar {
     font-size: 16px;
     padding: 12px;
   }
+}
+
+@media (max-width: 480px) {
+  .caja-inicio-sesion {
+    padding: 6vw 5vw;
+    border-radius: 15px;
+    min-height: auto;
+  }
 
   .caja-inicio-sesion h2 {
-    font-size: 20px;
+    font-size: 18px;
+    margin-bottom: 20px;
   }
 
   .grupo-entrada input {
-    font-size: 15px;
+    font-size: 14px;
+    padding: 8px 5px;
   }
 
-@media (max-width: 480px) {
-  .seccion-inicio-sesion {
-    flex-direction: column-reverse;
-    justify-content: flex-start;
-    padding-top: 80px;
+  .grupo-entrada label {
+    font-size: 13px;
+  }
+
+  .ingresar {
+    font-size: 15px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ingresar {
+    font-size: 16px;
+    padding: 12px;
+  }
+
+  .olvidoContra {
+    font-size: 13px;
   }
 
   .mensaje-bienvenida {
-    position: static;
-    margin-bottom: 20px;
+    top: 15px;
+    font-size: 14px;
+  }
+
+  .caja-inicio-sesion {
+    margin-top: 40px;
   }
 }
+
+/* 📱 Media Queries para móviles */
+@media (max-width: 480px) {
+  .ingresar {
+    font-size: 15px;
+    padding: 10px;
+  }
+
+  .olvidoContra {
+    font-size: 12px;
+    margin-top: 10px;
+  }
+
+  .mensaje-bienvenida {
+    top: 10px;
+    font-size: 13px;
+    padding: 0 10px;
+  }
+
+  .caja-inicio-sesion {
+    margin-top: 30px;
+  }
+}
+

@@ -1,6 +1,6 @@
 .seccion-recuperar {
-  height: 100vh;
-  width: 100vw;
+  min-height: 100vh;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -8,19 +8,26 @@
   background: #f0f0f0;
   font-family: 'Segoe UI', sans-serif;
   padding: 20px;
-
-   background-image: url('/assets/Fondo4.jpeg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+  background-image: url('/assets/Fondo4.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-sizing: border-box;
 }
+
 .grupo-entrada {
   position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: 10px 0;
 }
 
 .grupo-entrada input {
   width: 100%;
   padding-right: 40px; /* espacio para el ojito */
+  padding: 12px;
+  font-size: 1rem;
+  box-sizing: border-box;
 }
 
 .toggle-ojito {
@@ -36,10 +43,10 @@
   z-index: 2;
 }
 
-
 .toggle-ojito:focus {
   outline: none;
 }
+
 .mensaje-error {
   color: #d32f2f;
   font-weight: 600;
@@ -52,6 +59,7 @@
   box-shadow: none;
   font-family: 'Roboto', sans-serif;
 }
+
 .mensaje-info {
   color: #34495e;
   font-size: 0.9rem;
@@ -64,34 +72,30 @@
   margin-bottom: 30px;
   max-width: 400px;
   width: 100%;
-}
-.mensaje-recuperar {
-  background-color: rgba(0, 0, 0, 0.4); /* Fondo negro */
+  background-color: rgba(0, 0, 0, 0.4);
   padding: 20px;
   border-radius: 10px;
-  margin-bottom: 30px;
-  border: 2px solid #FFD700; /* Opcional: borde amarillo */
+  border: 2px solid #FFD700;
   box-shadow: 0 0 10px rgba(0,0,0,0.8);
+  box-sizing: border-box;
 }
+
 .mensaje-recuperar h1 {
   font-size: 28px;
-    color: yellow;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 20px;
-    text-shadow: 1px 1px 2px #000;
+  color: yellow;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  text-shadow: 1px 1px 2px #000;
 }
 
 .mensaje-recuperar p {
-  font-size: 16px;
-  color: white;
-  margin-bottom: 30px;
-    color: yellow;
-    font-weight: bold;
-    font-size: 1.1rem;
-    text-align: center;
-    margin-bottom: 20px;
-    text-shadow: 1px 1px 2px #000;
+  font-size: 1.1rem;
+  color: yellow;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  text-shadow: 1px 1px 2px #000;
 }
 
 .recuperar-form {
@@ -101,6 +105,7 @@
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
   max-width: 400px;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .grupo-entrada {
@@ -116,6 +121,7 @@
   border-radius: 8px;
   outline: none;
   transition: border-color 0.3s;
+  box-sizing: border-box;
 }
 
 .grupo-entrada input:focus {
@@ -162,17 +168,89 @@
   border-radius: 8px;
   font-size: 15px;
   text-align: center;
-}
-
-.mensaje-info {
   background-color: #d1f7d6;
   color: #2e7d32;
 }
 
 
+@media (max-width: 768px) {
+  .seccion-recuperar {
+    padding: 15px;
+  }
 
+  .mensaje-recuperar {
+    padding: 15px;
+  }
 
+  .mensaje-recuperar h1 {
+    font-size: 22px;
+  }
 
+  .mensaje-recuperar p {
+    font-size: 1rem;
+  }
+
+  .grupo-entrada input {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .mensaje-recuperar h1 {
+    font-size: 20px;
+  }
+
+  .mensaje-recuperar p {
+    font-size: 0.95rem;
+  }
+
+  .grupo-entrada input {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .recuperar-form {
+    padding: 30px;
+    border-radius: 16px;
+  }
+
+  .enviar {
+    font-size: 16px;
+    padding: 12px;
+  }
+
+  .grupo-entrada input {
+    font-size: 15px;
+    padding: 12px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .recuperar-form {
+    padding: 20px;
+    border-radius: 12px;
+  }
+
+  .enviar {
+    font-size: 15px;
+    padding: 10px;
+  }
+
+  .grupo-entrada input {
+    font-size: 14px;
+    padding: 10px 8px;
+  }
+
+  .grupo-entrada label {
+    font-size: 13px;
+  }
+
+  .mensaje-info {
+    font-size: 14px;
+  }
+}
 
 
 
