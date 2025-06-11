@@ -1,4 +1,6 @@
 <div class="chat-container">
+  <h2 class="chat-titulo">Chat con IA Malvinas</h2>
+
   <div class="chat-mensajes">
     <div class="mensaje" *ngFor="let msg of mensajes" [ngClass]="msg.autor">
       <markdown [data]="msg.texto"></markdown>

@@ -1,58 +1,58 @@
     * {
-       margin: 0;
-       padding: 0;
-       box-sizing: border-box;
-     }
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-.aplicacion {
-  font-family: 'Arial', sans-serif;
-  display: flex;
-  height: 100vh;
-  width: 100%;
-  flex-direction: row;
-}
+    .aplicacion {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      flex-direction: row;
+      height: 100vh;
+      width: 100%;
+    }
 
-.subboton.activo {
-  color: yellow;
-  font-weight: bold;
-}
+    .subboton.activo {
+      color: yellow;
+      font-weight: bold;
+    }
 
-.menu-lateral h2 {
-  text-align: center;
-  color: white;
-  margin-bottom: 30px;
-}
+    .menu-lateral h2 {
+      text-align: center;
+      color: white;
+      margin-bottom: 30px;
+    }
 
-.lista-opciones {
-  list-style: none;
-  padding: 0;
-  flex-grow: 1;
-  overflow-y: auto;
-}
+    .lista-opciones {
+      list-style: none;
+      padding: 0;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
 
-.subbotones {
-  display: flex;
-  flex-direction: column;
-  margin-left: 20px;
-  margin-top: 5px;
-}
+    .subbotones {
+      display: flex;
+      flex-direction: column;
+      margin-left: 20px;
+      margin-top: 5px;
+    }
 
-.subboton {
-  margin-bottom: 6px;
-  padding: 6px 12px;
-  border: none;
-  background-color: transparent;
-  color: white;
-  text-align: left;
-  cursor: pointer;
-  font-size: 14px;
-  transition: color 0.3s ease, text-decoration 0.3s ease;
-}
+    .subboton {
+      margin-bottom: 6px;
+      padding: 6px 12px;
+      border: none;
+      background-color: transparent;
+      color: white;
+      text-align: left;
+      cursor: pointer;
+      font-size: 14px;
+      transition: color 0.3s ease, text-decoration 0.3s ease;
+    }
 
-.subboton:hover {
-  color: #ffcc00;
-  text-decoration: underline;
-}
+    .subboton:hover {
+      color: #ffcc00;
+      text-decoration: underline;
+    }
 
     .contenido-principal {
       flex: 1;
@@ -101,51 +101,52 @@
       width: 250px;
       height: 100vh;
       background: linear-gradient(180deg, #003366, #0055cc, #3399ff);
-      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
       padding-top: 20px;
       position: relative;
       padding-bottom: 100px;
     }
-        .boton-volver {
-          margin: 30px 20px 0 20px;
-          padding: 14px 28px;
-          background: linear-gradient(45deg, #3399ff, #1e90ff, #0055cc);
-          border-radius: 30px;
-          border: 3px solid white;
-          color: white;
-          font-size: 18px;
-          font-weight: 700;
-          cursor: pointer;
-          box-shadow:
-            0 0 10px rgba(255, 255, 255, 0.9),
-            0 0 20px rgba(30, 144, 255, 0.8),
-            0 0 40px rgba(0, 85, 204, 0.7);
-          transition:
-            background-position 0.5s ease,
-            box-shadow 0.3s ease,
-            transform 0.2s ease;
-          background-size: 200% 200%;
-          background-position: 0% 50%;
-          text-align: center;
-          user-select: none;
-        }
 
-        .boton-volver:hover {
-          background-position: 100% 50%;
-          box-shadow:
-            0 0 15px rgba(255, 255, 255, 1),
-            0 0 30px rgba(30, 144, 255, 1),
-            0 0 60px rgba(0, 85, 204, 0.9);
-          transform: scale(1.1);
-        }
+    .boton-volver {
+      margin: 30px 20px 0 20px;
+      padding: 14px 28px;
+      background: linear-gradient(45deg, #3399ff, #1e90ff, #0055cc);
+      border-radius: 30px;
+      border: 3px solid white;
+      color: white;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow:
+        0 0 10px rgba(255, 255, 255, 0.9),
+        0 0 20px rgba(30, 144, 255, 0.8),
+        0 0 40px rgba(0, 85, 204, 0.7);
+      transition:
+        background-position 0.5s ease,
+        box-shadow 0.3s ease,
+        transform 0.2s ease;
+      background-size: 200% 200%;
+      background-position: 0% 50%;
+      text-align: center;
+      user-select: none;
+    }
 
-        .boton-volver:active {
-          transform: scale(0.95);
-          box-shadow:
-            0 0 6px rgba(255, 255, 255, 0.7),
-            0 0 15px rgba(30, 144, 255, 0.6),
-            0 0 30px rgba(0, 85, 204, 0.5);
-        }
+    .boton-volver:hover {
+      background-position: 100% 50%;
+      box-shadow:
+        0 0 15px rgba(255, 255, 255, 1),
+        0 0 30px rgba(30, 144, 255, 1),
+        0 0 60px rgba(0, 85, 204, 0.9);
+      transform: scale(1.1);
+    }
+
+    .boton-volver:active {
+      transform: scale(0.95);
+      box-shadow:
+        0 0 6px rgba(255, 255, 255, 0.7),
+        0 0 15px rgba(30, 144, 255, 0.6),
+        0 0 30px rgba(0, 85, 204, 0.5);
+    }
 
      #formulario-crear-reclamo,
      #formulario-adjuntar-excel,
@@ -156,6 +157,8 @@
        align-items: center;
        width: 100%;
        height: 100%;
+       padding: 20px; /* Para que no toque bordes en móviles */
+       box-sizing: border-box;
      }
 
      .formulario {
@@ -168,6 +171,7 @@
        display: flex;
        flex-direction: column;
        gap: 15px;
+       box-sizing: border-box;
      }
 
      .formulario label {
@@ -202,48 +206,48 @@
      }
 
 
-     .menu-titulo {
-       padding: 18px 22px;
-       background-color: transparent;
-       border: none;
-       color: white;
-       border-radius: 4px;
-       cursor: pointer;
-       font-weight: bold;
-       width: 100%;
-       text-align: left;
-       font-size: 16px;
-       display: flex;
-       justify-content: space-between;
-       align-items: center;
-       transition: background-color 0.3s ease;
-     }
+    .menu-titulo {
+      padding: 18px 22px;
+      background-color: transparent;
+      border: none;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      width: 100%;
+      text-align: left;
+      font-size: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color 0.3s ease;
+    }
 
-     .menu-titulo:hover {
-       background-color: #187bcd;
-     }
+    .menu-titulo:hover {
+      background-color: #187bcd;
+    }
 
-     .menu-titulo.activo {
-       background-color: #3399ff;
-     }
+    .menu-titulo.activo {
+      background-color: #3399ff;
+    }
 
-     .mensaje-error {
-       color: #d32f2f;
-       font-weight: 600;
-       font-size: 15px;
-       margin-top: 12px;
-       text-align: center;
-     }
+    .mensaje-error {
+      color: #d32f2f;
+      font-weight: 600;
+      font-size: 15px;
+      margin-top: 12px;
+      text-align: center;
+    }
 
-     .flecha {
-       display: inline-block;
-       font-size: 14px;
-       transition: transform 0.3s ease;
-     }
+    .flecha {
+      display: inline-block;
+      font-size: 14px;
+      transition: transform 0.3s ease;
+    }
 
-     .flecha.rotada {
-       transform: rotate(90deg);
-     }
+    .flecha.rotada {
+      transform: rotate(90deg);
+    }
 
 
 .fieldset-form {
@@ -322,12 +326,11 @@
   color: white;
 }
 
-
 .botones-formulario {
   display: flex;
   gap: 10px;
   justify-content: flex-start;
-  flex-wrap: wrap; /* Permite que los botones se acomoden en varias líneas si no hay espacio */
+  flex-wrap: wrap; /* ✅ Se acomoda en múltiples líneas */
 }
 
 .botones-formulario button {
@@ -339,7 +342,7 @@
   cursor: pointer;
   font-weight: 600;
   transition: background-color 0.3s ease;
-  flex: 1 1 auto; /* Permite que los botones crezcan/achiquen si es necesario */
+  flex: 1 1 auto;
 }
 
 .botones-formulario button:hover {
@@ -364,107 +367,186 @@
   }
 
   .subbotones {
-    margin-left: 10px;
-    margin-top: 10px;
+    margin-left: 0;
+    align-items: center;
   }
 
   .subboton {
+    text-align: center;
     font-size: 16px;
-    padding: 8px 16px;
   }
 
   .menu-lateral h2 {
     font-size: 20px;
+  }
+}
+
+/* Ajuste para móviles más pequeños */
+@media (max-width: 480px) {
+  .subboton {
+    font-size: 15px;
+    padding: 10px;
+  }
+
+  .menu-lateral h2 {
+    font-size: 18px;
     margin-bottom: 20px;
   }
 }
 
 @media (max-width: 768px) {
+  .titulo {
+    font-size: 22px;
+    height: 50px;
+    letter-spacing: 2px;
+  }
+
   .contenido-principal {
-    background-position: center top;
+    background-position: center center;
+    background-size: cover;
     padding: 10px;
   }
 
+  .seccion-usuarios {
+    padding: 10px 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .titulo {
+    font-size: 18px;
+    height: 45px;
+    text-align: center;
+    padding: 0 10px;
+  }
+
+  .contenido-principal {
+    padding: 5px;
+  }
+}
+
+@media (max-width: 768px) {
   .menu-lateral {
     width: 100%;
     height: auto;
     flex-direction: row;
-    overflow-x: auto;
-    padding: 10px 0;
-    justify-content: center;
-  }
-
-  .titulo {
-    font-size: 20px;
-    height: auto;
+    flex-wrap: wrap;
+    justify-content: space-around;
     padding: 10px;
-    text-align: center;
-    letter-spacing: 2px;
+    position: static;
   }
 
-  .seccion-usuarios {
-    flex: 1;
+  .boton-volver {
+    margin: 10px;
+    font-size: 16px;
+    padding: 10px 20px;
+    flex: 1 1 auto;
   }
 }
 
-@media (max-width: 768px) {
+/* 📱 Responsive para pantallas menores a 480px */
+@media (max-width: 480px) {
+  .menu-lateral {
+    flex-direction: column;
+    align-items: center;
+  }
+
   .boton-volver {
     width: 90%;
-    max-width: 300px;
-    margin: 20px auto 0 auto;
-    padding: 12px 20px;
-    font-size: 16px;
-    border-width: 2px;
+    font-size: 15px;
+    padding: 12px;
   }
 }
 
 @media (max-width: 768px) {
-  #formulario-crear-reclamo,
-  #formulario-adjuntar-excel,
-  #formulario-adjuntar-excel-obra,
-  #formulario-crear-obra {
-    padding: 20px;
-    height: auto;
-    align-items: flex-start;
+  .formulario {
+    max-width: 90%;
+    padding: 15px;
   }
 
+  .formulario input,
+  .formulario select,
+  .formulario textarea {
+    font-size: 15px;
+  }
+
+  .formulario button {
+    font-size: 16px;
+  }
+}
+
+/* 📱 Responsive: celulares chicos */
+@media (max-width: 480px) {
   .formulario {
-    max-width: 100%;
-    padding: 15px;
     gap: 12px;
   }
 
   .formulario input,
   .formulario select,
   .formulario textarea {
-    font-size: 16px;
     padding: 10px;
+    font-size: 16px;
   }
 
   .formulario button {
-    font-size: 16px;
     padding: 12px;
+    font-size: 17px;
   }
 }
 
 @media (max-width: 768px) {
   .menu-titulo {
-    padding: 14px 16px;
     font-size: 15px;
-  }
-
-  .mensaje-error {
-    font-size: 14px;
-    margin-top: 10px;
-    padding: 0 10px;
+    padding: 14px 18px;
   }
 
   .flecha {
     font-size: 13px;
   }
+
+  .mensaje-error {
+    font-size: 14px;
+    padding: 0 10px;
+  }
 }
 
+@media (max-width: 480px) {
+  .menu-titulo {
+    font-size: 14px;
+    padding: 12px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .flecha {
+    align-self: flex-end;
+    font-size: 12px;
+  }
+
+  .mensaje-error {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .campos-en-linea label {
+    flex: 1 1 calc(33.333% - 14px);
+    min-width: 180px;
+  }
+
+  .fieldset-form legend {
+    font-size: 20px;
+  }
+}
+
+/* 📱 Responsive para celulares */
 @media (max-width: 768px) {
+  .campos-en-linea label {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+
   .fieldset-form {
     padding: 15px 15px 25px 15px;
   }
@@ -474,44 +556,23 @@
     text-align: center;
   }
 
-  .campos-en-linea {
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .campos-en-linea label {
-    flex: 1 1 100%;
-    min-width: unset;
-  }
-
   .autocomplete-list {
     width: 100%;
     max-width: 100%;
-    font-size: 14px;
   }
 }
 
-@media (max-width: 768px) {
-  .autocomplete-list li {
-    padding: 12px 16px;
-    font-size: 14px;
-  }
-
-  .descripcion-label {
-    font-size: 14px;
-    padding: 0 5px;
-  }
-}
-
-@media (max-width: 768px) {
-  .botones-formulario {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .botones-formulario button {
-    width: 100%;
-    padding: 12px;
+/* 📱 Extras para celulares pequeños */
+@media (max-width: 480px) {
+  .fieldset-form legend {
     font-size: 16px;
+  }
+
+  .campos-en-linea {
+    gap: 15px;
+  }
+
+  .autocomplete-list {
+    font-size: 14px;
   }
 }

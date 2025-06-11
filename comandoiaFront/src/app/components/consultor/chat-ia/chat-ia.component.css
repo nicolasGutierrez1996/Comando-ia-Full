@@ -8,6 +8,20 @@
   font-family: 'Segoe UI', sans-serif;
 }
 
+.chat-titulo {
+  text-align: center;
+  font-size: 24px;
+  color: #ffffff;
+  background: #003366;
+  padding: 15px;
+  margin: 0;
+  border-bottom: 2px solid #3399ff;
+  font-family: 'Segoe UI', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
 .chat-container {
   display: flex;
   flex-direction: column;
@@ -125,6 +139,7 @@ button:hover {
     padding: 1rem 0.5rem;
   }
 
+
   .chat-container {
     height: auto;
     max-height: none;
@@ -144,9 +159,7 @@ button:hover {
     border-radius: 0 0 12px 12px;
   }
 
-  input, button {
-    width: 100%;
-  }
+eeee
 
   button {
     padding: 10px;
@@ -157,3 +170,10 @@ button:hover {
   0% { opacity: 0; transform: scale(0.95); }
   100% { opacity: 1; transform: scale(1); }
 }
+
+@media (max-width: 768px) {
+  .chat-titulo {
+    font-size: 18px;
+    padding: 12px;
+  }
+}ee
