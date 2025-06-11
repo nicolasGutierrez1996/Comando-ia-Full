@@ -83,6 +83,7 @@
         </div>
         <label>Estado:
           <select name="estado" [(ngModel)]="estadoSeleccionadoId" required>
+            <option></option>
             <option *ngFor="let estado of estados" [value]="estado.id">
               {{ estado.descripcion }}
             </option>
@@ -94,6 +95,7 @@
 
         <label>Rol:
           <select name="rol" [(ngModel)]="rolSeleccionadoId" required>
+            <option></option>
             <option *ngFor="let rol of roles" [value]="rol.id">
               {{ rol.tipo }}
             </option>

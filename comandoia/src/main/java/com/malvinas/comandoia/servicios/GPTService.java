@@ -2,12 +2,14 @@ package com.malvinas.comandoia.servicios;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.malvinas.comandoia.modelo.MensajeIA;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,13 +31,10 @@ public class GPTService {
                 .build();
     }
 
-    public String enviarPrompt(String systemPrompt, String userPrompt) {
+    public String enviarPrompt(List<Map<String, String>> mensajes){
         Map<String, Object> request = Map.of(
-                "model", /*"gpt-3.5-turbo"*/"gpt-4o",
-                "messages", List.of(
-                        Map.of("role", "system", "content", systemPrompt),
-                        Map.of("role", "user", "content", userPrompt)
-                ),
+                "model", "gpt-4o",
+                "messages", mensajes,
                 "temperature", 0.3
         );
 
@@ -52,8 +51,7 @@ public class GPTService {
                 .onErrorReturn("Error al comunicarse con la IA")
                 .block();
     }
-
-    public Map<String, String> generarSQLDesdePregunta(String pregunta) {
+    public Map<String, String> generarSQLDesdePregunta(String  pregunta, List<MensajeIA> historial) {
         String systemPrompt = """
                 🚫 No uses comillas triples ni bloques de código.
                 ✅ La respuesta debe comenzar directamente con { y ser JSON válido.
@@ -442,7 +440,29 @@ public class GPTService {
 
 
         try {
-            String respuesta = enviarPrompt(systemPrompt, pregunta);
+
+            List<Map<String, String>> mensajes = new ArrayList<>();
+
+            mensajes.add(Map.of(
+                    "role", "system",
+                    "content", systemPrompt
+            ));
+
+            if (historial != null) {
+                for (MensajeIA m : historial) {
+                    mensajes.add(Map.of(
+                            "role", m.getRol(),
+                            "content", m.getContent()
+                    ));
+                }
+            }
+
+            mensajes.add(Map.of(
+                    "role", "user",
+                    "content", pregunta
+            ));
+
+            String respuesta = enviarPrompt(mensajes);
 
             // ✅ Log para debugging
             System.out.println("Respuesta IA cruda: " + respuesta);
@@ -690,7 +710,13 @@ public class GPTService {
 
         String userPrompt = "Pregunta del usuario: " + pregunta + "\nResultados:\n" + datos + "\nMostrá una respuesta clara en Markdown.";
 
-        return enviarPrompt(systemPrompt, userPrompt);
+        List<Map<String, String>> mensajes = List.of(
+                Map.of("role", "system", "content", systemPrompt),
+                Map.of("role", "user", "content", userPrompt)
+        );
+
+        return enviarPrompt(mensajes);
+
     }
 
 

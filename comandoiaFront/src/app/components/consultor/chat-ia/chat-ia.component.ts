@@ -34,19 +34,24 @@ enviarMensaje() {
   const prompt = this.inputTexto.trim();
   if (!prompt) return;
 
-  // Agregar mensaje del usuario
   this.mensajes.push({ autor: 'usuario', texto: prompt });
   this.inputTexto = '';
 
-  // Agregar mensaje temporal de "Pensando..."
   const indexPensando = this.mensajes.push({
     autor: 'ia',
     texto: '⏳ Pensando...'
   }) - 1;
 
+const historialFormateado = this.mensajes.map(m => ({
+  rol: m.autor === 'usuario' ? 'user' as const : 'assistant' as const,
+  content: m.texto
+}));
+
+const historialReciente = historialFormateado.slice(-8);
+
   // Llamar al servicio GPT
-  this.gptService.preguntar(prompt).subscribe({
-    next: (res) => {
+   this.gptService.preguntar({ prompt, historial: historialReciente }).subscribe({
+   next: (res) => {
       const respuestaIA = res.respuesta || '🤖 No se encontró respuesta.';
       this.mensajes[indexPensando].texto = respuestaIA;
     },

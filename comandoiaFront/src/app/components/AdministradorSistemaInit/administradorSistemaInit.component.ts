@@ -235,6 +235,7 @@ validarSiExisteNombre(nombre: string): Promise<boolean> {
 
   MostrarModoEdicion(): void {
     this.modoEdicion = !this.modoEdicion;
+    this.mostrarDatosEdicion=false;
     this.mostrarCargaDeUsuario=false;
         this.administrarObra=false;
         this.modoEdicionTipoObra=false;
@@ -310,7 +311,7 @@ asignarRolyEstadoEditar() {
 
 editarUsuario() {
   if (!this.usuarioSeleccionado) {
-    this.snackBar.open('Debe seleccionar un usuario para editar', '', { duration: 3000 });
+    this.snackBar.open('Debe seleccionar un usuario para editar', '', { duration: 3000 ,horizontalPosition: 'end',verticalPosition: 'top'});
     return;
   }
 
@@ -355,7 +356,7 @@ editarUsuario() {
   this.usersService.actualizarUsuario(this.usuarioSeleccionado.id as number, usuarioActualizado).subscribe({
     next: res => {
       if (res.success) {
-        this.snackBar.open('Usuario actualizado con éxito', '', { duration: 3000 });
+        this.snackBar.open('Usuario actualizado con éxito', '', { duration: 3000 ,horizontalPosition: 'end',verticalPosition: 'top'});
 
         this.usuarioSeleccionado = null;
         this.nombre_usuario = '';
@@ -364,12 +365,12 @@ editarUsuario() {
         this.rolSeleccionadoId = null;
         this.mostrarDatosEdicion = false;
       } else {
-        this.snackBar.open('No se pudo actualizar el usuario', '', { duration: 3000 });
+        this.snackBar.open('No se pudo actualizar el usuario', '', { duration: 3000 ,horizontalPosition: 'end',verticalPosition: 'top'});
       }
     },
     error: err => {
       console.error('Error al actualizar usuario:', err);
-      this.snackBar.open('Error al actualizar usuario', '', { duration: 3000 });
+      this.snackBar.open('Error al actualizar usuario', '', { duration: 3000 ,horizontalPosition: 'end',verticalPosition: 'top'});
     }
   });
 }
@@ -421,7 +422,7 @@ if(this.estadoObra!==''){
      this.estadoObraService.crearEstadoObra(estadoObra).subscribe({
        next: res => {
          console.log('Respuesta del backend:', res);
-         this.snackBar.open('Estado de obra creado con éxito', '', { duration: 3000 });
+         this.snackBar.open('Estado de obra creado con éxito', '', { duration: 3000 ,horizontalPosition: 'end',verticalPosition: 'top'});
 
          // Limpiar campos
          this.estadoObra = '';
@@ -429,7 +430,7 @@ if(this.estadoObra!==''){
        },
        error: err => {
          console.error('Error al crear estado de obra:', err);
-         this.snackBar.open('Error al crear estado de obra', '', { duration: 3000 });
+         this.snackBar.open('Error al crear estado de obra', '', { duration: 3000 ,horizontalPosition: 'end',verticalPosition: 'top'});
        }
      });
 }
@@ -452,7 +453,7 @@ if(this.tipoObra!==''){
        this.tipoObraService.crearTipoObra(tipoObra).subscribe({
          next: res => {
            console.log('Respuesta del backend:', res);
-           this.snackBar.open('Tipo de obra creado con éxito', '', { duration: 6000 });
+           this.snackBar.open('Tipo de obra creado con éxito', '', { duration: 3000 ,horizontalPosition: 'end',verticalPosition: 'top'});
 
            // Limpiar campos
            this.tipoObra = '';
@@ -460,7 +461,7 @@ if(this.tipoObra!==''){
          },
          error: err => {
            console.error('Error al crear tipo de obra:', err);
-           this.snackBar.open('Error al crear tipo de obra', '', { duration: 3000 });
+           this.snackBar.open('Error al crear tipo de obra', '', { duration: 3000 ,horizontalPosition: 'end',verticalPosition: 'top'});
          }
        });
 
@@ -568,7 +569,6 @@ seleccionarTipoObra(tipoObra: TipoObra) {
 
                this.tipoObraSeleccionado = null;
                this.tipoObra = '';
-               this.modoEdicionTipoObra = false;
              } else {
                this.snackBar.open('No se pudo actualizar valores', '', {
                  duration: 3000,
@@ -615,7 +615,6 @@ seleccionarTipoObra(tipoObra: TipoObra) {
 
                  this.estadoObraSeleccionado = null;
                  this.estadoObra = '';
-                 this.modoEdicionTipoObra = false;
                } else {
                  this.snackBar.open('No se pudo actualizar los valores', '', {
                    duration: 3000,
@@ -863,7 +862,7 @@ if(this.estadoReclamo!==''){
      this.estadoReclamoService.crearEstadoReclamo(estadoReclamo).subscribe({
        next: res => {
          console.log('Respuesta del backend:', res);
-         this.snackBar.open('Estado de reclamo creado con éxito', '', { duration: 3000 });
+         this.snackBar.open('Estado de reclamo creado con éxito', '', { duration: 3000 ,horizontalPosition: 'end',verticalPosition: 'top'});
 
          // Limpiar campos
          this.estadoReclamo = '';
@@ -871,7 +870,7 @@ if(this.estadoReclamo!==''){
        },
        error: err => {
          console.error('Error al crear estado de reclamo:', err);
-         this.snackBar.open('Error al crear estado de reclamo', '', { duration: 3000 });
+         this.snackBar.open('Error al crear estado de reclamo', '', { duration: 3000 ,horizontalPosition: 'end',verticalPosition: 'top'});
        }
      });
 }
@@ -894,7 +893,8 @@ if(this.tipoReclamo!==''){
        this.tipoReclamoService.crearTipoReclamo(tipoReclamo).subscribe({
          next: res => {
            console.log('Respuesta del backend:', res);
-           this.snackBar.open('Tipo de reclamo creado con éxito', '', { duration: 3000 });
+           this.snackBar.open('Tipo de reclamo creado con éxito', '', { duration: 3000 ,horizontalPosition: 'end',verticalPosition: 'top'});
+
 
            // Limpiar campos
            this.tipoReclamo = '';
@@ -902,7 +902,7 @@ if(this.tipoReclamo!==''){
          },
          error: err => {
            console.error('Error al crear tipo de reclamo:', err);
-           this.snackBar.open('Error al crear tipo de reclamo', '', { duration: 3000 });
+           this.snackBar.open('Error al crear tipo de reclamo', '', { duration: 3000 ,horizontalPosition: 'end',verticalPosition: 'top'});
          }
        });
 
@@ -926,7 +926,7 @@ if(this.nivelReclamo!==''){
        this.nivelReclamoService.crearTipoNivel(nivelReclamo).subscribe({
          next: res => {
            console.log('Respuesta del backend:', res);
-           this.snackBar.open('Tipo de nivel de satisfaccion creado con éxito', '', { duration: 3000 });
+           this.snackBar.open('Tipo de nivel de satisfaccion creado con éxito', '', { duration: 3000 ,horizontalPosition: 'end',verticalPosition: 'top'});
 
            // Limpiar campos
            this.nivelReclamo = '';
@@ -934,7 +934,7 @@ if(this.nivelReclamo!==''){
          },
          error: err => {
            console.error('Error al crear nivel de satisfaccion de reclamo:', err);
-           this.snackBar.open('Error al crear nivel de satisfaccion de reclamo', '', { duration: 3000 });
+           this.snackBar.open('Error al crear nivel de satisfaccion de reclamo', '', { duration: 3000 ,horizontalPosition: 'end',verticalPosition: 'top'});
          }
        });
 
@@ -1338,7 +1338,8 @@ limpiarStrings(): void {
   this.error_mail = '';
   this.error_estado = '';
   this.error_rol = '';
-
+  this.rolSeleccionadoId=null
+  this.estadoSeleccionadoId=null
 
 }
 

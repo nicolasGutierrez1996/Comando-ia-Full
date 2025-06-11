@@ -60,21 +60,17 @@ enviarRecuperacion() {
       return;
     }
 
-     this.usersService.obtenerToken(this.email).subscribe({
-         next: (res) => {
-           this.cargando = false;
-           if (res.token === this.token) {
-             this.ocultarClave=true;
-             this.errorToken = '';
-           } else {
-             this.errorToken = 'El token ingresado no es valido.';
-           }
-         },
-         error: (err) => {
-           this.cargando = false;
-           this.errorToken = err.error || 'Error al comunicarse con el servidor.';
-         }
-       });
+   this.usersService.validarToken(this.email, this.token).subscribe({
+     next: () => {
+       this.cargando = false;
+       this.ocultarClave = true;
+       this.errorToken = '';
+     },
+     error: (err) => {
+       this.cargando = false;
+       this.errorToken = err.error || 'Error al comunicarse con el servidor.';
+     }
+   });
 
 
 
@@ -86,9 +82,6 @@ enviarRecuperacion() {
 }
 
 validarClavesIngresadas(){
-console.log("Ingrese a validar claves");
-console.log("clave:",this.clave);
-console.log("repe:",this.repeticion);
 
       if(this.clave===''){
         this.errorClave="Debe ingresar la nueva clave";

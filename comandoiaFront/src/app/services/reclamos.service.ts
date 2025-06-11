@@ -12,7 +12,7 @@ export interface Reclamo{
   tipo_reclamo: {
     id: number;
   };
-  fecha_reclamo: string;
+  fecha_reclamo: string | null;
   estado: {
     id: number;
   };
@@ -38,7 +38,7 @@ export interface ReclamoConDescripciones{
     id: number;
     descripcion: string;
   };
-  fecha_reclamo: string;
+  fecha_reclamo: string | null;
   estado: {
     id: number;
     descripcion: string;

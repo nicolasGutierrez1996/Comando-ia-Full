@@ -1140,3 +1140,16 @@
     margin-right: 10px;
   }
 }
+
+.area-chat-flotante{
+resize: none;
+font-size: 1rem;
+padding: 10px;
+width: 100%;
+box-sizing: border-box;
+
+}
+
+.info.legend.oculto {
+  display: none;
+}

@@ -12,6 +12,8 @@ import { TipoObrasService,TipoObra} from '../../services/tipoObras.service';
 import { EstadoObrasService,EstadoObra} from '../../services/estadoObras.service';
 import { ObrasService,Obra} from '../../services/obras.service';
 
+import{DireccionesService} from '../../services/direcciones.service';
+
 
 
 
@@ -41,7 +43,7 @@ mostrarAdjuntarExcel:boolean=false;
 mostrarDatosEdicion:boolean=false;
 nombreReclamo: string='';
 tipoReclamo: string='';
-fechaReclamo: string = '';
+fechaReclamo: string | null='';
 estadoReclamo:string='';
 localidad:string='';
 barrio:string='';
@@ -80,14 +82,23 @@ nroCalleObra:number | null = null;
 descripcionObra:string='';
 mensajeErrorObra:string='';
 obrasSugeridas: Obra[] = [];
-obraSeleccionada:Obra | null = null;;
+obraSeleccionada:Obra | null = null;
+
+
+localidadSeleccionada: string = '';
+localidadesDisponibles: string[] = [];
+
+barrioSeleccionado: string = '';
+barriosDisponibles: string[] = [];
+
+
 
 
   constructor(private snackBar: MatSnackBar
   ,private router: Router, private reclamosService:ReclamosService,private nivelReclamoService: NivelSatisfaccionService,
    private tipoReclamoService:TipoReclamosService,private estadoReclamoService: EstadoReclamoService,
    private tipoObrasService:TipoObrasService, private estadoObrasService:EstadoObrasService,
-   private obrasService:ObrasService) {}
+   private obrasService:ObrasService,private direccionService:DireccionesService) {}
 
 
   onFileSelected(event: any) {
@@ -132,7 +143,7 @@ this.router.navigate(['./login']);
    this.mostrarEditarReclamo = false;
    this.mostrarAdjuntarExcel = false;
    this.mostrarDatosEdicion = false;
-
+    this.barriosDisponibles=[];
    // Cargar selects
    this.CargarDatosReclamo();
 
@@ -141,10 +152,13 @@ this.router.navigate(['./login']);
    this.fechaReclamo = this.convertirFechaAInputDate(hoy);
    this.refrescarStrings();
 
-   this.tipoReclamoSeleccionadoId = 1;
-   this.estadoReclamoSeleccionadoId = 1;
+   this.tipoReclamoSeleccionadoId = null;
+   this.estadoReclamoSeleccionadoId = null;
    this.tiempoResolucion = null;
-   this.nivelReclamoSeleccionadoId = 1;
+   this.nivelReclamoSeleccionadoId = null;
+
+      this.localidadSeleccionada="";
+      this.barrioSeleccionado="";
 
    this.mostrarCrearObra=false;
    this.mostrarEditarObra=false;
@@ -166,11 +180,17 @@ this.router.navigate(['./login']);
             this.nivelReclamoSeleccionadoId=null;
             this.nroCalle=null;
 
+               this.localidadSeleccionada="";
+               this.barrioSeleccionado="";
+
 
             this.mostrarDatosEdicion = false;
                this.mostrarCrearObra=false;
                this.mostrarEditarObra=false;
                this.mostrarAdjuntarExcelObra=false;
+               this.barriosDisponibles=[];
+
+          this.CargarDatosReclamo();
   }
 MostrarAdjuntarExcel(){
 this.mostrarAdjuntarExcel=!this.mostrarAdjuntarExcel;
@@ -185,6 +205,12 @@ this.mostrarCrearReclamo=false;
 }
 
 CargarDatosReclamo(){
+
+    this.direccionService.obtenerLocalidades().subscribe((data: string[]) => {
+       this.localidadesDisponibles = data;
+     });
+
+
   this.estadoReclamoService.obtenerEstadosReclamo().subscribe({
      next: (data: EstadoReclamo[]) => {
        this.estadosReclamo = data;
@@ -256,7 +282,7 @@ if(this.fechaReclamo===null){
  this.mensajeErrorReclamo='Debe seleccionar la fecha del reclamo';
  return;
 }
-if(this.localidad===''){
+if(this.localidadSeleccionada===''){
  this.mensajeErrorReclamo='Debe seleccionar la localidad del reclamo';
  return;
 }
@@ -264,19 +290,20 @@ if(this.tiempoResolucion===null){
  this.mensajeErrorReclamo='Debe indicar el tiempo de resolucion del reclamo';
  return;
 }
+console.log("this.nivelReclamoSeleccionadoId:",this.nivelReclamoSeleccionadoId);
 console.log("estadoSeleccionado:",this.estadoReclamoSeleccionadoId);
 console.log("fechaReclamo:",this.fechaReclamo);
 const nuevoReclamo: Reclamo= {
                       nombre: this.nombreReclamo,
                       descripcion: this.descripcion,
                       tipo_reclamo: { id: this.tipoReclamoSeleccionadoId},
-                      fecha_reclamo : this.fechaReclamo + 'T00:00:00',
+                      fecha_reclamo: this.fechaReclamo ? this.fechaReclamo + 'T00:00:00' : null,
                       estado: { id: this.estadoReclamoSeleccionadoId },
                       tiempo_resolucion: this.tiempoResolucion,
                       nivel_satisfaccion: { id: this.nivelReclamoSeleccionadoId },
                       direccion: {
-                        localidad: this.localidad,
-                        barrio: this.barrio,
+                        localidad: this.localidadSeleccionada,
+                        barrio: this.barrioSeleccionado,
                         calle: this.calle,
                         numeroCalle: this.nroCalle,
                         latitud:null,
@@ -295,15 +322,14 @@ this.reclamosService.crearReclamo(nuevoReclamo).subscribe({
       }).afterDismissed().subscribe(() => {
         this.nombreReclamo = '';
         this.descripcion = '';
-        this.localidad = '';
-        this.barrio = '';
+        this.localidadSeleccionada = '';
+        this.barrioSeleccionado = '';
         this.calle = '';
         this.nroCalle = null;
         this.tiempoResolucion =null;
         this.nivelReclamoSeleccionadoId=null;
         this.tipoReclamoSeleccionadoId = null;
-        const hoy = new Date();
-        this.fechaReclamo = this.convertirFechaAInputDate(hoy);
+        this.fechaReclamo = null;
         this.estadoReclamoSeleccionadoId=null;
       });
     },
@@ -322,14 +348,16 @@ seleccionarReclamo(reclamo:Reclamo){
   this.nombreReclamo=reclamo.nombre;
   this.mostrarDatosEdicion = true;
 
-  console.log('Fecha recibida del reclamo:', reclamo.fecha_reclamo);
-  console.log('Tipo:', typeof reclamo.fecha_reclamo);
-  console.log('Instancia Date:', new Date(reclamo.fecha_reclamo));
   setTimeout(() => {
     this.reclamoSeleccionado = reclamo;
-    this.fechaReclamo = this.convertirFechaAInputDate(reclamo.fecha_reclamo);
-    this.localidad = reclamo.direccion.localidad;
-    this.barrio = reclamo.direccion.barrio;
+    if (reclamo.fecha_reclamo) {
+      this.fechaReclamo = this.convertirFechaAInputDate(reclamo.fecha_reclamo);
+    } else {
+      this.fechaReclamo = null;
+    }
+    this.localidadSeleccionada = reclamo.direccion.localidad;
+    this.cargarBarriosPorLocalidad();
+    this.barrioSeleccionado = reclamo.direccion.barrio;
     this.calle = reclamo.direccion.calle;
     this.nroCalle = reclamo.direccion.numeroCalle;
     this.tiempoResolucion=reclamo.tiempo_resolucion;
@@ -435,7 +463,7 @@ if(this.fechaReclamo===null){
  this.mensajeErrorReclamo='Debe seleccionar la fecha del reclamo';
  return;
 }
-if(this.localidad===''){
+if(this.localidadSeleccionada===''){
  this.mensajeErrorReclamo='Debe seleccionar la localidad del reclamo';
  return;
 }
@@ -454,8 +482,8 @@ const nuevoReclamo: Reclamo= {
                       tiempo_resolucion: this.tiempoResolucion,
                       nivel_satisfaccion: { id: this.nivelReclamoSeleccionadoId },
                       direccion: {
-                        localidad: this.localidad,
-                        barrio: this.barrio,
+                        localidad: this.localidadSeleccionada,
+                        barrio: this.barrioSeleccionado,
                         calle: this.calle,
                         numeroCalle: this.nroCalle,
                         latitud:null,
@@ -480,8 +508,8 @@ this.snackBar.open('Reclamo actualizado con éxito', '', {
         this.estadoReclamoSeleccionadoId=null;
         this.tiempoResolucion=null;
         this.nivelReclamoSeleccionadoId=null;
-        this.localidad='';
-        this.barrio='';
+        this.localidadSeleccionada='';
+        this.barrioSeleccionado='';
         this.calle='';
         this.nroCalle=null;
 
@@ -515,8 +543,11 @@ this.mostrarCrearObra=!this.mostrarCrearObra;
    this.mostrarEditarReclamo=false;
    this.mostrarAdjuntarExcel=false;
    this.refrescarStrings();
-   this.estadoObraSeleccionadoId=1;
-   this.tipoObraSeleccionadoId=1;
+   this.estadoObraSeleccionadoId=null;
+   this.tipoObraSeleccionadoId=null;
+   this.localidadSeleccionada="";
+   this.barrioSeleccionado="";
+   this.barriosDisponibles=[];
 
    // Cargar selects
    this.CargarDatosObra();
@@ -528,6 +559,11 @@ this.mostrarCrearObra=!this.mostrarCrearObra;
 }
 
 CargarDatosObra(){
+
+  this.direccionService.obtenerLocalidades().subscribe((data: string[]) => {
+    this.localidadesDisponibles = data;
+  });
+
  this.estadoObrasService.obtenerEstadosObra().subscribe({
      next: (data: EstadoObra[]) => {
        this.estadosObra = data;
@@ -609,7 +645,7 @@ if(this.estadoObraSeleccionadoId===null){
  this.mensajeErrorObra='Debe seleccionar un estado de la obra';
  return;
 }
-if(this.localidadObra===''){
+if(this.localidadSeleccionada===''){
  this.mensajeErrorObra='Debe ingresar la localidad de la obra';
  return;
 }
@@ -627,8 +663,8 @@ const nuevaObra: Obra= {
                       fecha_estimada_finalizacion: this.fechaFinEstimada ? this.fechaFinEstimada + 'T00:00:00' : null,
                       fecha_real_finalizacion: this.fechaFinReal ? this.fechaFinReal + 'T00:00:00' : null,
                       direccion: {
-                        localidad: this.localidadObra,
-                        barrio: this.barrioObra,
+                        localidad: this.localidadSeleccionada,
+                        barrio: this.barrioSeleccionado,
                         calle: this.calleObra,
                         numeroCalle: this.nroCalleObra,
                       },
@@ -645,8 +681,8 @@ this.obrasService.crearObra(nuevaObra).subscribe({
       }).afterDismissed().subscribe(() => {
         this.nombreObra = '';
         this.descripcionObra = '';
-        this.localidadObra = '';
-        this.barrioObra = '';
+        this.localidadSeleccionada = '';
+        this.barrioSeleccionado = '';
         this.calleObra = '';
         this.nroCalleObra = null;
         this.avanceFisico =null;
@@ -654,10 +690,9 @@ this.obrasService.crearObra(nuevaObra).subscribe({
         this.montoEjecutado=null;
         this.tipoObraSeleccionadoId=null;
         this.estadoObraSeleccionadoId = null;
-        const hoy = new Date();
-        this.fechaInicioObra = this.convertirFechaAInputDate(hoy);
-        this.fechaFinEstimada = this.convertirFechaAInputDate(hoy);
-        this.fechaFinReal = this.convertirFechaAInputDate(hoy);
+        this.fechaInicioObra = null;
+        this.fechaFinEstimada = null;
+        this.fechaFinReal = null;
       });
     },
     error: err => {
@@ -696,8 +731,12 @@ this.mostrarEditarObra=!this.mostrarEditarObra;
    this.mostrarEditarReclamo=false;
    this.mostrarAdjuntarExcel=false;
    this.refrescarStrings();
-   this.estadoObraSeleccionadoId=1;
-   this.tipoObraSeleccionadoId=1;
+   this.estadoObraSeleccionadoId=null;
+   this.tipoObraSeleccionadoId=null;
+
+      this.localidadSeleccionada="";
+      this.barrioSeleccionado="";
+      this.barriosDisponibles=[];
 
 }
 
@@ -712,8 +751,10 @@ seleccionarObra(obra:Obra){
    this.fechaInicioObra = obra.fecha_inicio ? this.convertirFechaAInputDate(obra.fecha_inicio) : '';
    this.fechaFinEstimada = obra.fecha_estimada_finalizacion ? this.convertirFechaAInputDate(obra.fecha_estimada_finalizacion) : '';
    this.fechaFinReal = obra.fecha_real_finalizacion ? this.convertirFechaAInputDate(obra.fecha_real_finalizacion) : '';
-    this.localidadObra = obra.direccion.localidad;
-    this.barrioObra = obra.direccion.barrio;
+    this.localidadSeleccionada = obra.direccion.localidad;
+    this.cargarBarriosPorLocalidad();
+
+    this.barrioSeleccionado = obra.direccion.barrio;
     this.calleObra = obra.direccion.calle;
     this.nroCalleObra = obra.direccion.numeroCalle;
     this.montoPresupuestado=obra.monto_presupuestado;
@@ -791,7 +832,7 @@ if(this.estadoObraSeleccionadoId===null){
  this.mensajeErrorObra='Debe seleccionar un estado de la obra';
  return;
 }
-if(this.localidadObra===''){
+if(this.localidadSeleccionada===''){
  this.mensajeErrorObra='Debe ingresar la localidad de la obra';
  return;
 }
@@ -813,8 +854,8 @@ const nuevaObra: Obra= {
                       fecha_estimada_finalizacion: this.fechaFinEstimada ? this.fechaFinEstimada + 'T00:00:00' : null,
                       fecha_real_finalizacion: this.fechaFinReal ? this.fechaFinReal + 'T00:00:00' : null,
                       direccion: {
-                        localidad: this.localidadObra,
-                        barrio: this.barrioObra,
+                        localidad: this.localidadSeleccionada,
+                        barrio: this.barrioSeleccionado,
                         calle: this.calleObra,
                         numeroCalle: this.nroCalleObra,
                       },
@@ -831,8 +872,8 @@ this.obrasService.actualizarObra(this.obraSeleccionada?.id as number,nuevaObra).
       }).afterDismissed().subscribe(() => {
         this.nombreObra = '';
         this.descripcionObra = '';
-        this.localidadObra = '';
-        this.barrioObra = '';
+        this.localidadSeleccionada = '';
+        this.barrioSeleccionado = '';
         this.calleObra = '';
         this.nroCalleObra = null;
         this.avanceFisico =null;
@@ -890,6 +931,23 @@ refrescarStrings(): void {
   this.nroCalleObra=null
   this.descripcionObra = '';
   this.mensajeErrorObra = '';
+}
+
+
+cargarBarriosPorLocalidad() {
+  if (this.localidadSeleccionada) {
+    this.direccionService.obtenerBarrios(this.localidadSeleccionada).subscribe({
+      next: (data: string[]) => {
+        this.barriosDisponibles = data?.length ? data : [];
+      },
+      error: (err) => {
+        console.error('Error al obtener barrios:', err);
+        this.barriosDisponibles = [];
+      }
+    });
+  } else {
+    this.barriosDisponibles = [];
+  }
 }
 
 }

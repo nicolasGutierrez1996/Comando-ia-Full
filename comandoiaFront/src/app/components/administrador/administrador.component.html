@@ -61,7 +61,8 @@
               <ng-container *ngIf="mostrarDatosEdicion || !mostrarEditarReclamo">
                 <label>Tipo de reclamo:
                   <select name="tipoReclamo" [(ngModel)]="tipoReclamoSeleccionadoId">
-                    <option *ngFor="let tipoReclamo of tiposReclamo" [value]="tipoReclamo.id">
+                    <option [ngValue]="null"></option>
+                    <option *ngFor="let tipoReclamo of tiposReclamo" [ngValue]="tipoReclamo.id">
                       {{ tipoReclamo.descripcion }}
                     </option>
                   </select>
@@ -73,17 +74,29 @@
 
                 <label>Estado:
                   <select name="estado-obra" [(ngModel)]="estadoReclamoSeleccionadoId">
-                    <option *ngFor="let estadoReclamo of estadosReclamo" [value]="estadoReclamo.id">
+                    <option [ngValue]="null"></option>
+                    <option *ngFor="let estadoReclamo of estadosReclamo" [ngValue]="estadoReclamo.id">
                       {{ estadoReclamo.descripcion }}
                     </option>
                   </select>
                 </label>
 
                 <label>Localidad:
-                  <input type="text" name="localidad" [(ngModel)]="localidad" required>
+                  <select name="localidad" [(ngModel)]="localidadSeleccionada" (change)="cargarBarriosPorLocalidad()" required>
+                    <option value=""></option>
+                    <option *ngFor="let localidad of localidadesDisponibles" [value]="localidad">
+                      {{ localidad }}
+                    </option>
+                  </select>
                 </label>
+
                 <label>Barrio:
-                  <input type="text" name="barrio" [(ngModel)]="barrio" required>
+                  <select name="barrio" [(ngModel)]="barrioSeleccionado" >
+                    <option value=""></option>
+                    <option *ngFor="let barrio of barriosDisponibles" [value]="barrio">
+                      {{ barrio }}
+                    </option>
+                  </select>
                 </label>
                 <label>Calle:
                   <input type="text" name="calle" [(ngModel)]="calle" required>
@@ -98,7 +111,8 @@
 
                 <label>Nivel de Satisfaccion:
                   <select name="satisfaccion" [(ngModel)]="nivelReclamoSeleccionadoId" required>
-                    <option *ngFor="let nivelReclamo of nivelesReclamo" [value]="nivelReclamo.id">
+                    <option [ngValue]="null"></option>
+                    <option *ngFor="let nivelReclamo of nivelesReclamo" [ngValue]="nivelReclamo.id">
                       {{ nivelReclamo.descripcion }}
                     </option>
                   </select>
@@ -142,7 +156,8 @@
               <ng-container *ngIf="mostrarCrearObra || mostrarDatosEdicionObra">
                 <label>Tipo de obra:
                   <select name="tipoObra" [(ngModel)]="tipoObraSeleccionadoId">
-                    <option *ngFor="let tipoObra of tiposObra" [value]="tipoObra.id">
+                    <option [ngValue]="null"></option>
+                    <option *ngFor="let tipoObra of tiposObra" [ngValue]="tipoObra.id">
                       {{ tipoObra.descripcion }}
                     </option>
                   </select>
@@ -173,11 +188,21 @@
                 </label>
 
                 <label>Localidad:
-                  <input type="text" name="localidad" [(ngModel)]="localidadObra" required>
+                  <select name="localidad" [(ngModel)]="localidadSeleccionada" (change)="cargarBarriosPorLocalidad()" required>
+                    <option value=""></option>
+                    <option *ngFor="let localidad of localidadesDisponibles" [value]="localidad">
+                      {{ localidad }}
+                    </option>
+                  </select>
                 </label>
 
                 <label>Barrio:
-                  <input type="text" name="barrio" [(ngModel)]="barrioObra">
+                  <select name="barrio" [(ngModel)]="barrioSeleccionado" >
+                    <option value=""></option>
+                    <option *ngFor="let barrio of barriosDisponibles" [value]="barrio">
+                      {{ barrio }}
+                    </option>
+                  </select>
                 </label>
 
                 <label>Calle:
@@ -190,7 +215,8 @@
 
                 <label>Estado:
                   <select name="estadoObra" [(ngModel)]="estadoObraSeleccionadoId">
-                    <option *ngFor="let estadoObra of estadosObra" [value]="estadoObra.id">
+                    <option [ngValue]="null"></option>
+                    <option *ngFor="let estadoObra of estadosObra" [ngValue]="estadoObra.id">
                       {{ estadoObra.descripcion }}
                     </option>
                   </select>

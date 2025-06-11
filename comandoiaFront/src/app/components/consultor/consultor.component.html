@@ -3,27 +3,34 @@
     <h2>IA Malvinas</h2>
     <ul class="lista-opciones">
       <li>
-        <button type="button" class="menu-titulo" (click)="mostrarInicioBoton()">
+        <button type="button" class="menu-titulo" (click)="mostrarInicioBoton()"
+                >
           <span class="texto">Inicio</span>
         </button>
 
-        <button type="button" class="menu-titulo">
+        <button type="button" class="menu-titulo" (click)="MostrarSubBotonesReclamo()"
+                [class.activo]="mostrarSubBotonReclamos">
           <span class="texto">Consultar Reclamos</span>
-          <span class="flecha">▶</span>
+          <span class="flecha" [class.rotada]="mostrarSubBotonReclamos">▶</span>
         </button>
         <div class="subbotones">
-          <button class="subboton" (click)="mostrarGraficosReclamosBoton()">Visualizar Gráficos</button>
-          <button class="subboton" (click)="mostrarMapaReclamosBoton()">Visualizar Mapas</button>
+          <button class="subboton" (click)="mostrarGraficosReclamosBoton()"
+                  *ngIf="mostrarSubBotonReclamos" [class.activo]="mostrarGraficosReclamos">Visualizar Gráficos</button>
+          <button class="subboton" (click)="mostrarMapaReclamosBoton()"
+                  *ngIf="mostrarSubBotonReclamos" [class.activo]="mostrarMapaReclamos">Visualizar Mapas</button>
         </div>
       </li>
       <li>
-        <button type="button" class="menu-titulo">
+        <button type="button" class="menu-titulo" (click)="MostrarSubBotonesObra()"
+                [class.activo]="mostrarSubBotonObras">
           <span class="texto">Consultar Obras</span>
-          <span class="flecha">▶</span>
+          <span class="flecha" [class.rotada]="mostrarSubBotonObras">▶</span>
         </button>
         <div class="subbotones">
-          <button class="subboton" (click)="mostrarGraficosObrasBoton()">Visualizar Gráficos</button>
-          <button class="subboton" (click)="mostrarMapaObrasBoton()">Visualizar Mapas</button>
+          <button class="subboton" (click)="mostrarGraficosObrasBoton()"
+                  *ngIf="mostrarSubBotonObras" [class.activo]="mostrarGraficosObras">Visualizar Gráficos</button>
+          <button class="subboton" (click)="mostrarMapaObrasBoton()"
+                  *ngIf="mostrarSubBotonObras" [class.activo]="mostrarMapaObras">Visualizar Mapas</button>
         </div>
       </li>
     </ul>
@@ -31,7 +38,7 @@
     <button class="btn-ia-malvinas" (click)="mostrarChatGpt()">
       <span>💬 HABLAR CON IA MALVINAS</span>
     </button>
-    <button class="boton-volver">Volver hacia atrás</button>
+    <button class="boton-volver" (click)="volverAlLogin()">Volver hacia atrás</button>
   </div>
 
   <div class="contenido-principal">
@@ -126,7 +133,7 @@
 
         <div class="filtro-item">
           <label>Localidad:</label>
-          <select [(ngModel)]="localidadSeleccionada">
+          <select [(ngModel)]="localidadSeleccionada" (change)="ActualizarBarrios()">
             <option value=""></option>
             <option *ngFor="let loc of localidadesDisponibles" [value]="loc">{{ loc }}</option>
           </select>
@@ -278,7 +285,7 @@
 
         <div class="filtro-item">
           <label>Localidad:</label>
-          <select [(ngModel)]="localidadSeleccionada">
+          <select [(ngModel)]="localidadSeleccionada" (change)="ActualizarBarrios()">
             <option value=""></option>
             <option *ngFor="let loc of localidadesDisponibles" [value]="loc">{{ loc }}</option>
           </select>
@@ -390,13 +397,13 @@
           </div>
 
           <!-- Input del usuario -->
-          <input
-            type="text"
+          <textarea
             [(ngModel)]="mensajeUsuario"
             (keydown.enter)="enviarMensaje()"
             placeholder="Escribe un mensaje…"
-            class="form-control mt-2"
-          />
+            class="area-chat-flotante"
+            rows="3"
+          ></textarea>
         </div>
       </div>
     </div>

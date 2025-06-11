@@ -118,9 +118,9 @@ public class DireccionController {
         return ResponseEntity.ok(listaDescripciones);
     }
 
-    @GetMapping("/obtenerBarrios")
-    public ResponseEntity<List<String>> obtenerBarrios() {
-        List<String> listaDescripciones = direccionService.obtenerBarrios();
+    @GetMapping("/obtenerBarrios/{localidad}")
+    public ResponseEntity<List<String>> obtenerBarrios(@PathVariable String localidad) {
+        List<String> listaDescripciones = direccionService.obtenerBarriosPorLocalidad(localidad);
         return ResponseEntity.ok(listaDescripciones);
     }
 

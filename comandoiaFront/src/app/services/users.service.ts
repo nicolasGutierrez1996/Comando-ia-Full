@@ -42,8 +42,8 @@ recuperarClave(email: string): Observable<any> {
        return this.http.put(`${this.baseUrl}/actualizar-clave/${email}/${token}/${nuevaClave}`, null);
   }
 
-obtenerToken(email: string): Observable<any> {
-  return this.http.post(`${this.baseUrl}/obtenerToken/${email}`, null);
+validarToken(email: string,tokenIngresado:String): Observable<any> {
+return this.http.post(`${this.baseUrl}/validarToken/${email}/${tokenIngresado}`, null);
 }
 
 cambiarContrasena(email:string,contrasena:string):Observable<any>{

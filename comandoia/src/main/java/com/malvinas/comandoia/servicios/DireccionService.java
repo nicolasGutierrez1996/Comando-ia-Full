@@ -49,31 +49,19 @@ public class DireccionService {
         return coincidencias.isEmpty() ? Optional.empty() : Optional.of(coincidencias.get(0));
     }
 
-    public List<String> obtenerLocalidades() {
-
-        return direccionRepository.obtenerLocalidades().stream()
-                .filter(Objects::nonNull)
-                .map(s -> Arrays.stream(s.split(" "))
-                        .map(w -> w.isBlank() ? w : Character.toUpperCase(w.charAt(0)) + w.substring(1).toLowerCase())
-                        .collect(Collectors.joining(" ")))
-                .distinct()
-                .sorted()
-                .collect(Collectors.toList());
-    }
-
-    public List<String> obtenerBarrios() {
 
 
-        return direccionRepository.obtenerBarrios().stream()
-                .filter(Objects::nonNull)
-                .map(s -> Arrays.stream(s.split(" "))
-                        .map(w -> w.isBlank() ? w : Character.toUpperCase(w.charAt(0)) + w.substring(1).toLowerCase())
-                        .collect(Collectors.joining(" ")))
-                .distinct()
-                .sorted()
-                .collect(Collectors.toList());    }
+
 
     public List<Direccion> obtenerDireccionesSinCoordenadas(){
         return direccionRepository.findDireccionesSinCoordenadas();
+    }
+
+    public List<String> obtenerLocalidades(){
+        return direccionRepository.obtenerLocalidadesDisponibles();
+    }
+
+    public List<String> obtenerBarriosPorLocalidad(String localidad){
+        return direccionRepository.obtenerBarriosPorLocalidad(localidad);
     }
 }

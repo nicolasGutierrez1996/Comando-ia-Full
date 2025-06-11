@@ -56,10 +56,10 @@ export class BienvenidaComponent {
 
 
        }else if(this.rol === 'CONSULTOR_PRINCIPAL'){
-                     this.router.navigate(['./Consultor']);
+                     this.router.navigate(['./ConsultorPrincipal']);
 
        }else if(this.rol === 'CONSULTOR'){
-               this.router.navigate(['./ConsultorPrincipal']);
+               this.router.navigate(['./Consultor']);
 
        }
         else {

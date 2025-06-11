@@ -8,7 +8,18 @@ export class GptService {
 
   constructor(private http: HttpClient) {}
 
-  preguntar(prompt: string): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/preguntar` , { prompt });
+preguntar(
+  prompt: string | {
+    prompt: string;
+    historial?: { rol: 'user' | 'assistant'; content: string }[];
   }
+): Observable<any> {
+  // Si el argumento es un string simple (modo flotante viejo)
+  if (typeof prompt === 'string') {
+    return this.http.post<any>(`${this.apiUrl}/preguntar`, { prompt });
+  }
+
+
+  return this.http.post<any>(`${this.apiUrl}/preguntar`, prompt);
+}
 }

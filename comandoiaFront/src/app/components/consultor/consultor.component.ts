@@ -42,6 +42,8 @@ respuestaIA = '';
 mostrarInicio:boolean=true;
 mostrarGraficosReclamos:boolean=false;
 mostrarMapaReclamos:boolean=false;
+mostrarSubBotonReclamos:boolean=false;
+mostrarSubBotonObras:boolean=false;
 
 //FILTROS
 localidadesDisponibles:string []=[];
@@ -285,15 +287,7 @@ get chartOptions(): ChartOptions {
          }
        });
 
-          this.direccionesService.obtenerBarrios().subscribe({
-                next: (data: string[]) => {
-                  this.barriosDisponibles = data;
-                  console.log('barrios cargados:', this.barriosDisponibles);
-                },
-                error: (err) => {
-                  console.error('Error al cargar barrios:', err);
-                }
-              });
+
 
                 this.nivelSatisfaccionService.obtenerDescripciones().subscribe({
                       next: (data: string[]) => {
@@ -429,34 +423,61 @@ const borderColors = backgroundColors.map(color => color); // usa el mismo color
  }
 
 aplicarFiltros() {
-let params = new HttpParams();
-    params = params.set('fechaInicioDesde', this.fechaDesdeInicioObra != null ? this.fechaDesdeInicioObra + 'T00:00:00' : 'null');
+  let params = new HttpParams();
 
-params = params.set('fechaDesde', this.fechaDesdeReclamo != null &&  this.fechaDesdeReclamo!=''? this.fechaDesdeReclamo + 'T00:00:00' : 'null');
-params = params.set('fechaHasta', this.fechaHastaReclamo != null &&  this.fechaHastaReclamo!=''? this.fechaHastaReclamo + 'T00:00:00' : 'null');
-params = params.set('estado', this.estadoReclamoSeleccionado || '');
-params = params.set('localidad', this.localidadSeleccionada || '');
-params = params.set('barrio', this.barrioSeleccionado || '');
-params = params.set('tipoReclamo', this.tipoReclamoSeleccionado || '');
-params = params.set('nivelSatisfaccion', this.nivelReclamoSeleccionado || '');
-params = params.set('tiempoResolucionMayor', this.tiempResoMayor != null ? this.tiempResoMayor.toString() : '0');
-params = params.set('tiempoResolucionMenor', this.tiempResoMenor != null ? this.tiempResoMenor.toString() : '999999');
+  params = params.set('fechaInicioDesde', this.fechaDesdeInicioObra != null ? this.fechaDesdeInicioObra + 'T00:00:00' : 'null');
+  params = params.set('fechaDesde', this.fechaDesdeReclamo != null && this.fechaDesdeReclamo !== '' ? this.fechaDesdeReclamo + 'T00:00:00' : 'null');
+  params = params.set('fechaHasta', this.fechaHastaReclamo != null && this.fechaHastaReclamo !== '' ? this.fechaHastaReclamo + 'T00:00:00' : 'null');
+  params = params.set('estado', this.estadoReclamoSeleccionado || '');
+  params = params.set('localidad', this.localidadSeleccionada || '');
+  params = params.set('barrio', this.barrioSeleccionado || '');
+  params = params.set('tipoReclamo', this.tipoReclamoSeleccionado || '');
+  params = params.set('nivelSatisfaccion', this.nivelReclamoSeleccionado || '');
+  params = params.set('tiempoResolucionMayor', this.tiempResoMayor != null ? this.tiempResoMayor.toString() : '0');
+  params = params.set('tiempoResolucionMenor', this.tiempResoMenor != null ? this.tiempResoMenor.toString() : '999999');
 
-this.reclamosService.obtenerReclamosFiltrados(params).subscribe((data: ReclamoConDescripciones[]) => {
-  this.reclamos = data;
-  console.log("reclamos obtenidos:",this.reclamos);
-  if(this.mostrarGraficosReclamos){
-  this.cargarGraficoAgrupado();
-  }
-  if(this.mostrarMapaReclamos){
+  this.reclamosService.obtenerReclamosFiltrados(params).subscribe((data: ReclamoConDescripciones[]) => {
+    this.reclamos = data;
+    console.log("Reclamos obtenidos:", this.reclamos);
+
+    // Si hay gráfico activo
+    if (this.mostrarGraficosReclamos) {
+      this.cargarGraficoAgrupado();
+    }
+
+    // Si hay mapa activo
+    if (this.mostrarMapaReclamos) {
+      // 1. Remover capas anteriores del mapa si existen
+      if (this.markerClusterGroup && this.map?.hasLayer(this.markerClusterGroup)) {
+        this.map.removeLayer(this.markerClusterGroup);
+      }
+      if (this.heatLayer && this.map?.hasLayer(this.heatLayer)) {
+        this.map.removeLayer(this.heatLayer);
+      }
+
+      // 2. Recrear clusters con nuevos datos
       this.agregarMarcadoresReclamos();
 
-  }
+      // 3. Crear mapa de calor nuevo con los datos actualizados
+      this.actualizarMapaCalor();
 
-});
+      // 4. Agregar al mapa según el estado de los checkboxes
+      const mostrarPuntos = (document.getElementById('checkboxTogglePuntos') as HTMLInputElement)?.checked ?? true;
+      const mostrarCalor = (document.getElementById('checkboxToggleCalor') as HTMLInputElement)?.checked ?? true;
+
+      if (mostrarPuntos && this.markerClusterGroup) {
+        this.map!.addLayer(this.markerClusterGroup);
+      }
+
+      if (mostrarCalor && this.heatLayer) {
+        this.map!.addLayer(this.heatLayer);
+      }
+
+      // 5. Actualizar el control de capas con las nuevas instancias
+      this.actualizarOverlayMaps();
+    }
+  });
 }
-
-
 
 actualizarAgrupamiento(){
 this.cargarGraficoAgrupado();
@@ -861,8 +882,12 @@ private agregarMarcadoresReclamos() {
     this.map!.closePopup();
   });
 
-  // Agregar al mapa
-  this.map.addLayer(this.markerClusterGroup);
+ const mostrarPuntos = (document.getElementById('checkboxTogglePuntos') as HTMLInputElement)?.checked ?? true;
+
+ if (mostrarPuntos) {
+   this.map.addLayer(this.markerClusterGroup);
+ }
+
 }
 
 actualizarAgrupamientoMapa() {
@@ -877,42 +902,39 @@ actualizarMapaCalor(): void {
     this.map.removeLayer(this.heatLayer);
   }
 
-
   let heatPoints: [number, number][] = [];
-  if(this.mostrarMapaReclamos){
-  if (this.grupoPorCalor === 'estado') {
-    heatPoints = this.reclamos
-      .filter(r => r.estado?.descripcion !== 'Cerrado' && r.direccion.latitud && r.direccion.longitud)
-      .map(r => [r.direccion.latitud!, r.direccion.longitud!] as [number, number]);
-  } else if (this.grupoPorCalor === 'satisfaccion') {
-    heatPoints = this.reclamos
-      .filter(r => (
-        r.nivel_satisfaccion.descripcion === 'Muy Insatisfecho' ||
-        r.nivel_satisfaccion.descripcion === 'Insatisfecho' ||
-        r.nivel_satisfaccion.descripcion === 'Muy Insatisfecha'
-      ) && r.direccion.latitud && r.direccion.longitud)
-      .map(r => [r.direccion.latitud!, r.direccion.longitud!] as [number, number]);
+
+  if (this.mostrarMapaReclamos) {
+    if (this.grupoPorCalor === 'estado') {
+      heatPoints = this.reclamos
+        .filter(r => r.estado?.descripcion !== 'Cerrado' && r.direccion.latitud && r.direccion.longitud)
+        .map(r => [r.direccion.latitud!, r.direccion.longitud!] as [number, number]);
+    } else if (this.grupoPorCalor === 'satisfaccion') {
+      heatPoints = this.reclamos
+        .filter(r =>
+          (r.nivel_satisfaccion.descripcion === 'Muy Insatisfecho' ||
+           r.nivel_satisfaccion.descripcion === 'Insatisfecho' ||
+           r.nivel_satisfaccion.descripcion === 'Muy Insatisfecha') &&
+          r.direccion.latitud && r.direccion.longitud)
+        .map(r => [r.direccion.latitud!, r.direccion.longitud!] as [number, number]);
+    }
+  } else if (this.mostrarMapaObras) {
+    if (this.grupoPorCalorObra === 'estado') {
+      heatPoints = this.obras
+        .filter(o => o.estado?.descripcion !== 'Finalizada' && o.direccion.latitud && o.direccion.longitud)
+        .map(o => [o.direccion.latitud!, o.direccion.longitud!] as [number, number]);
+    } else if (this.grupoPorCalorObra === 'fechaEstimadaAtrasada') {
+      const hoy = new Date();
+      heatPoints = this.obras
+        .filter(o =>
+          o.fecha_estimada_finalizacion &&
+          new Date(o.fecha_estimada_finalizacion) < hoy &&
+          (!o.fecha_real_finalizacion || new Date(o.fecha_real_finalizacion) > hoy) &&
+          o.direccion.latitud != null && o.direccion.longitud != null)
+        .map(o => [o.direccion.latitud!, o.direccion.longitud!] as [number, number]);
+    }
   }
-}else if(this.mostrarMapaObras){
-if (this.grupoPorCalorObra === 'estado') {
-    heatPoints = this.obras
-      .filter(o => o.estado?.descripcion !== 'Finalizada' && o.direccion.latitud && o.direccion.longitud)
-      .map(o => [o.direccion.latitud!, o.direccion.longitud!] as [number, number]);
-  }  else if (this.grupoPorCalorObra === 'fechaEstimadaAtrasada') {
-          const hoy = new Date();
 
-          heatPoints = this.obras
-            .filter(o =>
-              o.fecha_estimada_finalizacion &&
-              new Date(o.fecha_estimada_finalizacion) < hoy &&
-              (!o.fecha_real_finalizacion || new Date(o.fecha_real_finalizacion)>hoy) &&
-              o.direccion.latitud != null &&
-              o.direccion.longitud != null
-            )
-            .map(o => [o.direccion.latitud!, o.direccion.longitud!] as [number, number]);
-        }
-
-}
   // Crear heatLayer nuevo
   this.heatLayer = (this.L as any).heatLayer(heatPoints, {
     radius: 100,
@@ -926,30 +948,26 @@ if (this.grupoPorCalorObra === 'estado') {
     }
   });
 
-  // Si ya hay control de capas, eliminarlo para actualizar referencias
+  // Actualizar las capas en el mapa y los checkboxes
+  this.actualizarOverlayMaps();
+}
+
+private actualizarOverlayMaps(): void {
+  if (!this.map) return;
+
+  // 🔁 Remover control anterior
   if (this.layersControl) {
     this.map.removeControl(this.layersControl);
   }
 
-  // Agregar heatLayer nuevo al mapa (esto marca el checkbox)
-  this.heatLayer.addTo(this.map);
+  // ❌ No agregues los layers acá manualmente
+  // ✅ Solo definilos para el control
+  const overlayMaps = {
+    '🧩 Puntos en el mapa': this.markerClusterGroup,
+    '🔥 Mapa de Calor': this.heatLayer
+  };
 
-  // Crear nuevo control de capas con heatLayer actualizado
-  let overlayMaps=null;
-  if(this.mostrarMapaReclamos){
-     overlayMaps = {
-        '🧩 Reclamos Agrupados': this.markerClusterGroup,
-        '🔥 Mapa de Calor': this.heatLayer
-      };
-  }else if(this.mostrarMapaObras){
-       overlayMaps = {
-          '🧩 Obras Agrupadas': this.markerClusterGroup,
-          '🔥 Mapa de Calor': this.heatLayer
-        };
-  }
-
-
-
+  // ✅ Crear nuevo control con los objetos recién recreados
   this.layersControl = this.L.control.layers(undefined, overlayMaps, { collapsed: false }).addTo(this.map);
 }
 
@@ -1019,15 +1037,7 @@ cargarFiltrosObra(){
           }
         });
 
-           this.direccionesService.obtenerBarrios().subscribe({
-                 next: (data: string[]) => {
-                   this.barriosDisponibles = data;
-                   console.log('barrios cargados:', this.barriosDisponibles);
-                 },
-                 error: (err) => {
-                   console.error('Error al cargar barrios:', err);
-                 }
-               });
+
 
 
 
@@ -1053,21 +1063,16 @@ cargarFiltrosObra(){
 }
 
 
-aplicarFiltrosObra(){
-let params = new HttpParams();
-
-
-
-
-
+aplicarFiltrosObra() {
+  let params = new HttpParams();
 
   // Fechas obligatorias (siempre se envían)
-  params = params.set('fechaInicioDesde', this.fechaDesdeInicioObra != null &&  this.fechaDesdeInicioObra!='' ? this.fechaDesdeInicioObra + 'T00:00:00' : 'null');
-  params = params.set('fechaInicioHasta', this.fechaHastaInicioObra != null &&  this.fechaHastaInicioObra!='' ? this.fechaHastaInicioObra + 'T23:59:59' : 'null');
-  params = params.set('fechaEstimadaFinDesde', this.fechaDesdeEstiObra != null &&  this.fechaDesdeEstiObra!=''  ? this.fechaDesdeEstiObra + 'T00:00:00' : 'null');
-  params = params.set('fechaEstimadaFinHasta', this.fechaHastaEstiObra != null &&  this.fechaHastaEstiObra!='' ? this.fechaHastaEstiObra + 'T23:59:59' : 'null');
-  params = params.set('fechaRealFinDesde', this.fechaDesdeRealObra != null &&  this.fechaDesdeRealObra!='' ? this.fechaDesdeRealObra + 'T00:00:00' : 'null');
-  params = params.set('fechaRealFinHasta', this.fechaHastaRealObra != null &&  this.fechaHastaRealObra!='' ? this.fechaHastaRealObra + 'T23:59:59' : 'null');
+  params = params.set('fechaInicioDesde', this.fechaDesdeInicioObra && this.fechaDesdeInicioObra !== '' ? this.fechaDesdeInicioObra + 'T00:00:00' : 'null');
+  params = params.set('fechaInicioHasta', this.fechaHastaInicioObra && this.fechaHastaInicioObra !== '' ? this.fechaHastaInicioObra + 'T23:59:59' : 'null');
+  params = params.set('fechaEstimadaFinDesde', this.fechaDesdeEstiObra && this.fechaDesdeEstiObra !== '' ? this.fechaDesdeEstiObra + 'T00:00:00' : 'null');
+  params = params.set('fechaEstimadaFinHasta', this.fechaHastaEstiObra && this.fechaHastaEstiObra !== '' ? this.fechaHastaEstiObra + 'T23:59:59' : 'null');
+  params = params.set('fechaRealFinDesde', this.fechaDesdeRealObra && this.fechaDesdeRealObra !== '' ? this.fechaDesdeRealObra + 'T00:00:00' : 'null');
+  params = params.set('fechaRealFinHasta', this.fechaHastaRealObra && this.fechaHastaRealObra !== '' ? this.fechaHastaRealObra + 'T23:59:59' : 'null');
 
   params = params.set('tipoObra', this.tipoObraSeleccionado || '');
   params = params.set('estado', this.estadoObraSeleccionado || '');
@@ -1090,11 +1095,32 @@ let params = new HttpParams();
 
     if (this.mostrarMapaObras) {
       this.agregarMarcadoresObras();
+
+      // Solo si el mapa ya existe
+      if (this.map) {
+        // Agrega capas según estado actual
+        if (this.markerClusterGroup) {
+          this.map.addLayer(this.markerClusterGroup);
+        }
+        if (this.heatLayer) {
+          this.map.addLayer(this.heatLayer);
+        }
+
+        // Eliminar control de capas previo si existe
+        if (this.layersControl) {
+          this.map.removeControl(this.layersControl);
+        }
+
+        // Crear nuevo control de capas
+        const overlayMaps = {
+          '🧩 Obras Agrupadas': this.markerClusterGroup,
+          '🔥 Mapa de Calor': this.heatLayer
+        };
+
+        this.layersControl = this.L.control.layers(undefined, overlayMaps, { collapsed: false }).addTo(this.map);
+      }
     }
   });
-
-
-
 }
 cargarGraficoObras(): void {
   const conteo: { [clave: string]: number } = {};
@@ -1350,5 +1376,31 @@ private agregarMarcadoresObras() {
 
  }
 
+ActualizarBarrios(){
+this.direccionesService.obtenerBarrios(this.localidadSeleccionada).subscribe({
+                next: (data: string[]) => {
+                  this.barriosDisponibles = data;
+                  console.log('barrios cargados:', this.barriosDisponibles);
+                },
+                error: (err) => {
+                  console.error('Error al cargar barrios:', err);
+                }
+              });
+
+}
+
+volverAlLogin(){
+
+this.router.navigate(['./login']);
+}
+
+  MostrarSubBotonesReclamo(){
+    this.mostrarSubBotonReclamos = !this.mostrarSubBotonReclamos;
+  }
+
+MostrarSubBotonesObra(){
+this.mostrarSubBotonObras=!this.mostrarSubBotonObras;
+
+}
 
 }

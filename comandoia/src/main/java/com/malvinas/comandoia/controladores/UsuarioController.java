@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +28,9 @@ public class UsuarioController {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping
     public Iterable<Usuario> listarUsuarios() {
@@ -63,12 +67,18 @@ public class UsuarioController {
             return ResponseEntity.badRequest().body(response);
         }
 
-        usuario.setContrasena(FuncionesVarias.generarContrasenaAleatoria());
+        String claveAutogenerada=FuncionesVarias.generarContrasenaAleatoria();
+
+        emailService.enviarCredenciales(usuario.getEmail(),claveAutogenerada,usuario.getNombre());
+
+
+        String claveEncriptada = passwordEncoder.encode(claveAutogenerada);
+
+        usuario.setContrasena(claveEncriptada);
 
         Usuario nuevo = usuarioService.guardarUsuario(usuario);
 
 
-        emailService.enviarCredenciales(nuevo.getEmail(),nuevo.getContrasena(),nuevo.getNombre());
 
 
         response.put("success", true);
@@ -134,10 +144,14 @@ public class UsuarioController {
 
         Usuario usuario = usuarioOpt.get();
         String token = FuncionesVarias.generarTokenDeClave();
-        usuario.setToken(token);
+        emailService.enviarTokenDeRecuperacion(usuario.getEmail(), token);
+        String hashedToken = passwordEncoder.encode(token);
+        usuario.setToken(hashedToken);
+
+
         usuarioService.guardarUsuario(usuario);
 
-        emailService.enviarTokenDeRecuperacion(usuario.getEmail(), token);
+
         response.put("success",true);
         response.put("mensaje","Se envió un token de recuperación al correo registrado.");
         return ResponseEntity.ok(response);
@@ -155,11 +169,16 @@ public class UsuarioController {
         }
 
         Usuario usuario = usuarioOpt.get();
-        if (!token.equals(usuario.getToken())) {
+        System.out.println("TOKEN PLANO: " + token);
+        System.out.println("TOKEN HASH EN BD: " + usuario.getToken());
+        System.out.println("¿MATCH? " + passwordEncoder.matches(token, usuario.getToken()));
+        if (!passwordEncoder.matches(token, usuario.getToken())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido");
         }
 
-        usuario.setContrasena(nuevaClave);
+        String claveEncriptada = passwordEncoder.encode(nuevaClave);
+
+        usuario.setContrasena(claveEncriptada);
         usuario.setToken(null);
         usuarioService.guardarUsuario(usuario);
 
@@ -170,31 +189,45 @@ public class UsuarioController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         Map<String, Object> response = new HashMap<>();
-        Optional<Usuario> usuario =  usuarioService.buscarPorUserPass(
-                loginRequest.getUsuario(), loginRequest.getContrasena());
+        Optional<Usuario> usuarioOpt =  usuarioService.buscarPorUser(
+                loginRequest.getUsuario());
 
 
-        if (usuario.isPresent()) {
-            response.put("success", true);
-            response.put("usuario", usuario.get());
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario o contraseña incorrectos");
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            if (passwordEncoder.matches(loginRequest.getContrasena(), usuario.getContrasena())) {
+                response.put("success", true);
+                response.put("usuario", usuario);
+                return ResponseEntity.ok(response);
+            }
         }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario o contraseña incorrectos");
+
     }
 
-    @PostMapping("/obtenerToken/{mail}")
-    public ResponseEntity<?> obtenerTokenPorMail(@PathVariable String mail) {
+    @PostMapping("/validarToken/{mail}/{tokenIngresado}")
+    public ResponseEntity<?> validarToken(@PathVariable String mail,@PathVariable String tokenIngresado) {
         Map<String, Object> response = new HashMap<>();
         Optional<String> token = usuarioService.obtenerTokenPorMail(mail);
 
-        if (token.isPresent()) {
+
+        System.out.println("TOKEN plano ingresado: " + tokenIngresado);
+        System.out.println("TOKEN hash guardado: " + token.get());
+        System.out.println("MATCH: " + passwordEncoder.matches(tokenIngresado, token.get()));
+
+        if (!token.isPresent()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("El mail ingresado no tiene ningun token asignado");
+
+
+        } else if(passwordEncoder.matches(tokenIngresado, token.get())){
             response.put("success", true);
             response.put("token", token.get());
             return ResponseEntity.ok(response);
-        } else {
+
+        }else{
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("El mail ingresado no tiene ningun token asignado");
+                    .body("El token ingresado es incorrecto");
         }
     }
 
@@ -204,7 +237,11 @@ public class UsuarioController {
       Optional<Usuario> usuario = usuarioService.buscarPorMail(mail);
 
       if (usuario.isPresent()) {
-          usuarioService.actualizarPassword(mail,contrasena);
+
+          String claveEncriptada = passwordEncoder.encode(contrasena);
+
+
+          usuarioService.actualizarPassword(mail,claveEncriptada);
           response.put("success", true);
           response.put("mensaje", "Se actualizo correctamente la contraseña");
           return ResponseEntity.ok(response);

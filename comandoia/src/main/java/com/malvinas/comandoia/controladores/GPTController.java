@@ -1,5 +1,7 @@
 package com.malvinas.comandoia.controladores;
 
+import com.malvinas.comandoia.modelo.MensajeIA;
+import com.malvinas.comandoia.modelo.PreguntaIARequest;
 import com.malvinas.comandoia.modelo.PromptRequest;
 import com.malvinas.comandoia.servicios.GPTService;
 import com.malvinas.comandoia.servicios.SQLExecutorService;
@@ -7,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,12 +25,14 @@ public class GPTController {
     private SQLExecutorService sqlExecutorService;
 
     @PostMapping("/preguntar")
-    public ResponseEntity<?> preguntarIA(@RequestBody PromptRequest request) {
+    public ResponseEntity<?> preguntarIA(@RequestBody PreguntaIARequest request) {
         String pregunta = request.getPrompt();
+        List<MensajeIA> historial = request.getHistorial() != null ? request.getHistorial() : new ArrayList<>();
+
 
         try {
             // 1. GPT genera una respuesta con tipo y contenido
-            Map<String, String> respuestaIA = gptService.generarSQLDesdePregunta(pregunta);
+            Map<String, String> respuestaIA = gptService.generarSQLDesdePregunta(pregunta, historial);
             String tipo = respuestaIA.get("tipo");
             String contenido = respuestaIA.get("contenido");
 

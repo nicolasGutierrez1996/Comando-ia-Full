@@ -14,8 +14,8 @@ export class DireccionesService {
 obtenerLocalidades():Observable<string[]>{
  return this.http.get<string[]>(`${this.baseUrl}/obtenerLocalidades`);
 }
-obtenerBarrios():Observable<string[]>{
- return this.http.get<string[]>(`${this.baseUrl}/obtenerBarrios`);
+obtenerBarrios(localidad:String):Observable<string[]>{
+ return this.http.get<string[]>(`${this.baseUrl}/obtenerBarrios/${localidad}`);
 }
 
 }
