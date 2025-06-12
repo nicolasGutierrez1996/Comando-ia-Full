@@ -21,7 +21,7 @@ import { GptService } from '../../services/gpt.service';
 import { ChartData, ChartOptions,ChartType  } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
 import { ChatIaComponent } from './chat-ia/chat-ia.component';
-
+import { IndicadorService,TarjetaConEstado } from '../../services/indicador.service';
 
 import * as L from 'leaflet';
 
@@ -46,6 +46,9 @@ mostrarSubBotonReclamos:boolean=false;
 mostrarSubBotonObras:boolean=false;
 
 //FILTROS
+mostrarFiltros=false;
+
+
 localidadesDisponibles:string []=[];
 barriosDisponibles:string []=[];
 estadosReclamoDisponibles:string []=[];
@@ -122,6 +125,12 @@ grupoPorObra: string = 'estado';
 //IA CHAT
 chatGpt:boolean=false;
 
+
+indicadoresTarjetas: TarjetaConEstado[] = [];
+
+
+
+
 constructor(
   private router: Router,
   private reclamosService: ReclamosService,
@@ -132,10 +141,15 @@ constructor(
   private tipoObrasSservice:TipoObrasService,
   private nivelSatisfaccionService: NivelSatisfaccionService,
   private tipoReclamosService: TipoReclamosService,
-  private gptService: GptService
+  private gptService: GptService,
+  private indicadorService:IndicadorService
 ) {}
 
  ngOnInit(): void {
+
+      this.cargarIndicadores();
+
+
     this.reclamosService.obtenerReclamos().subscribe((data: ReclamoConDescripciones[]) => {
 
 
@@ -1401,6 +1415,38 @@ this.router.navigate(['./login']);
 MostrarSubBotonesObra(){
 this.mostrarSubBotonObras=!this.mostrarSubBotonObras;
 
+}
+
+
+//INDICADORES
+cargarIndicadores(): void {
+  this.indicadorService.obtenerIndicadoresConSuplentes().subscribe(data => {
+    console.log('📦 Indicadores crudos desde el backend:', data);
+
+    this.indicadoresTarjetas = data.map((t, i) => {
+      const tarjeta = {
+        principal: t.principal,
+        suplentes: t.suplentes,
+        indiceSuplente: null
+      };
+      console.log(`✅ Tarjeta ${i + 1} armada:`, tarjeta);
+      return tarjeta;
+    });
+
+    console.log('✅ Todas las tarjetas listas:', this.indicadoresTarjetas);
+  }, error => {
+    console.error('❌ Error al cargar indicadores:', error);
+  });
+}
+
+cambiarVista(tarjeta: TarjetaConEstado): void {
+  if (tarjeta.indiceSuplente === null) {
+    tarjeta.indiceSuplente = 0;
+  } else if (tarjeta.indiceSuplente < tarjeta.suplentes.length - 1) {
+    tarjeta.indiceSuplente++;
+  } else {
+    tarjeta.indiceSuplente = null; // volver al principal
+  }
 }
 
 }

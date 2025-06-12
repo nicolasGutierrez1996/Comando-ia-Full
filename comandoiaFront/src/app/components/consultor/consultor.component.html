@@ -57,16 +57,73 @@
         <div class="subtitle">Grand Bourg - Malvinas Argentinas</div>
 
         <div class="cards">
-          <div class="card">
-            <div class="percentage">67%</div>
-            <div class="label">Imagen Positiva<br>del intendente</div>
-            <div class="change positive">↑ +1%</div>
-          </div>
+          <div class="card" *ngFor="let tarjeta of indicadoresTarjetas">
+            <div class="percentage">
+              {{
+              tarjeta.indiceSuplente === null
+              ? tarjeta.principal.valorActual
+              : tarjeta.suplentes[tarjeta.indiceSuplente].valorActual
+              }}
+              <span class="unidad">
+  {{
+    (tarjeta.indiceSuplente === null
+      ? tarjeta.principal.unidad
+      : tarjeta.suplentes[tarjeta.indiceSuplente].unidad) === 'puntos'
+      ? '/5'
+      : (tarjeta.indiceSuplente === null
+          ? tarjeta.principal.unidad
+          : tarjeta.suplentes[tarjeta.indiceSuplente].unidad)
+  }}
+</span>
+            </div>
 
-          <div class="card">
-            <div class="percentage">55%</div>
-            <div class="label">Intención de Voto</div>
-            <div class="change positive">↑ 4%</div>
+            <div class="label">
+              {{
+              tarjeta.indiceSuplente === null
+              ? tarjeta.principal.nombre
+              : tarjeta.suplentes[tarjeta.indiceSuplente].nombre
+              }}
+            </div>
+
+            <div
+              class="change"
+              [ngClass]="
+      (tarjeta.indiceSuplente === null
+        ? tarjeta.principal.variacion
+        : tarjeta.suplentes[tarjeta.indiceSuplente].variacion) >= 0
+        ? 'positive'
+        : 'negative'
+    "
+            >
+              {{
+              tarjeta.indiceSuplente === null
+              ? tarjeta.principal.direccion
+              : tarjeta.suplentes[tarjeta.indiceSuplente].direccion
+              }}
+              {{
+              tarjeta.indiceSuplente === null
+              ? tarjeta.principal.variacion
+              : tarjeta.suplentes[tarjeta.indiceSuplente].variacion
+              }}
+              {{
+              tarjeta.indiceSuplente === null
+              ? tarjeta.principal.unidad
+              : tarjeta.suplentes[tarjeta.indiceSuplente].unidad
+              }}
+            </div>
+
+            <button
+              class="icono-flecha"
+              (click)="cambiarVista(tarjeta)"
+              [title]="
+    tarjeta.indiceSuplente === null
+      ? 'Ver suplente'
+      : tarjeta.indiceSuplente < tarjeta.suplentes.length - 1
+      ? 'Siguiente suplente'
+      : 'Volver al principal'
+  ">
+              {{ tarjeta.indiceSuplente === null || tarjeta.indiceSuplente < tarjeta.suplentes.length - 1 ? '▶' : '◀' }}
+            </button>
           </div>
 
           <div class="card">
@@ -112,7 +169,13 @@
 
     <!-- SECCIÓN GRÁFICOS -->
     <div *ngIf="mostrarGraficosReclamos || mostrarMapaReclamos" class="graficos-reclamos">
-      <div class="filtros-container">
+      <div style="text-align: right; margin-bottom: 10px;">
+        <button (click)="mostrarFiltros = !mostrarFiltros">
+          {{ mostrarFiltros ? 'Ocultar filtros 🔼' : 'Mostrar filtros 🔽' }}
+        </button>
+      </div>
+
+      <div class="filtros-container" *ngIf="mostrarFiltros">
         <div class="filtro-item">
           <label>Fecha desde:</label>
           <input type="date" [(ngModel)]="fechaDesdeReclamo" />
@@ -207,7 +270,13 @@
     <!-- SECCIÓN GRÁFICOS OBRAS-->
 
     <div *ngIf="mostrarGraficosObras || mostrarMapaObras" class="graficos-reclamos">
-      <div class="filtros-container">
+      <div style="text-align: right; margin-bottom: 10px;">
+        <button (click)="mostrarFiltros = !mostrarFiltros">
+          {{ mostrarFiltros ? 'Ocultar filtros 🔼' : 'Mostrar filtros 🔽' }}
+        </button>
+      </div>
+
+      <div class="filtros-container" *ngIf="mostrarFiltros">
         <div class="filtro-item">
           <label>Fecha de inicio desde:</label>
           <input type="date" [(ngModel)]="fechaDesdeInicioObra" />
@@ -332,6 +401,13 @@
 
     </div>
 
+    <div *ngIf="mostrarMapaReclamos || mostrarMapaObras" class="mapa-reclamos">
+
+      <div class="mapa" id="map"></div>
+    </div>
+
+
+
     <div class="tipo-grafico" *ngIf="tipoGrafico">
       <label>Tipo de gráfico:</label>
       <select [(ngModel)]="tipoGraficoSeleccionado" (change)="actualizarGrafico()">
@@ -343,6 +419,8 @@
         <option value="polarArea">Área polar</option>
       </select>
     </div>
+
+
 
 
     <div class="tipo-grafico" *ngIf="tipoGraficoObra">
@@ -374,10 +452,6 @@
     </div>
 
     <!-- SECCIÓN MAPA -->
-    <div *ngIf="mostrarMapaReclamos || mostrarMapaObras" class="mapa-reclamos">
-
-      <div class="mapa" id="map"></div>
-    </div>
 
     <div class="chat-container" *ngIf="!chatGpt">
       <input type="checkbox" id="chat-toggle">
