@@ -1,12 +1,12 @@
+
+
 :host {
-  display: block;
+  display: flex;
+  flex: 1;
+  height: 100vh;
   width: 100%;
-  height: 100%;
-  background: #f9f9f9;
-  padding: 2rem 1rem;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', sans-serif;
 }
+
 
 .chat-titulo {
   text-align: center;
@@ -20,36 +20,31 @@
   text-transform: uppercase;
   letter-spacing: 1px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .chat-container {
+  position: absolute; /* Forzamos que se superponga sobre todo */
+  top: 0;
+  left: 250px; /* exactamente el ancho del menú */
+  right: 0;
+  bottom: 0;
+  background: rgba(30, 30, 60, 0.85);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 600px;
-  max-height: 85vh;
-  width: 100%;
-  max-width: 700px;
-  margin: auto;
-  background: rgba(30, 30, 60, 0.85);
-  border-radius: 20px;
-  padding: 16px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(8px);
   overflow: hidden;
-  position: relative;
-  border: 2px solid rgba(255, 255, 255, 0.08);
 }
 
 .chat-mensajes {
   flex: 1;
-  overflow-y: auto;
-  padding: 1rem;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+  padding: 1rem 2rem 1rem 2rem;
   gap: 12px;
-  scrollbar-width: thin;
-  scrollbar-color: #888 transparent;
 }
 
 .chat-mensajes::-webkit-scrollbar {
@@ -75,14 +70,16 @@
 
 .usuario {
   align-self: flex-end;
-  background: linear-gradient(135deg, #00c9ff, #92fe9d);
-  color: #111;
+  background-color: #cce4f6;
+  color: #1a1a1a;
+  border: 1px solid #a4cbe3;
 }
 
 .ia {
   align-self: flex-start;
-  background: linear-gradient(135deg, #ff6a00, #ee0979);
-  color: white;
+  background-color: #d4f4e7; /* verde agua pastel */
+  color: #1a1a1a;
+  border: 1px solid #a9dbc5;
 }
 
 .input-container {
@@ -133,6 +130,19 @@ button:hover {
   background: linear-gradient(135deg, #8e2de2, #4a00e0);
 }
 
+.chat-diseno {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  background-color: #1e1e2f;
+}
+
+
+
 /* ------------------- RESPONSIVE ------------------- */
 @media (max-width: 600px) {
   :host {
@@ -141,10 +151,15 @@ button:hover {
 
 
   .chat-container {
-    height: auto;
-    max-height: none;
-    padding: 12px;
-    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh; /* Ocupar todo el alto de la pantalla */
+    width: calc(100% - 250px); /* Resta el ancho del menú */
+    margin-left: 250px; /* Se separa del menú lateral */
+    background: rgba(30, 30, 60, 0.85);
+    overflow: hidden;
+    position: relative;
   }
 
   .mensaje {
@@ -159,7 +174,7 @@ button:hover {
     border-radius: 0 0 12px 12px;
   }
 
-eeee
+
 
   button {
     padding: 10px;
@@ -176,4 +191,16 @@ eeee
     font-size: 18px;
     padding: 12px;
   }
-}ee
+}
+
+
+.chat-diseño {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  background-color: #1e1e2f; /* o el que estés usando de fondo */
+}
