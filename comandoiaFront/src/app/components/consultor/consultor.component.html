@@ -166,14 +166,13 @@
     </div>
 
 
-
+    <button class="boton-filtros" (click)="mostrarFiltros = !mostrarFiltros">
+      {{ mostrarFiltros ? 'Ocultar filtros' : 'Mostrar filtros' }}
+      <span class="icono">{{ mostrarFiltros ? '▲' : '▼' }}</span>
+    </button>
     <!-- SECCIÓN GRÁFICOS -->
-    <div *ngIf="mostrarGraficosReclamos || mostrarMapaReclamos" class="graficos-reclamos">
-      <div style="text-align: right; margin-bottom: 10px;">
-        <button (click)="mostrarFiltros = !mostrarFiltros">
-          {{ mostrarFiltros ? 'Ocultar filtros 🔼' : 'Mostrar filtros 🔽' }}
-        </button>
-      </div>
+    <div *ngIf="(mostrarGraficosReclamos || mostrarMapaReclamos) && mostrarFiltros" class="graficos-reclamos">
+
 
       <div class="filtros-container" *ngIf="mostrarFiltros">
         <div class="filtro-item">

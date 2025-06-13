@@ -452,10 +452,8 @@
 .grafico-container canvas {
   width: 100% !important;
   height: auto !important;
-  max-height: 320px !important;
+  max-height: 450px;  /* 🔧 Controla la altura máxima */
   border: none !important;
-  opacity: 1 !important;
-  filter: none !important;
   display: block;
   margin: 0 auto;
 }
@@ -1178,4 +1176,47 @@ box-sizing: border-box;
 .icono-flecha:hover {
   background-color: #f0f0f0;
   transform: scale(1.1);
+}
+
+.boton-filtros {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  font-weight: 500;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+  transition: background-color 0.3s;
+}
+
+.boton-filtros {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(to right, #007bff, #0056b3);
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.boton-filtros:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+}
+
+.boton-filtros:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.3);
+}
+
+.boton-filtros .icono {
+  font-size: 16px;
+  line-height: 1;
 }
