@@ -1,19 +1,40 @@
+
+:host {
+  display: flex;
+  flex: 1;
+  height: 100vh;
+  width: 100%;
+}
+
+
 .dashboard-container {
-  padding: 2rem;
-  font-family: 'Segoe UI', sans-serif;
+
+
+  min-height: 100vh; /* Asegura que ocupe todo el alto de la pantalla */
+  width: 100%;
+  padding: 0rem 5rem 1.5rem 0rem; /* Reduce el padding-top para subir todo */
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  background: yellow;
+  gap: 0.3rem;
+  margin-top: 0;      /* Por si algún contenedor lo empuja */
+  position: relative; /* Quitamos absolute si lo tenías, para evitar desplazamientos raros */
 }
 
 .dashboard-header {
   text-align: left;
 }
+.dashboard-header h1 {
+  color: #0a1833;
+  font-weight: 700;
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+}
 
 .subtitulo {
+margin: 0;
   font-size: 14px;
-  color: #555;
+  color: #2f3e6c;
 }
 
 .tarjetas-grid {
@@ -74,16 +95,18 @@
         }
 
 .graficos-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
   gap: 2rem;
+  align-items: start;
 }
 
 .grafico-card {
-  background: #ffffff;
-  padding: 1rem;
-  border-radius: 16px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    background: white;
+    padding: 1rem;
+    border-radius: 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    flex: 1;
+    border: 1px solid #90a4ae;
 }
 
 .alertas-grid {
@@ -114,8 +137,8 @@
 
 
 .tarjeta-moderna {
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
+  background: #f1f5ff;
+  border: 1px solid #90a4ae;
   border-radius: 12px;
   padding: 1rem;
   width: 180px;

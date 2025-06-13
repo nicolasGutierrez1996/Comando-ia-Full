@@ -3,8 +3,8 @@
     <h2>IA Malvinas</h2>
     <ul class="lista-opciones">
       <li>
-        <button type="button" class="menu-titulo" (click)="mostrarInicioBoton()"
-                >
+        <button type="button" class="menu-titulo" (click)="mostrarInicioBoton()">
+
           <span class="texto">Inicio</span>
         </button>
 
@@ -42,7 +42,8 @@
   </div>
 
   <div class="contenido-principal">
-    <div class="titulo">
+    <div class="titulo" *ngIf="mostrarGraficosObras||mostrarGraficosReclamos
+     || mostrarMapaObras || mostrarMapaReclamos">
       <h2 *ngIf="mostrarGraficosObras">Graficos de Obras</h2>
       <h2 *ngIf="mostrarGraficosReclamos">Graficos de Reclamos</h2>
       <h2 *ngIf="mostrarMapaObras">Mapa de Obras</h2>
@@ -50,7 +51,7 @@
     </div>
 
 
-    <app-inicio *ngIf="mostrarInicio"></app-inicio>
+
     <!-- SECCIÓN INICIO -->
 
 
@@ -378,13 +379,18 @@
 
     <div *ngIf="chatGpt">
       <app-chat-ia></app-chat-ia>
-    </div>
+
+
 
   </div>
 
-
+    <div *ngIf="mostrarInicio">
+      <app-inicio></app-inicio>
+    </div>
 
 
 </div>
 
 
+
+</div>

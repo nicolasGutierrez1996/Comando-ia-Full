@@ -98,8 +98,8 @@ public class IndicadorObraService {
     }
 
 
-    //@Scheduled(cron = "0 0 8 * * *") // todos los días a las 8:00 AM
-    @Scheduled(cron = "0 * * * * *") // cada minuto (para pruebas)
+    @Scheduled(cron = "0 0 8 * * *") // todos los días a las 8:00 AM
+    //@Scheduled(cron = "0 * * * * *") // cada minuto (para pruebas)
     @Transactional
     public void calcularIndicadoresAutomatico() {
         calcularIndicadores();
