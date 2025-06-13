@@ -1,0 +1,89 @@
+<!-- inicio.component.html -->
+<div class="dashboard-container">
+  <!-- Encabezado -->
+  <div class="dashboard-header">
+    <h1>COMANDO IA MALVINAS</h1>
+    <p class="subtitulo">Grand Bourg - Malvinas Argentinas</p>
+  </div>
+
+  <!-- Tarjetas principales -->
+  <div class="tarjetas-grid">
+    <div class="tarjeta-moderna" *ngFor="let tarjeta of indicadoresTarjetas.concat(indicadoresTarjetasObras)">
+      <div class="valor-grande">
+      <span class="valor-numero">
+        {{ tarjeta.indiceSuplente === null ? tarjeta.principal.valorActual : tarjeta.suplentes[tarjeta.indiceSuplente].valorActual }}
+      </span>
+        <span class="unidad">
+        {{
+          (tarjeta.indiceSuplente === null
+            ? tarjeta.principal.unidad
+            : tarjeta.suplentes[tarjeta.indiceSuplente].unidad) === 'puntos'
+            ? '/5'
+            : (tarjeta.indiceSuplente === null
+              ? tarjeta.principal.unidad
+              : tarjeta.suplentes[tarjeta.indiceSuplente].unidad)
+        }}
+      </span>
+      </div>
+
+      <div class="titulo texto-secundario">
+        {{ tarjeta.indiceSuplente === null ? tarjeta.principal.nombre : tarjeta.suplentes[tarjeta.indiceSuplente].nombre }}
+      </div>
+
+      <div class="variacion" [ngClass]="(tarjeta.indiceSuplente === null ? tarjeta.principal.variacion : tarjeta.suplentes[tarjeta.indiceSuplente].variacion) >= 0 ? 'positivo' : 'negativo'">
+        {{ tarjeta.indiceSuplente === null ? tarjeta.principal.direccion : tarjeta.suplentes[tarjeta.indiceSuplente].direccion }}
+        {{ tarjeta.indiceSuplente === null ? tarjeta.principal.variacion : tarjeta.suplentes[tarjeta.indiceSuplente].variacion }}
+        {{ tarjeta.indiceSuplente === null ? tarjeta.principal.unidad : tarjeta.suplentes[tarjeta.indiceSuplente].unidad }}
+      </div>
+
+      <!-- Flechita central para cambiar vista -->
+      <button
+        class="btn-ver"
+        (click)="cambiarVista(tarjeta)"
+        [title]="
+        tarjeta.indiceSuplente === null
+          ? 'Ver suplente'
+          : tarjeta.indiceSuplente < tarjeta.suplentes.length - 1
+          ? 'Siguiente suplente'
+          : 'Volver al principal'
+      "
+      >
+        {{ tarjeta.indiceSuplente === null || tarjeta.indiceSuplente < tarjeta.suplentes.length - 1 ? '▶' : '◀' }}
+      </button>
+
+      <!-- Botón adicional de ver -->
+      <button class="btn-ver-mini-fijo">Ver</button>
+    </div>
+  </div>
+
+
+  <!-- Gráficos -->
+  <div class="graficos-grid">
+    <div class="grafico-card">
+      <h3>Nivel de satisfacción del vecino con la gestión</h3>
+      <!-- Gráfico de barras aquí -->
+      <canvas id="satisfaccionChart"></canvas>
+    </div>
+    <div class="grafico-card">
+      <h3>Demandas Sociales</h3>
+      <!-- Gráfico de torta aquí -->
+      <canvas id="demandasChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Alertas, recomendaciones y sugerencias -->
+  <div class="alertas-grid">
+    <div class="alerta-card alerta">
+      <h4>ALERTA CRÍTICA</h4>
+      <p>Ej: Incremento delictivo en sectores vulnerables.</p>
+    </div>
+    <div class="alerta-card recomendacion">
+      <h4>RECOMENDACIÓN</h4>
+      <p>Ej: Reforzar comunicación institucional.</p>
+    </div>
+    <div class="alerta-card sugerencia">
+      <h4>SUGERENCIA</h4>
+      <p>Ej: Mejorar acceso a servicios esenciales.</p>
+    </div>
+  </div>
+</div>

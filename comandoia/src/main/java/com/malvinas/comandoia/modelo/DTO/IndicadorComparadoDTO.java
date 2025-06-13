@@ -11,6 +11,6 @@ public class IndicadorComparadoDTO {
     private String nombre;
     private BigDecimal valorActual;
     private String unidad;
-    private BigDecimal variacion; // valorActual - anterior
-    private String direccion;     // "↑", "↓" o "→"
+    private BigDecimal variacion;
+    private String direccion;
 }

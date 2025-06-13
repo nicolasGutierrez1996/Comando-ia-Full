@@ -49,124 +49,19 @@
       <h2 *ngIf="mostrarMapaReclamos">Mapa de Reclamos</h2>
     </div>
 
+
+    <app-inicio *ngIf="mostrarInicio"></app-inicio>
     <!-- SECCIÓN INICIO -->
-    <div class="Inicio" *ngIf="mostrarInicio">
-      <h1>INICIO</h1>
-      <div class="container">
-        <div class="title">COMANDO IA MALVINAS</div>
-        <div class="subtitle">Grand Bourg - Malvinas Argentinas</div>
-
-        <div class="cards">
-          <div class="card" *ngFor="let tarjeta of indicadoresTarjetas">
-            <div class="percentage">
-              {{
-              tarjeta.indiceSuplente === null
-              ? tarjeta.principal.valorActual
-              : tarjeta.suplentes[tarjeta.indiceSuplente].valorActual
-              }}
-              <span class="unidad">
-  {{
-    (tarjeta.indiceSuplente === null
-      ? tarjeta.principal.unidad
-      : tarjeta.suplentes[tarjeta.indiceSuplente].unidad) === 'puntos'
-      ? '/5'
-      : (tarjeta.indiceSuplente === null
-          ? tarjeta.principal.unidad
-          : tarjeta.suplentes[tarjeta.indiceSuplente].unidad)
-  }}
-</span>
-            </div>
-
-            <div class="label">
-              {{
-              tarjeta.indiceSuplente === null
-              ? tarjeta.principal.nombre
-              : tarjeta.suplentes[tarjeta.indiceSuplente].nombre
-              }}
-            </div>
-
-            <div
-              class="change"
-              [ngClass]="
-      (tarjeta.indiceSuplente === null
-        ? tarjeta.principal.variacion
-        : tarjeta.suplentes[tarjeta.indiceSuplente].variacion) >= 0
-        ? 'positive'
-        : 'negative'
-    "
-            >
-              {{
-              tarjeta.indiceSuplente === null
-              ? tarjeta.principal.direccion
-              : tarjeta.suplentes[tarjeta.indiceSuplente].direccion
-              }}
-              {{
-              tarjeta.indiceSuplente === null
-              ? tarjeta.principal.variacion
-              : tarjeta.suplentes[tarjeta.indiceSuplente].variacion
-              }}
-              {{
-              tarjeta.indiceSuplente === null
-              ? tarjeta.principal.unidad
-              : tarjeta.suplentes[tarjeta.indiceSuplente].unidad
-              }}
-            </div>
-
-            <button
-              class="icono-flecha"
-              (click)="cambiarVista(tarjeta)"
-              [title]="
-    tarjeta.indiceSuplente === null
-      ? 'Ver suplente'
-      : tarjeta.indiceSuplente < tarjeta.suplentes.length - 1
-      ? 'Siguiente suplente'
-      : 'Volver al principal'
-  ">
-              {{ tarjeta.indiceSuplente === null || tarjeta.indiceSuplente < tarjeta.suplentes.length - 1 ? '▶' : '◀' }}
-            </button>
-          </div>
-
-          <div class="card">
-            <div class="percentage">32</div>
-            <div class="label">Obras públicas<br>en ejecución</div>
-            <div class="change positive">↑ 3%</div>
-          </div>
-
-          <div class="card">
-            <div class="percentage">3.425</div>
-            <div class="label">Reclamos Vecinales</div>
-            <div class="change negative">↓ -2%</div>
-          </div>
-        </div>
-      </div>
-      <div class="contenedor-principal">
-        <div class="tarjeta alerta">
-          <h3>🔴 ALERTA CRÍTICA</h3>
-          <p><strong>Incremento Delictivo en Grand Bourg</strong></p>
-          <p>+29% de robos reportados en los últimos 15 días en Grand Bourg</p>
-          <p><strong>⚠ Acción:</strong> activar Comité de Crisis con Seguridad</p>
-        </div>
-
-        <div class="tarjeta recomendacion">
-          <h3>🟡 RECOMENDACIÓN</h3>
-          <p><strong>Refuerzo Comunicacional de Obras en Ejecución</strong></p>
-          <p>Muchas obras con alta inversión no son visibles.</p>
-          <p><strong>✔ Recomendación:</strong> Implementar señalética territorial</p>
-        </div>
-
-        <div class="tarjeta sugerencia">
-          <h3>🔵 SUGERENCIA</h3>
-          <p><strong>Segmentar discurso político a grupos etarios</strong></p>
-          <p>No todos los sectores responden igual.</p>
-          <p><strong>💡 Sugerencia:</strong> Jóvenes: empleo. Adultos: seguridad. Mayores: salud</p>
-        </div>
-      </div>
 
 
-    </div>
 
 
-    <button class="boton-filtros" (click)="mostrarFiltros = !mostrarFiltros">
+
+
+
+
+    <button class="boton-filtros" (click)="mostrarFiltros = !mostrarFiltros" *ngIf="mostrarGraficosReclamos||mostrarMapaReclamos">
+
       {{ mostrarFiltros ? 'Ocultar filtros' : 'Mostrar filtros' }}
       <span class="icono">{{ mostrarFiltros ? '▲' : '▼' }}</span>
     </button>
