@@ -30,7 +30,6 @@ public class IndicadorObraService {
         SELECT COUNT(*) FILTER (WHERE fecha_real_finalizacion IS NOT NULL) * 100.0 / NULLIF(COUNT(*), 0)
         FROM obra_publica;
     """);
-
         guardarIndicador("Obras finalizadas", "Porcentaje de obras finalizadas sobre el total", "principal", porcentajeFinalizadas, "%");
 
         // Indicador principal: Promedio avance físico
@@ -38,7 +37,6 @@ public class IndicadorObraService {
         SELECT AVG(avance_fisico)
         FROM obra_publica;
     """);
-
         guardarIndicador("Avance físico promedio", "Promedio de avance físico de todas las obras", "principal", promedioAvance, "%");
 
         // Suplente: Cantidad de obras activas (en ejecución)
@@ -48,7 +46,6 @@ public class IndicadorObraService {
         JOIN estado_obra eo ON op.estado_id = eo.id
         WHERE eo.descripcion ILIKE '%ejecución%';
     """);
-
         guardarIndicador("Obras activas", "Cantidad de obras actualmente en ejecución", "suplente", obrasActivas, "unidades");
 
         // Suplente: Obras sin fecha de finalización real
@@ -57,7 +54,6 @@ public class IndicadorObraService {
         FROM obra_publica
         WHERE fecha_real_finalizacion IS NULL;
     """);
-
         guardarIndicador("Obras abiertas", "Cantidad de obras sin fecha de finalización real", "suplente", obrasAbiertas, "unidades");
 
         // Suplente: % ejecutado vs presupuestado
@@ -65,7 +61,6 @@ public class IndicadorObraService {
         SELECT SUM(monto_ejecutado) * 100.0 / NULLIF(SUM(monto_presupuestado), 0)
         FROM obra_publica;
     """);
-
         guardarIndicador("Ejecución presupuestaria", "Monto total ejecutado sobre el presupuestado", "suplente", porcentajeEjecutado, "%");
 
         // Suplente: Cantidad de obras con avance físico bajo (< 30%)
@@ -74,10 +69,34 @@ public class IndicadorObraService {
         FROM obra_publica
         WHERE avance_fisico < 30;
     """);
-
         guardarIndicador("Avance físico bajo", "Cantidad de obras con avance físico menor al 30%", "suplente", obrasBajoAvance, "unidades");
-    }
 
+        // ➕ Nuevo principal: Obras atrasadas
+        BigDecimal obrasAtrasadas = ejecutarQueryDecimal("""
+        SELECT COUNT(*)
+        FROM obra_publica
+        WHERE fecha_estimada_finalizacion IS NOT NULL
+          AND fecha_real_finalizacion IS NULL
+          AND fecha_estimada_finalizacion < CURRENT_DATE;
+    """);
+        guardarIndicador("Obras atrasadas", "Cantidad de obras con fecha estimada vencida y sin finalización", "principal", obrasAtrasadas, "unidades");
+
+        // ➕ Nuevo suplente: Obras con sobreejecución presupuestaria
+        BigDecimal obrasSobreejecucion = ejecutarQueryDecimal("""
+        SELECT COUNT(*)
+        FROM obra_publica
+        WHERE monto_ejecutado > monto_presupuestado;
+    """);
+        guardarIndicador("Obras con sobreejecución", "Cantidad de obras con monto ejecutado mayor al presupuestado", "suplente", obrasSobreejecucion, "unidades");
+
+        // ➕ Nuevo suplente: Obras sin fecha estimada
+        BigDecimal obrasSinFechaEstimada = ejecutarQueryDecimal("""
+        SELECT COUNT(*)
+        FROM obra_publica
+        WHERE fecha_estimada_finalizacion IS NULL;
+    """);
+        guardarIndicador("obras sin estimacion", "Cantidad de obras sin fecha estimada de finalización", "suplente", obrasSinFechaEstimada, "unidades");
+    }
     private BigDecimal ejecutarQueryDecimal(String sql) {
         Object result = entityManager.createNativeQuery(sql).getSingleResult();
         return result != null ? new BigDecimal(result.toString()) : BigDecimal.ZERO;
@@ -99,7 +118,7 @@ public class IndicadorObraService {
 
 
     @Scheduled(cron = "0 0 8 * * *") // todos los días a las 8:00 AM
-    //@Scheduled(cron = "0 * * * * *") // cada minuto (para pruebas)
+     //@Scheduled(cron = "0 * * * * *") // cada minuto (para pruebas)
     @Transactional
     public void calcularIndicadoresAutomatico() {
         calcularIndicadores();
@@ -130,7 +149,7 @@ public class IndicadorObraService {
     }
 
     public List<IndicadorComparadoDTO> obtenerPrincipalesComparados() {
-        List<String> nombres = List.of("Obras finalizadas","Avance físico promedio");
+        List<String> nombres = List.of("Obras finalizadas","Avance físico promedio","Obras atrasadas");
 
         return nombres.stream()
                 .map(this::compararConAnterior)
@@ -142,7 +161,9 @@ public class IndicadorObraService {
                 "Obras activas",
                 "Obras abiertas",
                 "Ejecución presupuestaria",
-                "Avance físico bajo"
+                "Avance físico bajo",
+                "Obras con sobreejecución",
+                "obras sin estimacion"
         );
 
         return nombres.stream()

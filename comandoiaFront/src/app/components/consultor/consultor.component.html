@@ -1,6 +1,10 @@
 <div class="aplicacion">
   <div class="menu-lateral">
     <h2>IA Malvinas</h2>
+    <div class="fecha-hora-menu">
+      {{ fechaHoraActual }}
+    </div>
+
     <ul class="lista-opciones">
       <li>
         <button type="button" class="menu-titulo" (click)="mostrarInicioBoton()">
@@ -165,11 +169,11 @@
     <!-- SECCIÓN GRÁFICOS OBRAS-->
 
     <div *ngIf="mostrarGraficosObras || mostrarMapaObras" class="graficos-reclamos">
-      <div style="text-align: right; margin-bottom: 10px;">
-        <button (click)="mostrarFiltros = !mostrarFiltros">
-          {{ mostrarFiltros ? 'Ocultar filtros 🔼' : 'Mostrar filtros 🔽' }}
-        </button>
-      </div>
+
+        <button class="boton-filtros" (click)="mostrarFiltros = !mostrarFiltros">
+          {{ mostrarFiltros ? 'Ocultar filtros' : 'Mostrar filtros' }}
+          <span class="icono">{{ mostrarFiltros ? '▲' : '▼' }}</span>        </button>
+
 
       <div class="filtros-container" *ngIf="mostrarFiltros">
         <div class="filtro-item">
@@ -348,7 +352,7 @@
 
     <!-- SECCIÓN MAPA -->
 
-    <div class="chat-container" *ngIf="!chatGpt">
+    <div class="chat-container" *ngIf="!chatGpt && !mostrarInicio">
       <input type="checkbox" id="chat-toggle">
       <label for="chat-toggle" class="chat-button">💬</label>
 
@@ -361,8 +365,10 @@
           </p>
 
           <!-- Mostrar respuesta en Markdown si existe -->
-          <div *ngIf="respuestaIA">
-            <markdown [data]="respuestaIA"></markdown>
+          <div *ngFor="let mensaje of mensajes">
+            <div [ngClass]="mensaje.autor === 'usuario' ? 'mensaje-usuario' : 'mensaje-ia'">
+              <markdown [data]="mensaje.texto"></markdown>
+            </div>
           </div>
 
           <!-- Input del usuario -->

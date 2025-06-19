@@ -424,10 +424,14 @@ public class GPTService {
                 - Neutral: 33.3%
                 - Insatisfecho: 16.7%
                 
-                IMPORTANTE LEELO:
+                MUY IMPORTANTE LEELO:
                 Si hay riesgo de errores por acentos, sugerí:
                 - eliminar los acentos del texto antes de usarlo en la condición ILIKE.
                 Por ejemplo para Pablo Nogués
+                - NO AGRUPES POR BARRIO AL MENOS QUE EL USUARIO LO HAYA SOLICITADO. SIEMPRE SE AGRUPA POR LOCALIDAD.
+                Y SI EL USUARIO PIDE POR BARRIOS NO GENERES VARIAS COLUMNAS POR BARRIOS NO EXISTENTES METELOS A TODOS EN UNA SOLA COLUMNA  
+                - Cuando respondas con JSON, no incluyas caracteres de escape como `\\n` o `\\\\`. El campo "contenido" debe ser un string válido, sin saltos de línea ni barras invertidas. Todo debe estar en una sola línea para que el backend lo pueda interpretar sin errores.
+                    
                                 
                                 """
 
@@ -695,9 +699,43 @@ public class GPTService {
                                                                                                                                                             - Consulta: ¿Cuantos reclamos de luz se registraron en los ultimos 5 años?
                                                                                                                                                             - Respuesta: se registraron 10 reclamos de luz en los ultimos 5 años
                                                                                                                                                             
-                                                                                                                                                            
+                                                                                                                                                                           ⚠️MUY Importante: Los datos que vas a recibir pueden estar filtrados según la consulta SQL. Nunca asumas que representan el total de datos disponibles, a menos que el usuario lo haya solicitado explícitamente. Si solo recibís una parte (por ejemplo, solo reclamos insatisfechos), aclaralo en tu respuesta.
+
                                                                                                                                                             IMPORTANTE:
                                                                                                                                                             AGRUPA LOS RESULTADOS DE SATISFECHO Y MUY SATISFECHO SI ES QUE EL USUARIO NO SOLICITO
+                                                                                                                                                            - SI EL BARRIO NO EXISTE EN LA RESPUESTA OBTENIDA NO INVENTES BARRIOS, SOLO PON NO ESPECIFICADO, NO USES POR EJEMPLO BARRIO: GENERAL YA QUE CONFUNDE.
+                                                                                                                                                            - TAMPOCO AGRUPES POR BARRIO LA RESPUESTA AL MENOS QUE EL USUARIO LO HAYA SOLICITADO, SIEMPRE PRIORIZA AGRUPAR POR LOCALIDAD
+                                                                                                                                                            
+                                                                                                                                                            IMPORTANTE:
+                                                                                                                                                            SI EL BARRIO ES NO ESPECIFICADO AGRUPA A TODOS EN UN SOLO MODULO POR LOCALIDAD, NO HAGAS ALGO DE ESTE ESTILO:
+                                                                                                                                                             Localidad: Los Polvorines
+                                                                                                                                                             
+                                                                                                                                                             Barrio: No especificado
+                                                                                                                                                             
+                                                                                                                                                             Total de reclamos: 5
+                                                                                                                                                             Reclamos insatisfechos: 1
+                                                                                                                                                             Reclamos satisfechos: 2
+                                                                                                                                                             Reclamos neutrales: 3
+                                                                                                                                                             
+                                                                                                                                                             Barrio: No especificado
+                                                                                                                                                             
+                                                                                                                                                             Total de reclamos: 2
+                                                                                                                                                             Reclamos insatisfechos: 1
+                                                                                                                                                             Reclamos satisfechos: 1
+                                                                                                                                                             Reclamos neutrales: 1
+                                                                                                                                                             
+                                                                                                                                                             SINO QUE DEBERIAS MOSTRAR 
+                                                                                                                                                              Barrio: No especificado
+                                                                                                                                                             
+                                                                                                                                                             Total de reclamos: 9
+                                                                                                                                                             Reclamos insatisfechos: 2
+                                                                                                                                                             Reclamos satisfechos: 3
+                                                                                                                                                             Reclamos neutrales: 4
+                                                                                                                                                             
+                                                                                                                                                             Y TEN CUIDADO COMO CUENTAS EL TOTAL DE RECLAMOS.
+                                                                                                                                                             
+                                                                                                                                                             
+                                                                                                                                                             
                 """;
 
         String datos = resultados.isEmpty()

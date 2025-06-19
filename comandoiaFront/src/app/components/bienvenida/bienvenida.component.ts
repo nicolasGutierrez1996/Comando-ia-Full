@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { UsersService } from '../../services/users.service';
 import { NgIf } from '@angular/common';
+import { AuthService } from '../../services/authService.service';
 
 @Component({
   selector: 'app-bienvenida',
@@ -20,7 +21,8 @@ export class BienvenidaComponent {
 
   constructor(
     private usersService: UsersService,
-    private router: Router
+    private router: Router,
+                            private authService: AuthService
   ) {}
 
   onLogin(event: Event) {
@@ -42,36 +44,33 @@ export class BienvenidaComponent {
     this.router.navigate(['/recuperar']);
   }
 
- navegarPaginaPorRol() {
-   this.usersService.obtenerRol(this.usuario).subscribe({
-     next: (res) => {
-       console.log('Se encontró el rol:', res);
-       this.error = '';
-        this.rol = res.rol;
-       if (this.rol === 'ADMINISTRADOR_DEL_SISTEMA') {
-         console.log("Ingrese a redireccionar a administrador del sistema");
-         this.router.navigate(['./administradorSistemaInit']);
-       }else if(this.rol === 'ADMINISTRATIVO'){
-                  this.router.navigate(['./Administrador']);
+navegarPaginaPorRol() {
+  this.usersService.obtenerRol(this.usuario).subscribe({
+    next: (res) => {
+      this.error = '';
+      this.rol = res.rol;
 
+      // 👉 Guardar en el AuthService
+      this.authService.setDatos(this.usuario, this.rol);
 
-       }else if(this.rol === 'CONSULTOR_PRINCIPAL'){
-                     this.router.navigate(['./ConsultorPrincipal']);
-
-       }else if(this.rol === 'CONSULTOR'){
-               this.router.navigate(['./Consultor']);
-
-       }
-        else {
-         // Si hay otros roles y rutas, podés agregar más condiciones aquí
-         console.log("Rol no autorizado o diferente");
-       }
-     },
-     error: () => {
-       this.error = 'Rol no encontrado';
-     }
-   });
- }
+      // Redirección según rol
+      if (this.rol === 'ADMINISTRADOR_DEL_SISTEMA') {
+        this.router.navigate(['./administradorSistemaInit']);
+      } else if (this.rol === 'ADMINISTRATIVO') {
+        this.router.navigate(['./Administrador']);
+      } else if (this.rol === 'CONSULTOR_PRINCIPAL') {
+        this.router.navigate(['./ConsultorPrincipal']);
+      } else if (this.rol === 'CONSULTOR') {
+        this.router.navigate(['./Consultor']);
+      } else {
+        console.log("Rol no autorizado o diferente");
+      }
+    },
+    error: () => {
+      this.error = 'Rol no encontrado';
+    }
+  });
+}
 
  toggleMostrarContrasena(): void {
    this.mostrarContrasena = !this.mostrarContrasena;

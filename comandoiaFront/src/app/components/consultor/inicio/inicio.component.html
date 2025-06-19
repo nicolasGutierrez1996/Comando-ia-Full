@@ -1,10 +1,22 @@
-<!-- inicio.component.html -->
 <div class="dashboard-container">
   <!-- Encabezado -->
   <div class="dashboard-header">
-    <h1>COMANDO IA MALVINAS</h1>
-    <p class="subtitulo">Grand Bourg - Malvinas Argentinas</p>
+    <h3>COMANDO IA MALVINAS</h3>
+    <div class="usuario-box">
+      <div class="usuario-info">
+        <span class="usuario-nombre">👤{{nombreUsuario}}</span>
+        <span class="usuario-rol">{{rolUsuario}}</span>
+        <div class="usuario-localidad">
+          <span>Grand Bourg,</span><br />
+          <span>Malvinas</span><br />
+          <span>Argentinas</span>
+
+        </div>
+      </div>
+    </div>
   </div>
+
+
 
   <!-- Tarjetas principales -->
   <div class="tarjetas-grid">
@@ -18,7 +30,7 @@
           (tarjeta.indiceSuplente === null
             ? tarjeta.principal.unidad
             : tarjeta.suplentes[tarjeta.indiceSuplente].unidad) === 'puntos'
-            ? '/5'
+            ? 'SOBRE 5'
             : (tarjeta.indiceSuplente === null
               ? tarjeta.principal.unidad
               : tarjeta.suplentes[tarjeta.indiceSuplente].unidad)
@@ -51,39 +63,126 @@
         {{ tarjeta.indiceSuplente === null || tarjeta.indiceSuplente < tarjeta.suplentes.length - 1 ? '▶' : '◀' }}
       </button>
 
-      <!-- Botón adicional de ver -->
-      <button class="btn-ver-mini-fijo">Ver</button>
+
     </div>
   </div>
 
 
   <!-- Gráficos -->
   <div class="graficos-grid">
-    <div class="grafico-card">
+    <div class="grafico-card satisfaccion">
       <h3>Nivel de satisfacción del vecino con la gestión</h3>
-      <!-- Gráfico de barras aquí -->
-      <canvas id="satisfaccionChart"></canvas>
+      <canvas baseChart
+              *ngIf="satisfaccionMensualData?.labels?.length"
+              [data]="satisfaccionMensualData"
+              [options]="lineOptions"
+              [type]="'bar'"
+              class="canvas-satisfaccion">
+      </canvas>
     </div>
     <div class="grafico-card">
       <h3>Demandas Sociales</h3>
-      <!-- Gráfico de torta aquí -->
-      <canvas id="demandasChart"></canvas>
+
+      <div class="grafico-leyenda">
+        <canvas baseChart
+                [data]="demandasData"
+                [type]="'pie'"
+                [options]="pieOptions"
+                class="canvas-pie">
+        </canvas>
+
+        <ul class="leyenda-custom">
+          <li *ngFor="let label of demandasData.labels; let i = index">
+            <span class="color" [style.background-color]="getColor(i)"></span>
+            {{ label }}
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 
-  <!-- Alertas, recomendaciones y sugerencias -->
-  <div class="alertas-grid">
-    <div class="alerta-card alerta">
-      <h4>ALERTA CRÍTICA</h4>
-      <p>Ej: Incremento delictivo en sectores vulnerables.</p>
-    </div>
-    <div class="alerta-card recomendacion">
-      <h4>RECOMENDACIÓN</h4>
-      <p>Ej: Reforzar comunicación institucional.</p>
-    </div>
-    <div class="alerta-card sugerencia">
-      <h4>SUGERENCIA</h4>
-      <p>Ej: Mejorar acceso a servicios esenciales.</p>
+
+
+  <div class="alertas-y-chat">
+    <div class="alertas-grid">
+
+      <!-- ALERTA CRÍTICA -->
+      <div class="tarjeta-estandar alerta">
+        <div class="encabezado">ALERTA CRÍTICA</div>
+
+        <div class="contenido">
+          <p><span class="icono">⚠️</span><strong> Incremento Delictivo en Villa de Mayo</strong></p>
+          <p>
+            +29% de robos reportados en los últimos 15 días,<br />
+            con epicentro en el eje Gervasio Méndez – Mitre
+          </p>
+        </div>
+
+        <div class="footer">
+          <span class="subicono">👉</span>
+          <div><strong>Acción:</strong> activar Comité de Crisis con Seguridad, sumar rondines con móviles y presencia institucional</div>
+        </div>
+      </div>
+
+      <!-- RECOMENDACIÓN -->
+      <div class="tarjeta-estandar recomendacion">
+        <div class="encabezado">RECOMENDACIÓN</div>
+
+        <div class="contenido">
+          <p><span class="icono">💡</span><strong> Refuerzo Comunicacional de Obras en Ejecución</strong></p>
+          <p>Muchas obras con alta inversión no están siendo visibilizadas.</p>
+        </div>
+
+        <div class="footer">
+          <span class="subicono">👉</span>
+          <div><strong>Recomendación:</strong> implementar señalética territorial + posteos sectoriales con testimonio vecino</div>
+        </div>
+      </div>
+
+      <!-- SUGERENCIA -->
+      <div class="tarjeta-estandar sugerencia">
+        <div class="encabezado">SUGERENCIA</div>
+
+        <div class="contenido">
+
+          <p><span class="icono">💡</span><strong> Segmentar la narrativa política por grupo etario</strong></p>
+          <p>No todos los públicos responden igual al mensaje de gestión.</p>
+        </div>
+
+        <div class="footer">
+          <span class="subicono">👉</span>
+          <div>
+            <strong>Sugerencia</strong><br />
+            Jóvenes:futuro y empleo. Adultos:seguridad y limpieza.
+          </div>
+        </div>
+      </div>
+      <!-- CHAT IA -->
+      <div class="chat-box">
+        <h4>IA CHAT</h4>
+        <div class="mensaje-bienvenida" *ngIf="mensajes.length === 0">
+          <p>Hola, ¿en qué puedo ayudarte hoy?<br />Preguntá lo que quieras…</p>
+        </div>
+        <div class="chat-mensajes" *ngIf="mensajes.length > 0">
+          <div *ngFor="let mensaje of mensajes">
+            <div [ngClass]="mensaje.autor === 'usuario' ? 'mensaje-usuario' : 'mensaje-ia'">
+              <markdown [data]="mensaje.texto"></markdown>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-input-container">
+    <textarea
+      [(ngModel)]="mensajeUsuario"
+      rows="2"
+      placeholder="Escribí un mensaje..."
+      (keydown.enter)="enviarMensaje(); $event.preventDefault();">
+    </textarea>
+          <button class="boton-enviar" (click)="enviarMensaje()">➤</button>
+        </div>
+      </div>
+
     </div>
   </div>
+
 </div>

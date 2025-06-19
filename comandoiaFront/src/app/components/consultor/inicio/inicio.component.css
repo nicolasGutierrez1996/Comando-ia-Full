@@ -1,4 +1,3 @@
-
 :host {
   display: flex;
   flex: 1;
@@ -22,13 +21,18 @@
 }
 
 .dashboard-header {
-  text-align: left;
+   display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 1px solid #ddd;
 }
-.dashboard-header h1 {
+.dashboard-header h3 {
   color: #0a1833;
   font-weight: 700;
   font-family: 'Segoe UI', sans-serif;
   margin: 0;
+
 }
 
 .subtitulo {
@@ -95,84 +99,108 @@ margin: 0;
         }
 
 .graficos-grid {
-  display: flex;
-  gap: 2rem;
-  align-items: start;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
 }
 
 .grafico-card {
-    background: white;
-    padding: 1rem;
-    border-radius: 16px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-    flex: 1;
-    border: 1px solid #90a4ae;
+  background: white;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 380px;
+  height: 200px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.grafico-card h3 {
+  font-size: 15px;
+  margin: 0 0 0.4rem 0;
+  color: black;
+  align-self: flex-start;  /* 👈 alinea a la izquierda */
+}
+
+.contenedor-alertas-y-chat {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-top: 0.8rem;
+  padding: 0 0rem;
+  gap: 1rem;
 }
 
 .alertas-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  grid-template-columns: 200px 200px 200px 1rem 200px; /* ⬅️ Agregamos una columna de 1rem como espacio */
+  gap: 0.6rem;
+  justify-content: left;
+  align-items: flex-start;
+  margin-top: 1rem;
 }
 
-.alerta-card {
-  padding: 1rem;
-  border-radius: 12px;
-  color: white;
-  font-size: 14px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-.alerta {
-  background: #d32f2f;
-}
-
-.recomendacion {
-  background: #f9a825;
-}
-
-.sugerencia {
-  background: #1976d2;
-}
 
 
 .tarjeta-moderna {
   background: #f1f5ff;
-  border: 1px solid #90a4ae;
-  border-radius: 12px;
-  padding: 1rem;
-  width: 180px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  border: 1px solid #b0bec5;         /* 🔽 color más suave */
+  border-radius: 10px;               /* 🔽 bordes más sutiles */
+  padding: 0.6rem;                   /* 🔽 menos relleno */
+  width: 150px;                      /* 🔽 más angosta */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04); /* 🔽 sombra más suave */
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-between;
   text-align: left;
   font-family: 'Segoe UI', sans-serif;
   position: relative;
+    transition: all 0.2s ease-in-out;
+    will-change: transform, box-shadow;
+    height: 100%;
+      max-height: 120px;
+
+}
+.tarjeta-moderna:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  cursor: default;
 }
 
 .valor-grande {
-  font-size: 24px;
+  font-size: 20px;                   /* 🔽 más chico */
+  font-weight: bold;
+  color: #212121;
+}
+
+.valor-numero {
+  font-size: 22px;                   /* 🔽 más chico */
   font-weight: bold;
   color: #212121;
 }
 
 .unidad {
-  font-size: 14px;
-  font-weight: normal;
-  color: #212121;
-  margin-left: 4px;
+  font-size: inherit;
+  font-weight: bold;
+  margin-left: 0px;
+
 }
 
 .titulo {
-  font-size: 14px;
+  font-size: 12.5px;                 /* 🔽 más compacto */
   color: #424242;
-  margin: 0.4rem 0;
+  margin: 0.3rem 0;
 }
 
 .variacion {
-  font-size: 13px;
-  margin-top: 0.4rem;
+  font-size: 12px;                   /* 🔽 más compacto */
+  margin-top: 0.3rem;
 }
 
 .variacion.positivo {
@@ -183,42 +211,17 @@ margin: 0;
   color: red;
 }
 
-.btn-ver-mini {
-  background-color: #ffffff;
-  border: 1px solid #ccc;
-  border-radius: 50%;
-  font-size: 16px;
-  width: 28px;
-  height: 28px;
-  color: #333;
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.btn-ver-mini:hover {
-  background-color: #4da6ff;
-  color: white;
-  transform: scale(1.1);
-}
-
 .btn-ver-mini-fijo {
   position: absolute;
-  bottom: 8px;
-  right: 8px;
-  background-color: #e0e0e0; /* gris claro */
+  bottom: 6px;
+  right: 6px;
+  background-color: #e0e0e0;
   border: none;
-  border-radius: 12px;
-  font-size: 12px;
-  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 11px;
+  padding: 1px 8px;
   color: #333;
-  box-shadow: inset 0 0 1px rgba(0,0,0,0.1);
+  box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.08);
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
@@ -228,14 +231,381 @@ margin: 0;
   transform: scale(1.05);
 }
 
-.valor-numero {
-  font-size: 28px;
-  font-weight: bold;
-  color: #212121;
+.texto-secundario {
+  font-size: 13px;                   /* 🔽 más chico */
+  color: #2f3e6c;
+  text-align: left;
 }
 
-.texto-secundario {
+
+.chat-box {
+  background-color: white;
+  color: white;
+  border-radius: 10px;
+  padding: 0;
+  font-size: 12px;
+  line-height: 1.2;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+
+  height: 235px;
+  width: 410px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+
+  /* 🟦 Fuerza a quedarse dentro de la grilla */
+  grid-column: 4;
+  align-self: start;     /* lo alinea al tope de la fila */
+  position: static !important;  /* ⛔ cancela cualquier absolute/fixed heredado */
+  margin-left: 1.4rem;
+  border: 2px solid #162172;
+
+}
+.chat-box h4 {
+  background-color: #162172;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 0.4rem 0.6rem; /* 🔄 eliminamos padding vertical */
+  height: 30px; /* opcional: altura fija como en diseño */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  text-align: center;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+
+.chat-box p {
+  font-size: 13px;
+  text-align: center;
+  padding: 0.6rem 0.8rem 0 0.8rem;
+  margin: 0;
+  line-height: 1.4;
+  color: #162172;
+}
+
+.chat-box input {
+  font-size: 12px;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin: 0.6rem;
+  width: calc(100% - 1.2rem);
+  box-sizing: border-box;
+}
+
+
+
+.alertas-y-chat {
+  display: flex;
+  justify-content: left;
+  align-items: flex-start;
+  gap: 1.5rem; /* 🟦 este espacio separa el chat de las alertas */
+  margin-top: 0rem;
+}
+
+.chat-input-container {
+  display: flex;
+  align-items: center;
+  padding: 0 0.6rem 0.6rem 0.6rem;
+  gap: 0.5rem;
+}
+
+.chat-input-container textarea {
+  flex: 1;
+  font-size: 12px;
+  padding: 6px 10px;
+  border: 1.5px solid #162172;
+  border-radius: 6px;
+  resize: none; /* para que no pueda agrandarse manualmente */
+  box-sizing: border-box;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  min-height: 36px;
+  max-height: 80px; /* para evitar que crezca infinito */
+  overflow-y: auto;
+}
+
+.chat-input-container textarea:focus {
+  outline: none;
+  border-color: #304ffe;
+  box-shadow: 0 0 3px rgba(48, 79, 254, 0.4);
+}
+
+.boton-enviar {
+  width: 32px;
+  height: 32px;
+  background-color: #10206d;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.boton-enviar:hover {
+  background-color: #304ffe;
+}
+
+.tarjeta-estandar {
+  background-color: #fffef6;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  width: 160px;
+  min-height: 160px;
+  font-size: 13px;
+  font-family: 'Segoe UI', sans-serif;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* Encabezado común */
+.tarjeta-estandar .encabezado {
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 0.4rem;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  text-align: center;
+  width: 100%;
+  margin: 0;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  box-sizing: border-box;
+  color: white;
+  line-height: 1.2;
+}
+
+/* Contenido blanco */
+.tarjeta-estandar .contenido {
+  padding: 0.2rem 0.4rem;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  color: #000;
+  font-size: 12px;
+
+}
+
+/* Footer común */
+.tarjeta-estandar .footer {
+  padding: 0.25rem 0.4rem;
+  width: 100%;
+  box-sizing: border-box;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  display: flex;
+  gap: 0.2rem;
+  align-items: flex-start;
+  font-size: 12px;
+    line-height: 1.2;
+}
+
+/* Íconos en contenido y footer */
+.tarjeta-estandar .icono {
+  font-size: 18px;
+  margin-top: 2px;
+}
+.tarjeta-estandar .subicono{
+  font-size: 16px;
+  margin-top: 2px;
+}
+
+/* Tipos específicos */
+.tarjeta-estandar.alerta .encabezado,
+.tarjeta-estandar.alerta .footer {
+  background-color: #ef5350;
+  color: white;
+}
+
+
+
+.tarjeta-estandar.recomendacion .encabezado,
+.tarjeta-estandar.recomendacion .footer {
+  background-color: #ffd54f;
+  color: #000;
+}
+
+.tarjeta-estandar.sugerencia .encabezado,
+.tarjeta-estandar.sugerencia .footer {
+  background-color: #1976d2;
+  color: white;
+}
+
+
+.tarjeta-estandar .contenido {
+  padding: 1.5rem 0.4rem;     /* aún más compacto */
+  gap: 0.2rem;                /* menor separación entre elementos */
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.tarjeta-estandar .contenido p,
+.tarjeta-estandar .contenido div {
+  margin: 0 !important;       /* elimina márgenes por defecto */
+  padding: 0 !important;      /* por si tienen padding heredado */
+}
+
+
+.leyenda-custom {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.leyenda-custom li {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.leyenda-custom .color {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.color {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.grafico-leyenda {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 1rem;
+  flex-wrap: wrap; /* 🔁 permite que baje la leyenda si no entra */
+}
+
+
+
+.canvas-satisfaccion {
+  width: 100% !important;
+  height: 280px !important;
+}
+
+.canvas-pie {
+  width: 130px !important;
+  height: 130px !important;
+}
+
+.grafico-card.satisfaccion {
+  flex: 2; /* Le da el doble de ancho que al otro */
+}
+
+.usuario-box {
+  position: absolute; /* o fixed si querés que flote siempre visible */
+  top: 10px;
+  right: 20px;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  z-index: 1000;
+}
+
+.usuario-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+    font-size: 0.85rem;
+}
+.usuario-localidad {
+  font-size: 0.75rem;
+  color: #444;
+  font-style: normal;
+  margin-top: 2px;
+  text-align: right;
+  line-height: 1;
+}
+
+.usuario-nombre {
   font-size: 14px;
-  color: #2f3e6c;
-   text-align: left;
+  color: #222;
+    text-transform: uppercase;
+
+}
+
+.usuario-rol {
+  font-size: 12px;
+  color: #666;
+  font-weight: normal;
+}
+
+.chat-mensajes {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 40px;
+  max-height: 300px;
+  padding-bottom: 8px;
+}
+
+.mensaje-usuario {
+  background-color: #cce4f6;
+  color: #000000;
+  padding: 8px 12px;
+  border-radius: 12px;
+  margin: 6px 0;
+  max-width: 90%;
+  align-self: flex-end;  /* 💬 alineado a la derecha */
+  margin-left: 10%;
+}
+
+.mensaje-ia {
+  background-color: #f2f2f2;
+  color: #000000;
+  padding: 8px 12px;
+  border-radius: 12px;
+  margin: 6px 0;
+  max-width: 90%;
+  align-self: flex-start; /* 💬 alineado a la izquierda */
+  margin-right: 10%;
+}
+
+.chat-input-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chat-input-container textarea {
+  flex: 1;
+  resize: none;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.mensaje-bienvenida {
+  padding: 12px;
+  margin-bottom: 8px; /* o directamente 0 */
+  text-align: center;
+  font-style: italic;
+  color: #3f51b5;
 }

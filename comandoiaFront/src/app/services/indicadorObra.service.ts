@@ -47,6 +47,11 @@ obtenerIndicadoresConSuplentes(): Observable<TarjetaIndicador[]> {
         suplentes: [suplentes[2], suplentes[3]]
       });
 
+         tarjetas.push({
+              principal: principales[2],
+              suplentes: [suplentes[4], suplentes[5]]
+            });
+
       return tarjetas;
     })
   );

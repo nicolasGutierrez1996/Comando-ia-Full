@@ -25,6 +25,12 @@ import { InicioComponent } from './inicio/inicio.component';
 
 import * as L from 'leaflet';
 
+interface MensajeIA {
+  autor: 'usuario' | 'ia';
+  texto: string;
+}
+
+
 @Component({
   selector: 'app-consultor',
   standalone: true,
@@ -79,7 +85,7 @@ private markerClusterGroup: any;
 private layersControl: any = null;
 grupoPorCalorObra:string='estado';
 
-
+mensajes: MensajeIA[] = [];
 
 reclamos: ReclamoConDescripciones[] = [];
 obras:ObraConDescripciones [] = [];
@@ -125,6 +131,8 @@ grupoPorObra: string = 'estado';
 //IA CHAT
 chatGpt:boolean=false;
 
+fechaHoraActual: string = '';
+
 
 
 
@@ -146,6 +154,10 @@ constructor(
 
  ngOnInit(): void {
 
+      if (typeof window !== 'undefined') {
+        this.actualizarFecha();
+        setInterval(() => this.actualizarFecha(), 60000);
+      }
 
     this.reclamosService.obtenerReclamos().subscribe((data: ReclamoConDescripciones[]) => {
 
@@ -258,6 +270,32 @@ get chartOptions(): ChartOptions {
       // Opcional: configura otras cosas para otros tipos
     };
   }
+}
+
+actualizarFecha() {
+  const ahora = new Date();
+
+  const opcionesFecha: Intl.DateTimeFormatOptions = {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric'
+  };
+
+  const opcionesHora: Intl.DateTimeFormatOptions = {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  };
+
+  const fecha = ahora.toLocaleDateString('es-AR', opcionesFecha);
+  let hora = ahora.toLocaleTimeString('es-AR', opcionesHora);
+
+  hora = hora.replace(':', '.')
+             .replace('a. m.', 'AM')
+             .replace('p. m.', 'PM')
+             .toUpperCase();
+
+  this.fechaHoraActual = `${fecha}\n${hora}`;
 }
 
 
@@ -1356,21 +1394,37 @@ private agregarMarcadoresObras() {
 
 //GPT
 
-   enviarMensaje() {
-     const prompt = this.mensajeUsuario.trim();
-     if (!prompt) return;
+enviarMensaje() {
+  const prompt = this.mensajeUsuario.trim();
+  if (!prompt) return;
 
-     this.respuestaIA = '⏳ Pensando...';
+  this.mensajes.push({ autor: 'usuario', texto: prompt });
+  this.mensajeUsuario = '';
 
-     this.gptService.preguntar(prompt).subscribe(
-       res => this.respuestaIA = res.respuesta || '🤖 No se encontró respuesta.',
-       err => this.respuestaIA = '❌ Error al consultar la IA.'
-     );
+  const indexPensando = this.mensajes.push({
+    autor: 'ia',
+    texto: '⏳ Pensando...'
+  }) - 1;
 
-     this.mensajeUsuario = '';
-   }
+const historialFormateado = this.mensajes.map(m => ({
+  rol: m.autor === 'usuario' ? 'user' as const : 'assistant' as const,
+  content: m.texto
+}));
 
-//CHAT CON HISTORIAL GPT
+const historialReciente = historialFormateado.slice(-8);
+
+  // Llamar al servicio GPT
+   this.gptService.preguntar({ prompt, historial: historialReciente }).subscribe({
+   next: (res) => {
+      const respuestaIA = res.respuesta || '🤖 No se encontró respuesta.';
+      this.mensajes[indexPensando].texto = respuestaIA;
+    },
+    error: () => {
+      this.mensajes[indexPensando].texto = '❌ Error al consultar la IA.';
+    }
+  });
+}
+
 
  mostrarChatGpt(){
 

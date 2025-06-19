@@ -1237,3 +1237,33 @@ box-sizing: border-box;
   font-size: 16px;
   line-height: 1;
 }
+
+.mensaje-usuario {
+  background-color: #cce4f6; /* Celeste claro */
+  border: 1px solid #bcdfff;
+  padding: 8px;
+  border-radius: 12px;
+  margin: 6px 0;
+  text-align: left;
+  max-width: 90%;
+  margin-right: auto;
+}
+
+.mensaje-ia {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  padding: 8px;
+  border-radius: 12px;
+  margin: 6px 0;
+  text-align: left;
+  max-width: 90%;
+  margin-left: auto;
+}
+
+.fecha-hora-menu {
+  font-size: 0.85rem;
+  color: #b3e5fc;
+  text-align: center;
+  white-space: pre-line;
+  margin-top: 8px;
+}
